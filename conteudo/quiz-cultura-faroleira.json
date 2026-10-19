@@ -1,0 +1,617 @@
+{
+  "titulo": "Quiz Faroleiros – Módulo Cultura Faroleira",
+  "modulo": "cultura-faroleira",
+  "fonte": "estudo-canais-farol.md (YouTube, Instagram e X do Farol da Liberdade e de Abraham Weintraub, levantados em 19/10/2026)",
+  "versao": "1.0",
+  "aviso": "Este módulo reflete o discurso dos canais, que muda com o tempo. Revisar periodicamente. Perguntas com 'volatil': true tratam de fatos mais sujeitos a mudança.",
+  "niveis": {
+    "facil": "Identidade, programas, símbolos e definições básicas do movimento",
+    "medio": "Papel do Faroleiro, regras de conduta e aplicação a situações",
+    "dificil": "Nuances, fundamentos filosóficos e relação entre o discurso e o manifesto"
+  },
+  "formato": "correta = índice (0 a 3) da alternativa certa",
+  "perguntas": [
+    {
+      "id": "C1",
+      "tema": "Natureza do movimento",
+      "nivel": "facil",
+      "pergunta": "Como o Farol da Liberdade define a si mesmo?",
+      "alternativas": [
+        "Uma instituição de caridade",
+        "Um movimento civilizatório",
+        "Um partido político conservador",
+        "Uma igreja cristã"
+      ],
+      "correta": 1,
+      "explicacao": "Abraham afirma que o Farol é um movimento civilizatório. Não é partido, não é movimento político e não é projeto de poder.",
+      "zoeira": "Partido? Não. Igreja? Não. Caridade? Também não. ONG de fachada? Muito menos."
+    },
+    {
+      "id": "C2",
+      "tema": "Natureza do movimento",
+      "nivel": "facil",
+      "pergunta": "Quais são os dois alicerces da civilização que o Farol almeja?",
+      "alternativas": [
+        "Razão greco-romana e valores judaico-cristãos",
+        "Mercado livre e Estado mínimo",
+        "Tradição portuguesa e catolicismo",
+        "Nacionalismo e militarismo"
+      ],
+      "correta": 0,
+      "explicacao": "O movimento busca uma civilização ocidental brasileira baseada na lógica e na razão greco-romanas e nos valores judaico-cristãos (Antigo e Novo Testamento).",
+      "zoeira": "Sócrates e Moisés numa mesa de bar. O Farol pagou a cerveja e anotou tudo."
+    },
+    {
+      "id": "C3",
+      "tema": "Natureza do movimento",
+      "nivel": "medio",
+      "pergunta": "Segundo Abraham, qual é o centro do movimento civilizatório do Farol?",
+      "alternativas": [
+        "A nação e o território",
+        "O líder do movimento",
+        "O partido",
+        "O indivíduo e a família"
+      ],
+      "correta": 3,
+      "explicacao": "O movimento se baseia no indivíduo e na família, e não no partido, na nação ou no solo. Isso está em linha com o 1º Princípio do manifesto.",
+      "zoeira": "O líder como centro do movimento? Isso já tem nome, e quase sempre termina em '-ismo'."
+    },
+    {
+      "id": "C4",
+      "tema": "Natureza do movimento",
+      "nivel": "medio",
+      "pergunta": "Por que, segundo Abraham, ter o poder não basta?",
+      "alternativas": [
+        "Porque o Farol não quer disputar eleições",
+        "Porque o STF impede qualquer mudança",
+        "Porque sem um movimento civilizatório para orientar, não se sabe o que fazer com o poder",
+        "Porque o poder corrompe sempre"
+      ],
+      "correta": 2,
+      "explicacao": "O Farol não é projeto de poder: sem valores e rumo civilizatório, o poder na mão só gera erros. Primeiro vem a formação, depois o poder.",
+      "zoeira": "Poder sem rumo é Ferrari na mão de quem não tirou carta."
+    },
+    {
+      "id": "C5",
+      "tema": "Natureza do movimento",
+      "nivel": "dificil",
+      "pergunta": "Que definição de conservador Abraham usa ao descrever a civilização desejada?",
+      "alternativas": [
+        "Manter tudo como está",
+        "Preservar o que é bom e corrigir o que é errado, buscando uma civilização melhor que a passada",
+        "Rejeitar qualquer influência estrangeira",
+        "Voltar exatamente à civilização ocidental do passado"
+      ],
+      "correta": 1,
+      "explicacao": "O conservador preserva o que é bom e corrige o que é errado. A meta é uma civilização ocidental melhor do que a do passado, o que ecoa as Considerações finais do manifesto.",
+      "zoeira": "Não é saudade do passado, é revisão de garantia com troca das peças defeituosas."
+    },
+    {
+      "id": "C6",
+      "tema": "Identidade",
+      "nivel": "facil",
+      "pergunta": "Complete o post fixado do Farol no X: 'Cada um de nós é uma luz, juntos, somos...'",
+      "alternativas": [
+        "...o Farol da Liberdade",
+        "...o Brasil verdadeiro",
+        "...a nova direita",
+        "...a reação conservadora"
+      ],
+      "correta": 0,
+      "explicacao": "O post fixado começa com essa frase, que resume a ideia de cada Faroleiro como uma luz e do movimento como o farol.",
+      "zoeira": "'A nova direita' já teve tantas versões que precisa de controle de versão no GitHub."
+    },
+    {
+      "id": "C7",
+      "tema": "Identidade",
+      "nivel": "medio",
+      "pergunta": "Segundo o post fixado no X, quais grupos 'não têm lugar' no Farol?",
+      "alternativas": [
+        "Evangélicos e católicos",
+        "Liberais e libertários",
+        "Ateus e agnósticos",
+        "Bolsonaristas, petistas e centrão"
+      ],
+      "correta": 3,
+      "explicacao": "O post afirma que bolsonaristas, petistas e o centrão não têm lugar no movimento. Liberais, ateus e pessoas de várias religiões podem participar.",
+      "zoeira": "Lista curta, mas cobre uns 90% de Brasília."
+    },
+    {
+      "id": "C8",
+      "tema": "Identidade",
+      "nivel": "medio",
+      "pergunta": "A bio de Abraham no Instagram traz o lema 'Non nobis, Domine'. Qual a sua origem?",
+      "alternativas": [
+        "Lema da Revolução Francesa",
+        "Lema da bandeira dos EUA",
+        "Salmo 115, lema dos Cavaleiros Templários",
+        "Divisa da Companhia de Jesus"
+      ],
+      "correta": 2,
+      "explicacao": "'Não a nós, Senhor' (Sl 115) era o lema dos Templários, ordem que Abraham cita como inspiração para o Farol.",
+      "zoeira": "Não a nós, Senhor. E muito menos ao Fundo Partidário."
+    },
+    {
+      "id": "C9",
+      "tema": "Religião",
+      "nivel": "facil",
+      "pergunta": "O Farol da Liberdade é uma igreja ou movimento religioso?",
+      "alternativas": [
+        "Não, e rejeita qualquer religião",
+        "Não, mas se baseia nos valores bíblicos",
+        "Sim, é uma igreja evangélica",
+        "Sim, é um movimento católico"
+      ],
+      "correta": 1,
+      "explicacao": "O Farol não é igreja nem movimento religioso, mas se baseia nos valores do Antigo e do Novo Testamento e reconhece a importância da religião numa civilização.",
+      "zoeira": "Não é igreja: ninguém passa a sacolinha. Só o PIX, se você quiser."
+    },
+    {
+      "id": "C10",
+      "tema": "Religião",
+      "nivel": "medio",
+      "pergunta": "Qual é a associação cristã irmã do Farol, com CNPJ próprio?",
+      "alternativas": [
+        "Via Veritas Vita",
+        "Raiz Cristã",
+        "Instituto Força Brasil",
+        "Centro de Estudos da Liberdade"
+      ],
+      "correta": 0,
+      "explicacao": "A Via Veritas Vita é uma associação religiosa cristã separada do Farol. Raiz Cristã é o nome de um programa, e o CEL é a razão social do próprio Farol.",
+      "zoeira": "Raiz Cristã é programa, Via Veritas Vita tem CNPJ. Até a fé precisa de contador."
+    },
+    {
+      "id": "C11",
+      "tema": "Religião",
+      "nivel": "medio",
+      "pergunta": "Um ateu que concorda com a mensagem moral bíblica pode ser Faroleiro?",
+      "alternativas": [
+        "Só como apoiador, não como Faroleiro",
+        "Não, só cristãos",
+        "Só se se converter em até um ano",
+        "Sim, não é preciso crer no transcendente, basta concordar com a mensagem"
+      ],
+      "correta": 3,
+      "explicacao": "Ateus, agnósticos, judeus, budistas, umbandistas e outros podem ser Faroleiros se concordarem com a mensagem. Já para a Via Veritas Vita, que é cristã, não faria sentido.",
+      "zoeira": "Ateu pode. O que não pode é ateu de caráter."
+    },
+    {
+      "id": "C12",
+      "tema": "Religião",
+      "nivel": "medio",
+      "pergunta": "Qual destes grupos Abraham declarou incompatível com o Farol?",
+      "alternativas": [
+        "Budistas",
+        "Judeus",
+        "Satanistas",
+        "Umbandistas"
+      ],
+      "correta": 2,
+      "explicacao": "Abraham diz explicitamente que satanistas não podem ser Faroleiros, enquanto budistas, judeus e umbandistas podem.",
+      "zoeira": "O budista medita, o umbandista defuma e o satanista fica do lado de fora do grupo do WhatsApp."
+    },
+    {
+      "id": "C13",
+      "tema": "Religião",
+      "nivel": "dificil",
+      "pergunta": "Por que, segundo Abraham, a religião é importante num movimento civilizatório?",
+      "alternativas": [
+        "Porque a lei brasileira exige",
+        "Porque não existe civilização sem algum compromisso transcendente",
+        "Porque as igrejas financiam o movimento",
+        "Porque garante votos"
+      ],
+      "correta": 1,
+      "explicacao": "Para Abraham, toda civilização tem um vínculo transcendente. Ele cita como exemplos a Europa enfraquecida ao abandonar o cristianismo e o comunismo como 'religião sem Deus'.",
+      "zoeira": "Até o comunismo tinha santo, liturgia e procissão. Só faltava Deus. E comida."
+    },
+    {
+      "id": "C14",
+      "tema": "Política",
+      "nivel": "facil",
+      "pergunta": "Segundo Aristóteles, citado por Abraham, a política é:",
+      "alternativas": [
+        "A mais nobre das atividades humanas",
+        "Um jogo de interesses",
+        "Um mal necessário",
+        "Tarefa exclusiva dos governantes"
+      ],
+      "correta": 0,
+      "explicacao": "O ser humano é um animal político, e a política (diferente de politicagem) é a mais nobre das atividades: entender o outro e agir em conjunto por um objetivo maior.",
+      "zoeira": "Política é nobre. Politicagem é o que acontece quando o nobre vende o título no leilão."
+    },
+    {
+      "id": "C15",
+      "tema": "Política",
+      "nivel": "medio",
+      "pergunta": "O Farol pode ter parceria com partidos ou um partido próprio?",
+      "alternativas": [
+        "Nunca, isso é proibido",
+        "Sim, e o Farol é um partido",
+        "Só com o PL",
+        "Sim, mas o Farol em si não é partido nem movimento político"
+      ],
+      "correta": 3,
+      "explicacao": "Dentro do movimento civilizatório, pode haver parcerias ou partido, de preferência conservador. Mas o Farol continua não sendo partido nem projeto de poder.",
+      "zoeira": "O Farol pode ter partido. O que não pode é partido ter o Farol."
+    },
+    {
+      "id": "C16",
+      "tema": "Política",
+      "nivel": "medio",
+      "pergunta": "Quem, além dos conservadores, pode estar no Farol, segundo Abraham?",
+      "alternativas": [
+        "Qualquer pessoa, sem critério",
+        "Comunistas moderados",
+        "Liberais e até social-democratas que combatam a corrupção e defendam a liberdade",
+        "Apenas conservadores 'raiz'"
+      ],
+      "correta": 2,
+      "explicacao": "Não é preciso ser conservador puro. Liberais e social-democratas que combatam a corrupção são bem-vindos. Comunistas são incompatíveis.",
+      "zoeira": "Social-democrata que combate corrupção: espécie rara, em extinção, mas bem-vinda."
+    },
+    {
+      "id": "C17",
+      "tema": "Política",
+      "nivel": "dificil",
+      "pergunta": "Quais são as premissas mínimas exigidas de um candidato associado ao Farol?",
+      "alternativas": [
+        "Ter mandato anterior",
+        "Não roubar, não ser corrupto e não ser mentiroso contumaz",
+        "Ser filiado há 10 anos",
+        "Ser rico e famoso"
+      ],
+      "correta": 1,
+      "explicacao": "Abraham cita essas premissas básicas, que ecoam o 9º (honestidade) e o 13º (corrupção como assassinato indireto) Princípios.",
+      "zoeira": "Três requisitos simples. Bastariam para reprovar metade do Congresso na primeira fase."
+    },
+    {
+      "id": "C18",
+      "tema": "O Faroleiro",
+      "nivel": "facil",
+      "pergunta": "O Faroleiro é um simples apoiador do movimento?",
+      "alternativas": [
+        "Não, é membro de uma elite moral e comportamental",
+        "Sim, basta fazer doações",
+        "Sim, basta seguir nas redes",
+        "Não, é um funcionário pago"
+      ],
+      "correta": 0,
+      "explicacao": "Abraham afirma que o Faroleiro não é o apoiador comum. É parte de uma elite moral e comportamental, e não econômica.",
+      "zoeira": "Apoiador curte o post. Faroleiro levanta do sofá."
+    },
+    {
+      "id": "C19",
+      "tema": "O Faroleiro",
+      "nivel": "facil",
+      "pergunta": "Qual a missão do Faroleiro, na ordem certa?",
+      "alternativas": [
+        "Primeiro eleger candidatos, depois mudar a si mesmo",
+        "Primeiro arrecadar, depois formar",
+        "Primeiro ganhar seguidores, depois agir",
+        "Primeiro mudar a si mesmo, depois abrir os olhos de quem está ao redor"
+      ],
+      "correta": 3,
+      "explicacao": "'Você primeiro, depois as pessoas ao seu redor': ser senhor do próprio destino e então iluminar os outros, como o 'pescador de homens' do 1º Princípio.",
+      "zoeira": "Querer consertar o mundo sem arrumar o próprio quarto é especialidade de diretório acadêmico."
+    },
+    {
+      "id": "C20",
+      "tema": "O Faroleiro",
+      "nivel": "medio",
+      "pergunta": "Qual a meta de formação citada por Abraham para um Faroleiro?",
+      "alternativas": [
+        "Viralizar uma dancinha por semana",
+        "Eleger um vereador por cidade",
+        "Abrir os olhos de uma pessoa por mês",
+        "Doar um salário por ano"
+      ],
+      "correta": 2,
+      "explicacao": "Um Faroleiro que abre os olhos de uma pessoa por mês 'já está giga'. Abrir os olhos de 30 pessoas vale mais que eleger um vereador.",
+      "zoeira": "Uma pessoa por mês. Mais lento que dancinha viral, mas não morre em 24 horas."
+    },
+    {
+      "id": "C21",
+      "tema": "Metáforas",
+      "nivel": "medio",
+      "pergunta": "Na metáfora da fogueira, o que representa a 'madeira de lei'?",
+      "alternativas": [
+        "Os vídeos virais",
+        "Os Faroleiros sólidos e bem formados",
+        "Os políticos aliados",
+        "O dinheiro das doações"
+      ],
+      "correta": 1,
+      "explicacao": "Jornal e álcool (barulho, views, likes) são fogo de palha. O que mantém a fogueira acesa, até na chuva, é a madeira robusta: os Faroleiros formados.",
+      "zoeira": "Viral é jornal com álcool: faz fumaça bonita e vira cinza antes do almoço."
+    },
+    {
+      "id": "C22",
+      "tema": "Metáforas",
+      "nivel": "medio",
+      "pergunta": "Que ambiente Abraham usa como modelo para a convivência no Farol?",
+      "alternativas": [
+        "Um dojô de artes marciais",
+        "Um retiro de meditação com Wi-Fi grátis",
+        "Uma Smart Fit",
+        "Um quartel"
+      ],
+      "correta": 0,
+      "explicacao": "O Farol é um dojô: há hierarquia e respeito, a correção dura ('escovada') educa e o desleal é expulso. 'Não é uma Smart Fit': os membros não são clientes.",
+      "zoeira": "Não é Smart Fit: aqui ninguém cancela a matrícula pelo app reclamando do ar-condicionado."
+    },
+    {
+      "id": "C23",
+      "tema": "Metáforas",
+      "nivel": "medio",
+      "pergunta": "Qual ordem histórica Abraham cita como inspiração para o Farol?",
+      "alternativas": [
+        "Os Bandeirantes",
+        "Os Jesuítas",
+        "Os Maçons",
+        "Os Templários"
+      ],
+      "correta": 3,
+      "explicacao": "Os Templários. Abraham pergunta se um novato da ordem desrespeitaria um templário veterano sem consequência, para ilustrar a disciplina esperada.",
+      "zoeira": "Jesuíta ensinava, maçom guardava segredo, bandeirante andava. Templário segurava a linha."
+    },
+    {
+      "id": "C24",
+      "tema": "Conduta",
+      "nivel": "medio",
+      "pergunta": "Um Faroleiro discorda de uma decisão da liderança. Qual a postura esperada?",
+      "alternativas": [
+        "Atacar publicamente nas redes",
+        "Sair e fundar outro grupo",
+        "Questionar com boa-fé e educação e, se se sentir injustiçado, apresentar sua defesa",
+        "Ficar calado sempre"
+      ],
+      "correta": 2,
+      "explicacao": "Pode-se questionar 'de igual para igual', com educação. Quem se sentir injustiçado deve procurar a liderança e se defender, e a decisão pode ser revista.",
+      "zoeira": "Atacar a liderança nas redes é o jeito mais rápido de virar ex-Faroleiro com print emoldurado."
+    },
+    {
+      "id": "C25",
+      "tema": "Conduta",
+      "nivel": "medio",
+      "pergunta": "Os líderes do Farol são empregados dos Faroleiros?",
+      "alternativas": [
+        "Sim, recebem por live",
+        "Não, também são Faroleiros e o trabalho é voluntário",
+        "Sim, são pagos pelas doações",
+        "Sim, e dá para pedir reembolso se não gostar da live"
+      ],
+      "correta": 1,
+      "explicacao": "Abraham ressalta que ele, Arthur, Eric e Gabriel são Faroleiros como os demais, sem salário. Por isso devem ser tratados como mestres de dojô, não como prestadores de serviço.",
+      "zoeira": "Ninguém aqui é seu garçom. Se quiser atendimento, ligue para o SAC da operadora e boa sorte."
+    },
+    {
+      "id": "C26",
+      "tema": "Conduta",
+      "nivel": "medio",
+      "pergunta": "Um Faroleiro quer ir a um evento incompatível com os valores do Farol. O que vale?",
+      "alternativas": [
+        "Como indivíduo é livre, mas não pode associar o nome ou a camisa do Farol ao evento",
+        "Precisa de autorização por escrito",
+        "É expulso automaticamente",
+        "Pode ir e levar a bandeira do Farol"
+      ],
+      "correta": 0,
+      "explicacao": "A liberdade individual é respeitada (desde que não haja crime), mas a marca do Farol não pode ser ligada a eventos ou pessoas que maculem seus valores.",
+      "zoeira": "Você é livre para ir aonde quiser. A camiseta do Farol, não."
+    },
+    {
+      "id": "C27",
+      "tema": "Conduta",
+      "nivel": "dificil",
+      "pergunta": "Qual o padrão de conduta sexual que Abraham cobra de Faroleiros homossexuais?",
+      "alternativas": [
+        "Devem esconder a orientação",
+        "Não podem participar",
+        "Nenhum padrão",
+        "O mesmo autocontrole cobrado dos heterossexuais"
+      ],
+      "correta": 3,
+      "explicacao": "Homossexuais podem ser Faroleiros se aceitarem os valores. Como os heterossexuais, devem se controlar. Crimes levam à exclusão, e a marca do Farol não vai a paradas gays.",
+      "zoeira": "Autocontrole é regra para todo mundo. Inclusive para quem comenta em rede social de madrugada."
+    },
+    {
+      "id": "C28",
+      "tema": "Conduta",
+      "nivel": "facil",
+      "pergunta": "O Farol é uma instituição de caridade?",
+      "alternativas": [
+        "Não, e proíbe caridade",
+        "Sim, só para famílias conservadoras",
+        "Não. Ações como campanha do agasalho são permitidas, mas não são o foco",
+        "Sim, o foco é assistência social"
+      ],
+      "correta": 2,
+      "explicacao": "A caridade pontual ajuda uma família, mas não muda a realidade de uma nação. O foco é formar guerreiros. Lembre o 12º Princípio: a política justa é a melhor forma de caridade.",
+      "zoeira": "Campanha do agasalho esquenta uma família. Política justa esquenta o país inteiro, e não dá bolinha."
+    },
+    {
+      "id": "C29",
+      "tema": "Programas",
+      "nivel": "facil",
+      "pergunta": "Qual é o programa de análise política semanal de Abraham Weintraub?",
+      "alternativas": [
+        "Farol News",
+        "Weintraub Sem Filtro (WSF)",
+        "Raiz Cristã",
+        "Reação Conservadora"
+      ],
+      "correta": 1,
+      "explicacao": "O Weintraub Sem Filtro (WSF) é o programa de análise política, com centenas de episódios numerados.",
+      "zoeira": "Sem filtro mesmo. Às vezes até sem freio."
+    },
+    {
+      "id": "C30",
+      "tema": "Programas",
+      "nivel": "facil",
+      "pergunta": "Qual programa do canal do Farol trata de fé e atualidade à luz da Bíblia?",
+      "alternativas": [
+        "Raiz Cristã",
+        "Farol News",
+        "WSF",
+        "Lanterna do Abe"
+      ],
+      "correta": 0,
+      "explicacao": "O Raiz Cristã, no canal do Farol, aborda temas como família, sexualidade, Igreja e perseguição a cristãos pela ótica bíblica.",
+      "zoeira": "Bíblia numa mão, manchete na outra e paciência de Jó no meio."
+    },
+    {
+      "id": "C31",
+      "tema": "Programas",
+      "nivel": "medio",
+      "pergunta": "Qual programa é o mais doutrinário e formativo, com aulas como 'Os rumos do Farol' e 'As bases de nossa revolução'?",
+      "alternativas": [
+        "Farol News",
+        "Farol Cuts",
+        "Reação Conservadora",
+        "Lanterna do Abe"
+      ],
+      "correta": 3,
+      "explicacao": "O Lanterna do Abe é a aula-conversa de Abraham com Eric Ferreira e convidados, onde se discute a identidade e os rumos do movimento.",
+      "zoeira": "Lanterna do Abe: porque até farol começa com uma lanterninha."
+    },
+    {
+      "id": "C32",
+      "tema": "Estrutura",
+      "nivel": "medio",
+      "volatil": true,
+      "pergunta": "Qual destes NÃO é um núcleo de bastidores do Farol citado pela liderança?",
+      "alternativas": [
+        "Jurídico",
+        "Farol da Saúde",
+        "Núcleo de marketing eleitoral pago (com coffee break)",
+        "Inteligência e segurança"
+      ],
+      "correta": 2,
+      "explicacao": "A liderança citou núcleos jurídico, Farol da Saúde (médicos), meio ambiente, inteligência e segurança, previdência e religioso. O trabalho é voluntário.",
+      "zoeira": "Marketing eleitoral pago? Os líderes nem salário têm, imagine marqueteiro com estagiário."
+    },
+    {
+      "id": "C33",
+      "tema": "Estrutura",
+      "nivel": "dificil",
+      "pergunta": "Qual centro, criado por Abraham e Arthur na universidade, deu origem ao Farol?",
+      "alternativas": [
+        "O MEC",
+        "Um centro de estudos fundado na Unifesp",
+        "O Banco Votorantim",
+        "O Instituto Liberal"
+      ],
+      "correta": 1,
+      "explicacao": "Abraham conta que um centro de estudos criado por eles na Universidade Federal de São Paulo, com projetos com instituições do mercado, deu origem ao Farol.",
+      "zoeira": "Nasceu dentro de uma universidade federal. Onde, segundo os próprios, foram recebidos com muito carinho. Só que não."
+    },
+    {
+      "id": "C34",
+      "tema": "Revolução",
+      "nivel": "dificil",
+      "pergunta": "Segundo 'As bases de nossa revolução', quem costuma fazer as revoluções?",
+      "alternativas": [
+        "A classe média instruída e sem perspectiva ('desmobilizada')",
+        "Os bilionários",
+        "Os militares",
+        "Os mais miseráveis, movidos pela fome"
+      ],
+      "correta": 0,
+      "explicacao": "Abraham argumenta, com as revoluções americana, francesa e russa como exemplos, que quem lidera rupturas é a classe média com formação e recursos, mas sem perspectiva. Quem passa fome luta pelo próximo prato.",
+      "zoeira": "Quem passa fome luta pelo almoço. Quem tem diploma e dirige Uber luta por tudo, e ainda avalia o passageiro."
+    },
+    {
+      "id": "C35",
+      "tema": "Revolução",
+      "nivel": "dificil",
+      "pergunta": "Que crítica Abraham faz à estratégia de Olavo de Carvalho?",
+      "alternativas": [
+        "Que era radical demais",
+        "Nenhuma, segue Olavo integralmente",
+        "Que ignorava a economia",
+        "Que 'conquistar universidades e criar alta cultura' não funcionou na prática"
+      ],
+      "correta": 3,
+      "explicacao": "Abraham reconhece Olavo como grande filósofo, mas diz que a estratégia falhou: as instituições continuaram iguais, e parte dos herdeiros dessa 'alta cultura' teria se acomodado.",
+      "zoeira": "Conquistar as universidades? Tentaram. A reitoria continua lá, igualzinha, tomando café."
+    },
+    {
+      "id": "C36",
+      "tema": "Revolução",
+      "nivel": "dificil",
+      "pergunta": "Qual destas NÃO é uma das propostas de 'ruptura' citadas por Abraham?",
+      "alternativas": [
+        "Fechar municípios que não se sustentam",
+        "Confisco alargado dos bens de corruptos",
+        "Estatização dos bancos",
+        "Autonomia regional para cada região decidir quão conservadora quer ser"
+      ],
+      "correta": 2,
+      "explicacao": "Abraham citou confisco alargado, pena de morte para corruptos, fechamento de municípios inviáveis e autonomia regional. Estatizar bancos contraria a defesa da propriedade privada (8º Princípio).",
+      "zoeira": "Estatizar banco é a ideia que o Farol menos defenderia. Perde só para imposto sobre churrasco."
+    },
+    {
+      "id": "C37",
+      "tema": "Revolução",
+      "nivel": "medio",
+      "pergunta": "Se o dinheiro recuperado da corrupção fosse devolvido às famílias, quem decidiria como gastá-lo, segundo Abraham?",
+      "alternativas": [
+        "O governo",
+        "A própria família, livremente e dentro da lei",
+        "O Farol",
+        "Um conselho de especialistas"
+      ],
+      "correta": 1,
+      "explicacao": "'Quem sou eu para dizer como você vai gastar o seu dinheiro?' Cada um faz suas escolhas com juízo e vive com o resultado, ao contrário dos 'ismos' que decidem pelo indivíduo.",
+      "zoeira": "Pode gastar com pinga, com puxadinho ou com a sogra. O dinheiro é seu. O Estado que se contente."
+    },
+    {
+      "id": "C38",
+      "tema": "Posicionamento",
+      "nivel": "medio",
+      "pergunta": "Por que, segundo Abraham, o Farol continua criticando Bolsonaro?",
+      "alternativas": [
+        "Porque o bolsonarismo ainda seria uma força capaz de inviabilizar novas lideranças à direita",
+        "Por vingança pessoal apenas",
+        "Porque foi pedido pelo PT",
+        "Porque Bolsonaro é comunista"
+      ],
+      "correta": 0,
+      "explicacao": "Abraham diz que o bolsonarismo não é 'cachorro morto': ainda teria força para barrar outros nomes. Antes de alguém virar Faroleiro, precisaria perceber que, para o Farol, Bolsonaro mentiu e se corrompeu.",
+      "zoeira": "Cachorro morto não late. Esse, segundo o Farol, ainda late e morde quem passa pela direita."
+    },
+    {
+      "id": "C39",
+      "tema": "Manifesto x Discurso",
+      "nivel": "dificil",
+      "pergunta": "Qual destas falas dos canais está em TENSÃO com o 13º Princípio do manifesto (que admite tirar uma vida apenas em legítima defesa)?",
+      "alternativas": [
+        "Defesa do confisco alargado",
+        "Defesa da autonomia regional",
+        "Defesa da família",
+        "Defesa da pena de morte para corruptos"
+      ],
+      "correta": 3,
+      "explicacao": "O manifesto só admite tirar a vida em legítima defesa (própria ou de terceiros). A pena de morte para corruptos, defendida em live, vai além dessa exceção. É um ponto para debate nos grupos de formação.",
+      "zoeira": "Nem todo debate cabe num quiz. Esse aqui rende mais no churrasco de sábado, com moderação e picanha."
+    },
+    {
+      "id": "C40",
+      "tema": "Manifesto x Discurso",
+      "nivel": "dificil",
+      "pergunta": "O que permanece igual entre o manifesto e o discurso atual dos canais?",
+      "alternativas": [
+        "A crítica nominal a políticos",
+        "A tese de separação do país",
+        "A centralidade do indivíduo e da família e o combate à corrupção",
+        "O modelo do dojô"
+      ],
+      "correta": 2,
+      "explicacao": "Indivíduo, família e combate à corrupção são o fio condutor dos dois. Crítica nominal, separatismo e dojô aparecem só no discurso dos canais.",
+      "zoeira": "Muda o tom, muda o alvo, mas família e combate à corrupção seguem sendo o arroz com feijão."
+    }
+  ],
+  "tom": "Cômico e descontraído, com humor ácido. O campo 'zoeira' é exibido depois da resposta; a 'explicacao' continua séria e fiel à fonte."
+}

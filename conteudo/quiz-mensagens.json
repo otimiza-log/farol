@@ -1,0 +1,48 @@
+{
+  "titulo": "Quiz Faroleiros – Mensagens do jogo",
+  "tom": "Cômico e descontraído, com humor ácido. Mire em políticos, burocracia e vícios do país, nunca no jogador como pessoa.",
+  "acerto": [
+    "Acertou! Já pode cobrar consultoria do Centrão. Mas não aceite.",
+    "Na mosca. Se fosse concurso público, você já estaria nomeado. Por mérito, olha que raridade.",
+    "Correto! A lanterna acendeu. A conta de luz vem depois.",
+    "Mandou bem. Aristóteles levantou da cadeira e bateu palma.",
+    "Certo! Mais preciso que promessa de campanha. Tá, isso não é difícil.",
+    "Acertou, e sem precisar de emenda parlamentar.",
+    "Correto! O Farol agradece. Brasília lamenta.",
+    "Isso aí! Se continuar assim, vira ministro. Calma, foi só uma ameaça.",
+    "Na lata. Até o STF concordaria, depois de três pedidos de vista.",
+    "Acertou! Sua avó ficaria orgulhosa e faria bolo de cenoura."
+  ],
+  "erro": [
+    "Errou. Mas relaxa: tem gente com foro privilegiado que erra mais e ganha mais.",
+    "Não foi dessa vez. Respira, lê a explicação e não culpe o algoritmo.",
+    "Errado! Até o horóscopo do jornal acertou mais hoje.",
+    "Quase. 'Quase' também é o que dizem do Brasil há 500 anos.",
+    "Errou feio, errou rude. Mas um Faroleiro levanta e tenta de novo.",
+    "Resposta incorreta. O político de plantão adorou. Não dê esse gosto a ele.",
+    "Ops. Errar é humano. Persistir no erro é coisa de partido.",
+    "Não. Mas pelo menos você não mudou de opinião para agradar a plateia. Ou mudou?",
+    "Errou. A boa notícia: esse erro não custou nenhum imposto.",
+    "Negativo. Volte uma casa e leia o manifesto sem pular as partes chatas."
+  ],
+  "sequencia": {
+    "3": "Três seguidas! Já dá para abrir uma CPI de tanto acerto.",
+    "5": "Cinco seguidas! Isso não é sorte, é formação. Ou cola. Esperamos que formação.",
+    "10": "Dez seguidas! Você está oficialmente iluminando mais que a iluminação pública da sua cidade."
+  },
+  "titulos": [
+    { "min": 0, "max": 39, "titulo": "Vela de Aniversário", "descricao": "Acende, faz um desejo e apaga no primeiro sopro. Volte ao manifesto antes que um político te convença de alguma coisa." },
+    { "min": 40, "max": 59, "titulo": "Lanterna sem Pilha", "descricao": "Tem potencial, mas a pilha está fraca. Mais uns episódios do Lanterna e você recarrega." },
+    { "min": 60, "max": 74, "titulo": "Lampião de Varanda", "descricao": "Ilumina a própria casa e um pedaço da calçada. O vizinho já percebeu." },
+    { "min": 75, "max": 89, "titulo": "Holofote", "descricao": "Já enxerga longe e incomoda quem vive no escuro. Brasília já ficou sabendo." },
+    { "min": 90, "max": 100, "titulo": "Faroleiro", "descricao": "Luz firme, madeira de lei e olho aberto. Agora vá abrir os olhos de uma pessoa por mês. Uma. Por mês. Não vale o primo que já concorda com você." }
+  ],
+  "tela_inicial": [
+    "Bem-vindo ao Quiz Faroleiros. Aqui ninguém ganha cargo, só conhecimento. Péssimo negócio para Brasília, ótimo para você.",
+    "Prepare-se: perguntas difíceis, explicações sérias e um comentário ácido no final. Igual jantar de família em ano eleitoral."
+  ],
+  "fim_de_jogo": [
+    "Fim de rodada. Diferente de mandato, aqui dá para recomeçar quando quiser.",
+    "Acabou! Se ficou com dúvida, o manifesto está lá. Ele não morde, só ilumina."
+  ]
+}
