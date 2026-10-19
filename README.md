@@ -18,17 +18,35 @@ conteudo/
 jogo/
   farol-template.html                 Código do jogo (Phaser 3, HTML/CSS/JS num arquivo)
   build_jogo.py                       Injeta as perguntas no template
-  farol-da-liberdade.html             Jogo pronto (gerado; abre direto no navegador)
+  index.html                          Jogo pronto para servidores (VPS) e para abrir direto no navegador
+  farol-da-liberdade.html             Jogo pronto para publicar como artefato do claude.ai
 ```
 
 ## Como jogar
 
-Abra `jogo/farol-da-liberdade.html` no navegador.
+Abra `jogo/index.html` no navegador, ou sirva a pasta `jogo/` num servidor web (veja "Publicar na VPS").
 
 - **Computador:** ← → ou A/D para andar, Espaço ou W para pular, J para atacar, Esc para pausar. No quiz, as teclas 1 a 4 escolhem a alternativa.
-- **Celular:** botões na tela (ativáveis em Ajustes).
+- **Celular:** o jogo detecta a tela de toque e mostra botões sobrepostos (◀ ▶, PULO, ATAQUE). Feito para a tela **na horizontal**: na vertical, aparece um aviso para girar (com a opção de jogar assim mesmo). No Android, ao começar a missão, o jogo entra em tela cheia e trava na horizontal. Ao levar dano, o celular vibra.
 
 Aberto fora do claude.ai, o jogo roda em **modo local**: o progresso fica só no navegador e não há ranking online. A versão publicada como artefato do claude.ai salva o progresso na conta e mantém o ranking compartilhado.
+
+## Publicar na VPS
+
+O jogo é estático: basta servir a pasta `jogo/` com o arquivo de índice `index.html`. Exemplo com Caddy (porta 8085):
+
+```
+http://:8085 {
+	root * /var/www/farol/jogo
+	@bloqueado path *.py *.md /farol-template.html
+	respond @bloqueado 404
+	file_server {
+		index index.html
+	}
+}
+```
+
+Para atualizar: `git -C /var/www/farol pull --ff-only` (sem reiniciar o servidor).
 
 ## Como alterar perguntas
 

@@ -1,4 +1,4 @@
-"""Gera jogo/farol-da-liberdade.html a partir do template e dos bancos de perguntas.
+"""Gera jogo/farol-da-liberdade.html (artefato claude.ai) e jogo/index.html (servidores comuns, ex.: VPS).
 
 Uso:  python jogo/build_jogo.py
 Edite as perguntas nos JSONs de conteudo/ e rode de novo: o jogo não precisa de mudança no código.
@@ -29,7 +29,22 @@ dump = lambda o: json.dumps(o, ensure_ascii=False).replace('</', '<\\/')
 assert '/*__BANCO__*/[]' in html and '/*__MSG__*/{}' in html
 html = html.replace('/*__BANCO__*/[]', dump(banco)).replace('/*__MSG__*/{}', dump(msg))
 
+# 1) versão para o artefato do claude.ai (o claude.ai acrescenta <head> e viewport ao publicar)
 saida = os.path.join(AQUI, 'farol-da-liberdade.html')
 with open(saida, 'w', encoding='utf-8') as f:
     f.write(html)
-print(f'{len(banco)} perguntas -> {saida}')
+
+# 2) versão completa para qualquer servidor (VPS, GitHub Pages): documento com <head> e viewport de celular
+corte = html.index('<!-- ============ TELA: INÍCIO')
+cabeca, corpo = html[:corte], html[corte:]
+standalone = ('<!doctype html>\n<html lang="pt-BR">\n<head>\n<meta charset="utf-8">\n'
+              '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
+              '<meta name="theme-color" content="#110e0b">\n'
+              '<meta name="mobile-web-app-capable" content="yes">\n'
+              '<meta name="apple-mobile-web-app-capable" content="yes">\n'
+              '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n'
+              + cabeca + '</head>\n<body>\n' + corpo + '</body>\n</html>\n')
+index = os.path.join(AQUI, 'index.html')
+with open(index, 'w', encoding='utf-8') as f:
+    f.write(standalone)
+print(f'{len(banco)} perguntas -> {saida} e {index}')

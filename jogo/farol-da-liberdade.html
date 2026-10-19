@@ -22,7 +22,7 @@
   color-scheme: dark;
 }
 html, body { height: 100%; }
-body { background: var(--ink); color: var(--bone); font-family: var(--body); font-size: 15px; line-height: 1.5; overflow: hidden; }
+body { margin: 0; background: var(--ink); color: var(--bone); font-family: var(--body); font-size: 15px; line-height: 1.5; overflow: hidden; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 button { font: inherit; color: inherit; cursor: pointer; }
@@ -101,7 +101,7 @@ h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-
 
 /* ---------- jogo ---------- */
 #scr-game { padding: 0; overflow: hidden; background: #0b0907; display: flex; flex-direction: column; }
-#game { flex: 1; min-height: 0; position: relative; }
+#game { flex: 1; min-height: 0; position: relative; touch-action: none; user-select: none; -webkit-user-select: none; }
 #game canvas { display: block; }
 .hud { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; pointer-events: none; z-index: 5;
   padding: calc(10px + env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px)) 0 max(14px, env(safe-area-inset-left, 0px)); }
@@ -114,18 +114,28 @@ h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-
 .hud-r { display: flex; gap: 8px; align-items: center; }
 .score { font-family: var(--hud); font-size: 20px; font-weight: 700; background: rgba(11,9,7,.7); padding: 2px 10px; border: 1px solid var(--line); }
 .iconbtn { width: 36px; height: 36px; display: grid; place-items: center; background: rgba(11,9,7,.75); border: 1px solid var(--line); border-radius: 3px; font-family: var(--hud); font-weight: 700; }
-.touch { display: none; justify-content: space-between; gap: 10px; background: #0b0907; border-top: 1px solid var(--line);
-  padding: 10px max(14px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px)); }
-.touch .grp { display: flex; gap: 10px; }
-.touch button { width: 64px; height: 56px; border: 1px solid var(--line); background: var(--panel-2); border-radius: 6px; font-family: var(--hud); font-weight: 700; font-size: 15px; touch-action: none; user-select: none; -webkit-user-select: none; }
-.touch button.atk { background: #4a1915; border-color: var(--blood); }
+/* controles de toque: sobrepostos ao jogo, sem roubar altura da tela */
+.touch { display: none; position: absolute; left: 0; right: 0; bottom: 0; z-index: 7; justify-content: space-between; align-items: flex-end; pointer-events: none;
+  padding: 0 max(18px, env(safe-area-inset-right, 0px)) calc(14px + env(safe-area-inset-bottom, 0px)) max(18px, env(safe-area-inset-left, 0px)); }
+.touch .grp { display: flex; gap: 14px; align-items: flex-end; pointer-events: auto; }
+.touch button { width: 72px; height: 72px; border-radius: 50%; border: 2px solid rgba(239,230,214,.35); background: rgba(27,22,18,.55); color: var(--bone);
+  font-family: var(--hud); font-weight: 700; font-size: 15px; letter-spacing: .04em; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.touch button.pressed { background: rgba(232,163,61,.38); border-color: var(--ember); }
+.touch button.atk { width: 84px; height: 84px; background: rgba(120,28,22,.62); border-color: rgba(210,70,60,.85); }
+.touch .grp.right button[data-k="jump"] { margin-bottom: 44px; }
 body.touchmode .touch { display: flex; }
+/* aviso para girar o celular */
+.rotate { position: absolute; inset: 0; z-index: 20; background: rgba(11,9,7,.95); display: grid; place-content: center; justify-items: center; gap: 18px; text-align: center; padding: 24px; }
+.rotate p { margin: 0; font-size: 16px; color: #d9cdb9; max-width: 30ch; }
+.rotate b { font-family: var(--display); font-size: 22px; color: var(--bone); display: block; margin-bottom: 6px; }
+.phone { width: 46px; height: 80px; border: 3px solid var(--ember); border-radius: 9px; animation: girar 2.4s ease-in-out infinite; }
+@keyframes girar { 0%, 25% { transform: rotate(0deg); } 55%, 100% { transform: rotate(-90deg); } }
 .toast { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); background: rgba(11,9,7,.88); border: 1px solid var(--ember); padding: 8px 14px; font-family: var(--hud); font-size: 16px; letter-spacing: .03em; z-index: 6; max-width: calc(100% - 32px); text-align: center; }
 
 /* ---------- modais ---------- */
-.modal { position: fixed; inset: 0; z-index: 50; background: rgba(8,6,5,.78); display: grid; place-items: center; overflow-y: auto;
+.modal { position: fixed; inset: 0; z-index: 50; background: rgba(8,6,5,.78); display: flex; align-items: flex-start; justify-content: center; overflow-y: auto;
   padding: calc(16px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
-.sheet { width: min(640px, 100%); background: var(--panel); border: 1px solid var(--line); border-top: 3px solid var(--blood); padding: 22px; display: grid; gap: 14px; border-radius: 3px; }
+.sheet { margin: auto; width: min(640px, 100%); background: var(--panel); border: 1px solid var(--line); border-top: 3px solid var(--blood); padding: 22px; display: grid; gap: 14px; border-radius: 3px; }
 .sheet h2 { font-size: 22px; }
 .sheet p { margin: 0; }
 .opts { display: grid; gap: 8px; }
@@ -172,7 +182,18 @@ details.rules ul { margin: 10px 0 0; padding-left: 18px; color: #d9cdb9; font-si
   .ladder { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .player { grid-template-columns: minmax(0, 1fr); }
 }
-@media (prefers-reduced-motion: reduce) { .xpbar i { transition: none; } }
+@media (max-height: 520px) {
+  .sheet { padding: 14px 16px; gap: 9px; }
+  .sheet h2 { font-size: 18px; }
+  #mq-q { font-size: 16px !important; }
+  .opt { padding: 8px 10px; font-size: 14px; }
+  .feedback { padding: 10px 12px; gap: 5px; font-size: 13.5px; }
+  .objective { font-size: 12.5px; }
+  .heart { width: 13px; height: 13px; }
+  .score { font-size: 17px; }
+  .iconbtn { width: 32px; height: 32px; }
+}
+@media (prefers-reduced-motion: reduce) { .xpbar i { transition: none; } .phone { animation: none; transform: rotate(-90deg); } }
 </style>
 
 <!-- ============ TELA: INÍCIO ============ -->
@@ -247,19 +268,25 @@ details.rules ul { margin: 10px 0 0; padding-left: 18px; color: #d9cdb9; font-si
       </div>
       <div class="hud-r">
         <div class="score num" id="h-score" aria-label="Pontos da missão">0</div>
+        <button class="iconbtn" id="btn-full" aria-label="Tela cheia" hidden>⤢</button>
         <button class="iconbtn" id="btn-pause" aria-label="Pausar">II</button>
       </div>
     </div>
     <div class="toast" id="toast" hidden></div>
-  </div>
-  <div class="touch" id="touch">
-    <div class="grp">
-      <button data-k="left" aria-label="Mover para a esquerda">◀</button>
-      <button data-k="right" aria-label="Mover para a direita">▶</button>
+    <div class="touch" id="touch">
+      <div class="grp">
+        <button data-k="left" aria-label="Mover para a esquerda">◀</button>
+        <button data-k="right" aria-label="Mover para a direita">▶</button>
+      </div>
+      <div class="grp right">
+        <button data-k="jump" aria-label="Pular">PULO</button>
+        <button data-k="attack" class="atk" aria-label="Atacar">ATAQUE</button>
+      </div>
     </div>
-    <div class="grp">
-      <button data-k="jump" aria-label="Pular">PULO</button>
-      <button data-k="attack" class="atk" aria-label="Atacar">ATAQUE</button>
+    <div class="rotate" id="rotate" hidden>
+      <div class="phone" aria-hidden="true"></div>
+      <p><b>Gire o celular</b>O jogo foi feito para a tela na horizontal.</p>
+      <button class="btn" id="btn-portrait">Jogar na vertical mesmo</button>
     </div>
   </div>
 </section>
@@ -415,7 +442,7 @@ const FASES = {
     largura: 2500,
     chao: [[0, 1100], [1220, 2500]],
     plataformas: [[640, 380, 3], [1330, 370, 2]],
-    placas: [[150, "← → ou A / D para andar"], [520, "Espaço para pular"], [890, "J para atacar o boneco"], [1500, "Toque a Pedra do Juramento"]],
+    placas: [[150, "← → ou A / D para andar", "◀ ▶ para andar"], [520, "Espaço para pular", "PULO para pular"], [890, "J para atacar o boneco", "ATAQUE no boneco"], [1500, "Toque a Pedra do Juramento"]],
     boneco: 1010,
     pedra: { x: 1720, nome: "Pedra do Juramento", temas: ["Identidade"], qtd: 3 },
     inimigos: [2020],
@@ -433,7 +460,7 @@ const FASES = {
     largura: 4800,
     chao: [[0, 900], [1010, 1700], [1830, 2600], [2730, 3500], [3630, 4800]],
     plataformas: [[580, 370, 3], [1120, 360, 2], [1380, 270, 2], [2040, 370, 3], [2300, 285, 2], [2880, 360, 2], [3110, 265, 2], [3790, 360, 3], [4060, 255, 2]],
-    placas: [[140, "Saqueadores à frente. J para atacar"]],
+    placas: [[140, "Saqueadores à frente. J para atacar", "Saqueadores à frente. Use ATAQUE"]],
     pilares: [
       { x: 1560, nome: "Pilar da Liberdade", temas: ["Introdução"], qtd: 2 },
       { x: 2460, nome: "Pilar da Justiça", temas: ["1º Princípio"], qtd: 2 },
@@ -687,13 +714,43 @@ function renderRanking() {
 const INPUT = { left: false, right: false, jump: false, attack: false, jumpQueued: false, attackQueued: false };
 document.querySelectorAll("#touch button").forEach((b) => {
   const k = b.dataset.k;
-  const down = (e) => { e.preventDefault(); INPUT[k] = true; if (k === "jump") INPUT.jumpQueued = true; if (k === "attack") INPUT.attackQueued = true; b.setPointerCapture && b.setPointerCapture(e.pointerId); };
-  const up = (e) => { e.preventDefault(); INPUT[k] = false; };
+  const down = (e) => { e.preventDefault(); INPUT[k] = true; b.classList.add("pressed"); if (k === "jump") INPUT.jumpQueued = true; if (k === "attack") INPUT.attackQueued = true; try { b.setPointerCapture(e.pointerId); } catch (err) { /* opcional */ } };
+  const up = (e) => { e.preventDefault(); INPUT[k] = false; b.classList.remove("pressed"); };
   b.addEventListener("pointerdown", down);
   b.addEventListener("pointerup", up);
   b.addEventListener("pointercancel", up);
   b.addEventListener("pointerleave", up);
+  b.addEventListener("contextmenu", (e) => e.preventDefault());
 });
+
+/* ---------- celular: orientação, tela cheia e vibração ---------- */
+let portraitOk = lsGet("farol.vertical", false);
+function checarOrientacao() {
+  const mostrar = !$("scr-game").hidden && document.body.classList.contains("touchmode") && innerHeight > innerWidth && !portraitOk;
+  $("rotate").hidden = !mostrar;
+  const s = cena();
+  if (!s || !s.sys || !s.sys.isActive() || s.terminou) return;
+  if (mostrar && !s.pausado) { s.pausado = true; s.pausaGiro = true; s.physics.pause(); }
+  else if (!mostrar && s.pausaGiro) { s.pausaGiro = false; s.pausado = false; s.physics.resume(); }
+}
+window.addEventListener("resize", checarOrientacao);
+window.addEventListener("orientationchange", () => setTimeout(checarOrientacao, 250));
+$("btn-portrait").addEventListener("click", () => { portraitOk = true; lsSet("farol.vertical", true); checarOrientacao(); remedir(); });
+const podeTelaCheia = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+function telaCheia(ligar) {
+  const el = document.documentElement;
+  try {
+    if (ligar && !(document.fullscreenElement || document.webkitFullscreenElement)) {
+      const req = el.requestFullscreen || el.webkitRequestFullscreen;
+      const p = req && req.call(el, { navigationUI: "hide" });
+      const travar = () => { try { screen.orientation.lock("landscape").catch(() => {}); } catch (err) { /* sem suporte */ } };
+      if (p && p.then) p.then(travar).catch(() => {}); else travar();
+    } else if (!ligar && (document.fullscreenElement || document.webkitFullscreenElement)) {
+      (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    }
+  } catch (err) { /* o navegador recusou: segue sem tela cheia */ }
+}
+function vibrar(ms) { try { navigator.vibrate && navigator.vibrate(ms); } catch (err) { /* sem suporte */ } }
 const isTouch = (() => { try { return matchMedia("(pointer: coarse)").matches; } catch (e) { return false; } })();
 function aplicarToque(on) { document.body.classList.toggle("touchmode", !!on); if (typeof remedir === "function") remedir(); }
 /* Impede a página de rolar com Espaço/setas durante a missão. Precisa ser registrado DEPOIS do
@@ -910,7 +967,7 @@ class Missao extends Phaser.Scene {
       tentativas: []
     };
     this.vidaMax = 5; this.vida = this.vidaMax;
-    this.checkpoint = r ? r.checkpoint : { x: 80, y: 400 };
+    this.checkpoint = r ? r.checkpoint : { x: 300, y: 400 }; // longe dos botões de toque do canto
     this.pausado = false; this.invuln = 0; this.atkCd = 0; this.facing = 1; this.terminou = false;
 
     // mundo e fundo
@@ -943,7 +1000,9 @@ class Missao extends Phaser.Scene {
     });
 
     // placas
-    (F.placas || []).forEach(([x, txt]) => {
+    const toque = document.body.classList.contains("touchmode");
+    (F.placas || []).forEach(([x, txtTeclado, txtToque]) => {
+      const txt = toque && txtToque ? txtToque : txtTeclado;
       const tt = this.add.text(x, 404, txt, { fontFamily: "Barlow Condensed, Arial Narrow, sans-serif", fontSize: "17px", color: "#efe6d6", backgroundColor: "#3a2a1dcc", padding: { x: 8, y: 4 } }).setOrigin(.5, 1);
       this.add.rectangle(x, 440, 4, 40, 0x4a3726).setOrigin(.5, 0);
       tt.setDepth(1);
@@ -1008,6 +1067,7 @@ class Missao extends Phaser.Scene {
     // teclado (sem captura global: as teclas não vazam para campos de texto fora do jogo)
     this.keys = this.input.keyboard.addKeys("LEFT,RIGHT,UP,A,D,W,SPACE,J,K,ESC", false);
     bloquearRolagem();
+    setTimeout(checarOrientacao, 0);
 
     this.atualizarHUD();
     if (r) this.toast("Você voltou ao ponto de controle.");
@@ -1024,7 +1084,7 @@ class Missao extends Phaser.Scene {
   textoObjetivo() {
     const c = this.run.concluidos;
     if (this.id === "m0") {
-      if (!c.has("boneco")) return "Derrote o boneco de treino (J)";
+      if (!c.has("boneco")) return document.body.classList.contains("touchmode") ? "Derrote o boneco de treino (ATAQUE)" : "Derrote o boneco de treino (J)";
       if (!c.has("pedra")) return "Faça o juramento na Pedra";
       return "Siga até o estandarte";
     }
@@ -1097,7 +1157,7 @@ class Missao extends Phaser.Scene {
     this.dano(e.x < this.player.x ? 1 : -1);
   }
   dano(dirEmpurrao) {
-    this.vida -= 1; this.invuln = 1100;
+    this.vida -= 1; this.invuln = 1100; vibrar(45);
     this.player.setVelocity(dirEmpurrao * 260, -280);
     this.cameras.main.shake(120, .006);
     this.atualizarHUD();
@@ -1249,7 +1309,11 @@ function abrirIntro(id) {
   $("mi-controls").textContent = isTouch || document.body.classList.contains("touchmode")
     ? "Controles: botões na parte de baixo da tela. Pausa: botão II."
     : "Controles: ← → ou A/D para andar, Espaço para pular, J para atacar, Esc para pausar. No quiz, use 1 a 4.";
-  $("mi-go").onclick = () => { closeModal("m-intro"); iniciarMissao(id); };
+  $("mi-go").onclick = () => {
+    closeModal("m-intro");
+    if (document.body.classList.contains("touchmode") && podeTelaCheia) telaCheia(true);
+    iniciarMissao(id);
+  };
   openModal("m-intro");
 }
 $("mi-back").addEventListener("click", () => closeModal("m-intro"));
@@ -1281,12 +1345,14 @@ if (window.ResizeObserver) new ResizeObserver(() => { if (!$("scr-game").hidden)
 
 function pausar() {
   const s = cena();
-  if (!s || s.pausado || s.terminou || !$("m-quiz").hidden) return;
+  if (!s || s.pausado || s.terminou || !$("m-quiz").hidden || !$("rotate").hidden) return;
   s.pausado = true; s.physics.pause();
   $("mp-serio").checked = !!PERFIL.modoSerio;
   openModal("m-pause");
 }
 $("btn-pause").addEventListener("click", pausar);
+$("btn-full").hidden = !podeTelaCheia;
+$("btn-full").addEventListener("click", () => telaCheia(!(document.fullscreenElement || document.webkitFullscreenElement)));
 $("mp-resume").addEventListener("click", () => { closeModal("m-pause"); const s = cena(); if (s) { s.pausado = false; s.physics.resume(); } });
 $("mp-serio").addEventListener("change", (e) => { PERFIL.modoSerio = e.target.checked; Store.salvarPerfil(PERFIL); });
 $("mp-quit").addEventListener("click", () => { closeModal("m-pause"); game.scene.stop("Missao"); renderCentral(); });

@@ -1,0 +1,1490 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#110e0b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Farol da Liberdade</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* Layout: uma tela por vez (início, central, missão, resultado, ranking), visual único escuro de entardecer pós-apocalíptico com acento templário */
+:root {
+  --ink: #110e0b;        /* fundo */
+  --panel: #1b1612;      /* superfícies */
+  --panel-2: #241d17;
+  --line: #3b3128;       /* bordas */
+  --bone: #efe6d6;       /* texto */
+  --muted: #a3957f;      /* texto secundário */
+  --blood: #b3261e;      /* cruz templária */
+  --ember: #e8a33d;      /* luz do farol */
+  --ok: #7fb36f;
+  --bad: #d8603f;
+  --display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --hud: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body { margin: 0; background: var(--ink); color: var(--bone); font-family: var(--body); font-size: 15px; line-height: 1.5; overflow: hidden; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: .04em; }
+.label { font-family: var(--hud); text-transform: uppercase; letter-spacing: .14em; font-size: 12px; color: var(--muted); }
+.num { font-variant-numeric: tabular-nums; }
+
+.screen { position: fixed; inset: 0; overflow-y: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: calc(20px + env(safe-area-inset-top, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)); }
+.wrap { max-width: 980px; margin: 0 auto; display: grid; gap: 20px; }
+
+.btn { border: 1px solid var(--line); background: var(--panel-2); padding: 10px 18px; border-radius: 3px;
+  font-family: var(--hud); font-weight: 600; letter-spacing: .1em; text-transform: uppercase; font-size: 15px; }
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--blood); border-color: #d2463c; color: #fff8ee; }
+.btn.primary:hover { background: #c42e24; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+/* ---------- início ---------- */
+#scr-home { background:
+  radial-gradient(ellipse at 78% 30%, rgba(232,163,61,.28), transparent 45%),
+  linear-gradient(180deg, #2a1d14 0%, #4a2e1a 38%, #1a120d 70%, var(--ink) 100%); }
+.home { min-height: 100%; display: grid; align-content: center; gap: 28px; max-width: 980px; margin: 0 auto; }
+.home h1 { font-size: clamp(40px, 8vw, 84px); font-weight: 800; line-height: .95; color: #f6eee0; display: flex; align-items: center; gap: .25em; flex-wrap: wrap; }
+.cross { display: inline-block; width: .55em; height: .7em; position: relative; flex: none; }
+.cross::before, .cross::after { content: ""; position: absolute; background: var(--blood); }
+.cross::before { left: 40%; width: 20%; top: 0; bottom: 0; }
+.cross::after { top: 26%; height: 18%; left: 0; right: 0; }
+.tagline { font-family: var(--hud); letter-spacing: .32em; text-transform: uppercase; color: var(--ember); font-size: 15px; }
+.home p.lead { max-width: 58ch; color: #d9cdb9; font-size: 17px; margin: 0; }
+.values { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); max-width: 760px; background: rgba(17,14,11,.55); }
+.values div { padding: 12px 14px; border-right: 1px solid var(--line); min-width: 0; }
+.values div:last-child { border-right: 0; }
+.values b { display: block; font-family: var(--display); font-size: 14px; color: var(--bone); }
+.values span { font-size: 12.5px; color: var(--muted); }
+.signin { display: grid; gap: 10px; max-width: 460px; }
+.signin input { background: var(--ink); border: 1px solid var(--line); color: var(--bone); padding: 11px 12px; font: inherit; font-size: 16px; border-radius: 3px; width: 100%; }
+.hint { font-size: 13px; color: var(--muted); margin: 0; }
+.err { color: var(--bad); font-size: 13px; margin: 0; min-height: 1.2em; }
+
+/* ---------- central ---------- */
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 14px; }
+.brand { font-family: var(--display); font-weight: 800; letter-spacing: .08em; font-size: 18px; display: flex; gap: 10px; align-items: center; }
+.card { background: var(--panel); border: 1px solid var(--line); padding: 18px; border-radius: 4px; }
+.player { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: end; }
+.player h2 { font-size: 26px; }
+.patente-atual { font-family: var(--hud); font-size: 20px; font-weight: 700; color: var(--ember); letter-spacing: .06em; text-transform: uppercase; }
+.xpbar { height: 10px; background: var(--ink); border: 1px solid var(--line); border-radius: 2px; overflow: hidden; margin-top: 8px; }
+.xpbar i { display: block; height: 100%; background: linear-gradient(90deg, #b9782a, var(--ember)); width: 0; transition: width .6s; }
+.stats { display: flex; gap: 22px; flex-wrap: wrap; }
+.stats div { display: grid; }
+.stats b { font-family: var(--hud); font-size: 24px; font-weight: 700; }
+.ladder { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; }
+.rank { text-align: center; padding: 10px 4px 8px; border: 1px solid var(--line); background: var(--ink); border-radius: 3px; min-width: 0; }
+.rank .ico { width: 28px; height: 28px; margin: 0 auto 6px; border: 1.5px solid var(--line); transform: rotate(45deg); display: grid; place-items: center; }
+.rank .ico span { transform: rotate(-45deg); font-family: var(--hud); font-size: 12px; color: var(--muted); }
+.rank small { display: block; font-family: var(--hud); font-size: 12px; line-height: 1.15; color: var(--muted); letter-spacing: .03em; }
+.rank.done .ico { border-color: var(--muted); }
+.rank.current { border-color: var(--ember); }
+.rank.current .ico { border-color: var(--ember); background: rgba(232,163,61,.15); }
+.rank.current small, .rank.current .ico span { color: var(--bone); }
+.missions { display: grid; gap: 8px; }
+.mission { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px 14px; border: 1px solid var(--line); background: var(--panel); border-radius: 3px; }
+.mission .n { font-family: var(--display); font-size: 20px; color: var(--muted); text-align: center; }
+.mission h3 { font-size: 16px; }
+.mission p { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+.mission.locked { opacity: .55; }
+.chip { font-family: var(--hud); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; padding: 3px 8px; border: 1px solid var(--line); border-radius: 2px; white-space: nowrap; }
+.chip.ok { color: var(--ok); border-color: #4d6b44; }
+.chip.go { color: var(--ember); border-color: #7a5a2a; }
+.mode { font-size: 12.5px; color: var(--muted); }
+.mode b { color: var(--bone); font-weight: 600; }
+
+/* ---------- jogo ---------- */
+#scr-game { padding: 0; overflow: hidden; background: #0b0907; display: flex; flex-direction: column; }
+#game { flex: 1; min-height: 0; position: relative; touch-action: none; user-select: none; -webkit-user-select: none; }
+#game canvas { display: block; }
+.hud { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; pointer-events: none; z-index: 5;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px)) 0 max(14px, env(safe-area-inset-left, 0px)); }
+.hud > * { pointer-events: auto; }
+.hud-l { display: grid; gap: 4px; }
+.hearts { display: flex; gap: 4px; }
+.heart { width: 16px; height: 16px; background: var(--blood); clip-path: polygon(50% 100%, 0 38%, 12% 8%, 34% 4%, 50% 22%, 66% 4%, 88% 8%, 100% 38%); }
+.heart.off { background: #3b2a24; }
+.objective { font-family: var(--hud); font-size: 14px; letter-spacing: .04em; background: rgba(11,9,7,.7); padding: 3px 8px; border-left: 2px solid var(--ember); max-width: min(60vw, 420px); }
+.hud-r { display: flex; gap: 8px; align-items: center; }
+.score { font-family: var(--hud); font-size: 20px; font-weight: 700; background: rgba(11,9,7,.7); padding: 2px 10px; border: 1px solid var(--line); }
+.iconbtn { width: 36px; height: 36px; display: grid; place-items: center; background: rgba(11,9,7,.75); border: 1px solid var(--line); border-radius: 3px; font-family: var(--hud); font-weight: 700; }
+/* controles de toque: sobrepostos ao jogo, sem roubar altura da tela */
+.touch { display: none; position: absolute; left: 0; right: 0; bottom: 0; z-index: 7; justify-content: space-between; align-items: flex-end; pointer-events: none;
+  padding: 0 max(18px, env(safe-area-inset-right, 0px)) calc(14px + env(safe-area-inset-bottom, 0px)) max(18px, env(safe-area-inset-left, 0px)); }
+.touch .grp { display: flex; gap: 14px; align-items: flex-end; pointer-events: auto; }
+.touch button { width: 72px; height: 72px; border-radius: 50%; border: 2px solid rgba(239,230,214,.35); background: rgba(27,22,18,.55); color: var(--bone);
+  font-family: var(--hud); font-weight: 700; font-size: 15px; letter-spacing: .04em; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.touch button.pressed { background: rgba(232,163,61,.38); border-color: var(--ember); }
+.touch button.atk { width: 84px; height: 84px; background: rgba(120,28,22,.62); border-color: rgba(210,70,60,.85); }
+.touch .grp.right button[data-k="jump"] { margin-bottom: 44px; }
+body.touchmode .touch { display: flex; }
+/* aviso para girar o celular */
+.rotate { position: absolute; inset: 0; z-index: 20; background: rgba(11,9,7,.95); display: grid; place-content: center; justify-items: center; gap: 18px; text-align: center; padding: 24px; }
+.rotate p { margin: 0; font-size: 16px; color: #d9cdb9; max-width: 30ch; }
+.rotate b { font-family: var(--display); font-size: 22px; color: var(--bone); display: block; margin-bottom: 6px; }
+.phone { width: 46px; height: 80px; border: 3px solid var(--ember); border-radius: 9px; animation: girar 2.4s ease-in-out infinite; }
+@keyframes girar { 0%, 25% { transform: rotate(0deg); } 55%, 100% { transform: rotate(-90deg); } }
+.toast { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); background: rgba(11,9,7,.88); border: 1px solid var(--ember); padding: 8px 14px; font-family: var(--hud); font-size: 16px; letter-spacing: .03em; z-index: 6; max-width: calc(100% - 32px); text-align: center; }
+
+/* ---------- modais ---------- */
+.modal { position: fixed; inset: 0; z-index: 50; background: rgba(8,6,5,.78); display: flex; align-items: flex-start; justify-content: center; overflow-y: auto;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.sheet { margin: auto; width: min(640px, 100%); background: var(--panel); border: 1px solid var(--line); border-top: 3px solid var(--blood); padding: 22px; display: grid; gap: 14px; border-radius: 3px; }
+.sheet h2 { font-size: 22px; }
+.sheet p { margin: 0; }
+.opts { display: grid; gap: 8px; }
+.opt { text-align: left; display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; padding: 11px 12px; background: var(--ink); border: 1px solid var(--line); border-radius: 3px; font-size: 15px; }
+.opt .k { font-family: var(--hud); font-weight: 700; color: var(--ember); }
+.opt:hover:not(:disabled) { border-color: var(--muted); }
+.opt.right { border-color: var(--ok); background: rgba(127,179,111,.12); }
+.opt.wrong { border-color: var(--bad); background: rgba(216,96,63,.12); }
+.opt:disabled { cursor: default; }
+.feedback { display: grid; gap: 8px; border: 1px solid var(--line); background: var(--ink); padding: 14px; border-radius: 3px; }
+.feedback .verdict { font-family: var(--hud); font-size: 18px; font-weight: 700; letter-spacing: .04em; }
+.feedback .verdict.ok { color: var(--ok); }
+.feedback .verdict.no { color: var(--bad); }
+.zoeira { color: #e9c78b; font-style: italic; }
+.obj-list { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.obj-list .opc { color: var(--muted); }
+
+/* ---------- resultado e ranking ---------- */
+.result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.kpi { background: var(--panel); border: 1px solid var(--line); padding: 14px; display: grid; gap: 2px; }
+.kpi b { font-family: var(--hud); font-size: 30px; font-weight: 700; line-height: 1.1; }
+.breakdown { width: 100%; border-collapse: collapse; font-size: 14px; }
+.breakdown td { padding: 7px 0; border-bottom: 1px solid var(--line); }
+.breakdown td:last-child { text-align: right; font-family: var(--hud); font-size: 16px; }
+.promo { border: 1px solid var(--ember); background: rgba(232,163,61,.1); padding: 14px; display: grid; gap: 4px; }
+.promo b { font-family: var(--display); font-size: 20px; color: var(--ember); }
+.table-wrap { overflow-x: auto; }
+table.rk { width: 100%; border-collapse: collapse; min-width: 480px; }
+table.rk th { text-align: left; font-family: var(--hud); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--line); }
+table.rk td { padding: 10px; border-bottom: 1px solid var(--line); }
+table.rk td.pts { font-family: var(--hud); font-size: 18px; font-weight: 700; text-align: right; }
+table.rk th.pts { text-align: right; }
+table.rk tr.me td { background: rgba(232,163,61,.09); }
+table.rk td.pos { font-family: var(--display); color: var(--muted); width: 48px; }
+details.rules summary { cursor: pointer; font-family: var(--hud); letter-spacing: .08em; text-transform: uppercase; font-size: 14px; }
+details.rules ul { margin: 10px 0 0; padding-left: 18px; color: #d9cdb9; font-size: 14px; display: grid; gap: 3px; }
+.empty { color: var(--muted); padding: 18px 10px; }
+.switch { display: flex; gap: 10px; align-items: center; }
+
+@media (max-width: 720px) {
+  .values { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .values div:nth-child(2) { border-right: 0; }
+  .values div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+  .ladder { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .player { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-height: 520px) {
+  .sheet { padding: 14px 16px; gap: 9px; }
+  .sheet h2 { font-size: 18px; }
+  #mq-q { font-size: 16px !important; }
+  .opt { padding: 8px 10px; font-size: 14px; }
+  .feedback { padding: 10px 12px; gap: 5px; font-size: 13.5px; }
+  .objective { font-size: 12.5px; }
+  .heart { width: 13px; height: 13px; }
+  .score { font-size: 17px; }
+  .iconbtn { width: 32px; height: 32px; }
+}
+@media (prefers-reduced-motion: reduce) { .xpbar i { transition: none; } .phone { animation: none; transform: rotate(-90deg); } }
+</style>
+
+</head>
+<body>
+<!-- ============ TELA: INÍCIO ============ -->
+<section class="screen" id="scr-home">
+  <div class="home">
+    <div class="tagline">Conhecimento + Ação + Liberdade</div>
+    <h1>Farol da <span style="white-space:nowrap">Liberdade <span class="cross" aria-hidden="true"></span></span></h1>
+    <p class="lead">A cidade caiu na névoa e ninguém mais sabe o que é verdade. Numa ilha distante, uma luz continua acesa. Atravesse as ruínas, responda ao que os pilares guardam e chegue até o Farol.</p>
+    <div class="values" aria-label="Valores do Farol da Liberdade">
+      <div><b>Liberdade</b><span>física, material, intelectual e de crença</span></div>
+      <div><b>Valores tradicionais</b><span>a família transmite o que é bom</span></div>
+      <div><b>Racionalidade</b><span>contra o fanatismo</span></div>
+      <div><b>Minorias</b><span>a menor delas é o indivíduo</span></div>
+    </div>
+    <form class="signin" id="form-signin" novalidate>
+      <label class="label" for="in-apelido">Seu apelido no ranking</label>
+      <input id="in-apelido" maxlength="16" autocomplete="nickname" placeholder="Ex.: Lanterna_SP">
+      <p class="err" id="signin-err" role="alert"></p>
+      <div class="row"><button class="btn primary" type="submit" id="btn-start">Iniciar jornada</button></div>
+      <p class="hint" id="mode-hint">Conectando ao ranking…</p>
+    </form>
+  </div>
+</section>
+
+<!-- ============ TELA: CENTRAL ============ -->
+<section class="screen" id="scr-central" hidden>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand"><span class="cross" aria-hidden="true"></span>Farol da Liberdade</div>
+      <div class="row">
+        <button class="btn" id="btn-ranking">Ranking</button>
+        <button class="btn" id="btn-settings">Ajustes</button>
+      </div>
+    </div>
+
+    <div class="card player">
+      <div>
+        <div class="label">Faroleiro em formação</div>
+        <h2 id="c-apelido">—</h2>
+        <div class="patente-atual" id="c-patente">Sujeito Desconfiado</div>
+        <div class="hint" id="c-tom"></div>
+        <div class="xpbar" aria-hidden="true"><i id="c-xpbar"></i></div>
+        <div class="hint" id="c-xpnext"></div>
+      </div>
+      <div class="stats">
+        <div><span class="label">XP</span><b class="num" id="c-xp">0</b></div>
+        <div><span class="label">Pontos de ranking</span><b class="num" id="c-pts">0</b></div>
+        <div><span class="label">Posição</span><b class="num" id="c-pos">—</b></div>
+      </div>
+    </div>
+
+    <div class="card" style="display:grid;gap:12px">
+      <div class="label">Patentes</div>
+      <div class="ladder" id="c-ladder"></div>
+    </div>
+
+    <div style="display:grid;gap:10px">
+      <div class="label">Jornada até o Farol</div>
+      <div class="missions" id="c-missions"></div>
+    </div>
+    <p class="mode" id="c-mode"></p>
+  </div>
+</section>
+
+<!-- ============ TELA: MISSÃO ============ -->
+<section class="screen" id="scr-game" hidden>
+  <div id="game">
+    <div class="hud">
+      <div class="hud-l">
+        <div class="hearts" id="h-hearts" aria-label="Vida"></div>
+        <div class="objective" id="h-obj"></div>
+      </div>
+      <div class="hud-r">
+        <div class="score num" id="h-score" aria-label="Pontos da missão">0</div>
+        <button class="iconbtn" id="btn-full" aria-label="Tela cheia" hidden>⤢</button>
+        <button class="iconbtn" id="btn-pause" aria-label="Pausar">II</button>
+      </div>
+    </div>
+    <div class="toast" id="toast" hidden></div>
+    <div class="touch" id="touch">
+      <div class="grp">
+        <button data-k="left" aria-label="Mover para a esquerda">◀</button>
+        <button data-k="right" aria-label="Mover para a direita">▶</button>
+      </div>
+      <div class="grp right">
+        <button data-k="jump" aria-label="Pular">PULO</button>
+        <button data-k="attack" class="atk" aria-label="Atacar">ATAQUE</button>
+      </div>
+    </div>
+    <div class="rotate" id="rotate" hidden>
+      <div class="phone" aria-hidden="true"></div>
+      <p><b>Gire o celular</b>O jogo foi feito para a tela na horizontal.</p>
+      <button class="btn" id="btn-portrait">Jogar na vertical mesmo</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TELA: RESULTADO ============ -->
+<section class="screen" id="scr-result" hidden>
+  <div class="wrap" style="max-width:760px">
+    <div>
+      <div class="label" id="r-kicker">Missão concluída</div>
+      <h2 style="font-size:30px" id="r-title">—</h2>
+    </div>
+    <div id="r-promo"></div>
+    <div class="result-grid">
+      <div class="kpi"><span class="label">Pontos da missão</span><b class="num" id="r-pts">0</b><span class="hint" id="r-best"></span></div>
+      <div class="kpi"><span class="label">XP ganho</span><b class="num" id="r-xp">0</b><span class="hint" id="r-xpnote"></span></div>
+      <div class="kpi"><span class="label">Acertos no quiz</span><b class="num" id="r-quiz">0/0</b></div>
+      <div class="kpi"><span class="label">Tempo</span><b class="num" id="r-time">0:00</b></div>
+    </div>
+    <div class="card"><table class="breakdown" id="r-breakdown"></table></div>
+    <p class="mode" id="r-saved"></p>
+    <div class="row">
+      <button class="btn primary" id="r-next">Próxima missão</button>
+      <button class="btn" id="r-central">Central</button>
+      <button class="btn" id="r-ranking">Ver ranking</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TELA: RANKING ============ -->
+<section class="screen" id="scr-ranking" hidden>
+  <div class="wrap" style="max-width:820px">
+    <div class="topbar">
+      <div><div class="label">Ranking da campanha</div><h2 style="font-size:28px">Os que mais iluminam</h2></div>
+      <button class="btn" id="k-back">Voltar</button>
+    </div>
+    <div class="table-wrap">
+      <table class="rk"><thead><tr><th>#</th><th>Apelido</th><th>Patente</th><th>Missões</th><th class="pts">Pontos</th></tr></thead><tbody id="k-body"></tbody></table>
+    </div>
+    <details class="rules" open>
+      <summary>Como a pontuação funciona</summary>
+      <ul id="k-rules"></ul>
+    </details>
+    <p class="mode" id="k-mode"></p>
+  </div>
+</section>
+
+<!-- ============ MODAIS ============ -->
+<div class="modal" id="m-intro" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mi-title">
+    <div class="label" id="mi-kicker"></div>
+    <h2 id="mi-title"></h2>
+    <p id="mi-text"></p>
+    <div><div class="label" style="margin-bottom:6px">Objetivos</div><ul class="obj-list" id="mi-obj"></ul></div>
+    <p class="hint" id="mi-controls"></p>
+    <div class="row"><button class="btn primary" id="mi-go">Começar</button><button class="btn" id="mi-back">Voltar</button></div>
+  </div>
+</div>
+
+<div class="modal" id="m-quiz" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mq-q">
+    <div class="row" style="justify-content:space-between"><span class="label" id="mq-kicker"></span><span class="label num" id="mq-count"></span></div>
+    <h2 id="mq-q" style="font-family:var(--body);font-weight:600;font-size:19px;letter-spacing:0;line-height:1.35"></h2>
+    <div class="opts" id="mq-opts"></div>
+    <div class="feedback" id="mq-fb" hidden>
+      <div class="verdict" id="mq-verdict"></div>
+      <p id="mq-msg"></p>
+      <p id="mq-exp"></p>
+      <p class="zoeira" id="mq-zoeira"></p>
+    </div>
+    <div class="row"><button class="btn primary" id="mq-next" hidden>Continuar</button></div>
+  </div>
+</div>
+
+<div class="modal" id="m-pause" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mp-title">
+    <h2 id="mp-title">Pausa</h2>
+    <label class="switch"><input type="checkbox" id="mp-serio"> Modo sério (sem comentários cômicos no quiz)</label>
+    <div class="row">
+      <button class="btn primary" id="mp-resume">Continuar</button>
+      <button class="btn" id="mp-quit">Abandonar missão</button>
+    </div>
+    <p class="hint">Abandonar não salva os pontos desta tentativa.</p>
+  </div>
+</div>
+
+<div class="modal" id="m-settings" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ms-title">
+    <h2 id="ms-title">Ajustes</h2>
+    <label class="switch"><input type="checkbox" id="ms-serio"> Modo sério (sem comentários cômicos no quiz)</label>
+    <label class="switch"><input type="checkbox" id="ms-touch"> Mostrar controles de toque</label>
+    <div class="row"><button class="btn primary" id="ms-close">Fechar</button></div>
+  </div>
+</div>
+
+<div class="modal" id="m-defeat" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="md-title">
+    <h2 id="md-title">Você caiu.</h2>
+    <p>Um Faroleiro levanta. O que você já conquistou nesta tentativa continua contando.</p>
+    <div class="row">
+      <button class="btn primary" id="md-resume">Retomar do ponto de controle</button>
+      <button class="btn" id="md-restart">Reiniciar missão</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.80.1/phaser.min.js"></script>
+<script>
+"use strict";
+/* =====================================================================
+   DADOS (injetados por build_jogo.py a partir dos JSONs do quiz)
+   ===================================================================== */
+const BANCO = [{"id": 1, "tema": "Identidade", "nivel": "facil", "pergunta": "Qual é a razão social da entidade cujo nome fantasia é Farol da Liberdade?", "alternativas": ["Instituto Conservador-Liberal", "Centro de Estudos da Liberdade (CEL)", "Movimento Brasil Livre", "Instituto Força Brasil"], "correta": 1, "explicacao": "O Farol da Liberdade é o nome fantasia do Centro de Estudos da Liberdade (CEL), fundado pelos irmãos Abraham e Arthur Weintraub.", "zoeira": "Nome fantasia bonito, razão social de cartório. Igual político: um nome pra campanha, outro pro processo.", "versao": 1}, {"id": 2, "tema": "Identidade", "nivel": "facil", "pergunta": "Qual destes NÃO é um dos quatro valores do Farol da Liberdade?", "alternativas": ["Igualdade de resultados", "Liberdade", "Racionalidade", "Valores tradicionais"], "correta": 0, "explicacao": "Os quatro valores são: Liberdade, Valores tradicionais, Racionalidade e Defesa das minorias. 'Igualdade de resultados' não faz parte deles.", "zoeira": "Igualdade de resultados só existe em dois lugares: no cemitério e na fila do INSS.", "versao": 1}, {"id": 3, "tema": "Identidade", "nivel": "facil", "pergunta": "Segundo o manifesto, qual é a menor de todas as minorias?", "alternativas": ["A família", "O nascituro", "A comunidade local", "O indivíduo"], "correta": 3, "explicacao": "O valor 'Defesa das minorias' especifica que a menor delas é o indivíduo. Defender minorias é, antes de tudo, defender cada pessoa.", "zoeira": "A menor minoria é o indivíduo. A segunda menor é a de quem leu o manifesto até o fim. Parabéns, você está nas duas.", "versao": 1}, {"id": 4, "tema": "Identidade", "nivel": "facil", "pergunta": "A partir do material-base de quem o Manifesto Conservador foi discutido e reestruturado?", "alternativas": ["Olavo de Carvalho", "Edmund Burke", "Abraham Weintraub", "Arthur Weintraub"], "correta": 2, "explicacao": "O manifesto foi reestruturado por conservadores a partir de material-base do economista e professor Abraham Bragança de Vasconcellos Weintraub.", "zoeira": "Edmund Burke morreu em 1797. Tem álibi.", "versao": 1}, {"id": 5, "tema": "Introdução", "nivel": "facil", "pergunta": "Por que, segundo a Introdução, todo ser humano tem igual dignidade?", "alternativas": ["Porque todos nascem na mesma condição social", "Porque é reflexo do Criador", "Porque todos pagam impostos", "Porque a Constituição assim determina"], "correta": 1, "explicacao": "A Introdução afirma que todo ser humano tem igual dignidade por ser reflexo do Criador, devendo ser livre para escolher e arcar com as consequências.", "zoeira": "A Constituição tem mais emenda que colcha de vó. A dignidade veio antes, e sem jabuti.", "versao": 1}, {"id": 6, "tema": "Introdução", "nivel": "facil", "pergunta": "Qual é a instituição mais importante, segundo a Introdução do manifesto?", "alternativas": ["A família", "O Estado", "O grupo de WhatsApp da família", "A Igreja"], "correta": 0, "explicacao": "A Introdução diz que o governo existe para permitir a busca da felicidade por indivíduos e famílias, sendo estas as instituições mais importantes.", "zoeira": "O Estado como instituição mais importante? Só na opinião do próprio Estado.", "versao": 1}, {"id": 7, "tema": "Introdução", "nivel": "medio", "pergunta": "Na Introdução, drogas e promiscuidade são apontadas como condutas que ferem qual direito básico?", "alternativas": ["Paz", "Propriedade", "Vida", "Família"], "correta": 3, "explicacao": "Os pares são: Vida (homicídio, aborto); Propriedade (roubo, furto, corrupção); Paz (distúrbios); Família (drogas, promiscuidade).", "zoeira": "Drogas e promiscuidade: a dupla sertaneja que mais desfez família no Brasil. E sem precisar de turnê.", "versao": 1}, {"id": 8, "tema": "Introdução", "nivel": "medio", "pergunta": "Segundo a Introdução, a corrupção fere diretamente qual direito básico?", "alternativas": ["Família", "Paz", "Propriedade", "Liberdade de crença"], "correta": 2, "explicacao": "Na Introdução, corrupção aparece junto com roubo e furto como violação da Propriedade. (No 13º Princípio, ela também é chamada de assassinato indireto.)", "zoeira": "Aqui a corrupção é roubo. Spoiler: no 13º Princípio ela é promovida a assassinato. Plano de carreira invejável.", "versao": 1}, {"id": 9, "tema": "Introdução", "nivel": "medio", "pergunta": "Para o manifesto, qual é a finalidade do governo?", "alternativas": ["Conduzir a moral religiosa da nação", "Permitir a busca da felicidade, mantendo ordem e justiça", "Administrar a economia em nome do povo", "Garantir igualdade material entre todos"], "correta": 1, "explicacao": "O governo existe para permitir que indivíduos, famílias e outros grupos busquem a felicidade, com normas que garantam ordem e justiça.", "zoeira": "Se o papel do governo fosse administrar a economia com sucesso, o Brasil seria a Suíça. Olhe pela janela.", "versao": 1}, {"id": 10, "tema": "1º Princípio", "nivel": "facil", "pergunta": "Segundo o 1º Princípio, qual é a base do conservadorismo?", "alternativas": ["O indivíduo forte, livre e capaz de decidir o próprio destino", "A tradição religiosa", "O Estado forte", "O influenciador com mais seguidores"], "correta": 0, "explicacao": "O 1º Princípio coloca como alicerce o indivíduo forte, livre e capaz de decidir o próprio destino.", "zoeira": "Estado forte é aquele que você sustenta com força. Uns 40% do seu salário de força.", "versao": 1}, {"id": 11, "tema": "1º Princípio", "nivel": "medio", "pergunta": "No 1º Princípio, o que deve fazer quem se libertou da 'prisão mental' imposta por movimentos totalitários?", "alternativas": ["Denunciar os totalitários às autoridades", "Fundar um partido político", "Afastar-se de quem ainda está preso", "Libertar, um a um, os que estão ao seu redor, como 'pescador de homens'"], "correta": 3, "explicacao": "O manifesto pede que a pessoa liberta ajude a libertar os demais, um a um, como um 'pescador de homens' — a essência da missão do Faroleiro.", "zoeira": "Pescador de homens. Não confundir com pescador de emenda parlamentar, espécie muito mais comum no Planalto.", "versao": 1}, {"id": 12, "tema": "1º Princípio", "nivel": "medio", "pergunta": "Complete segundo o 1º Princípio: 'Não existe nação livre sem...'", "alternativas": ["...forças armadas", "...economia de mercado", "...indivíduos livres", "...um governo forte"], "correta": 2, "explicacao": "O manifesto afirma que, sem a família transmitindo valores e patrimônio, a nação perece — e que não há nação livre sem indivíduos livres.", "zoeira": "Sem indivíduos livres não há nação livre, só plateia batendo palma em live oficial.", "versao": 1}, {"id": 13, "tema": "1º Princípio", "nivel": "dificil", "pergunta": "Segundo o 1º Princípio, o que a família transmite entre gerações?", "alternativas": ["Somente a fé religiosa", "Valores, tradições e patrimônio cultural e material", "Filiação partidária", "Apenas bens materiais (herança)"], "correta": 1, "explicacao": "A família é o núcleo natural pelo qual se transmitem valores, tradições e patrimônio cultural E material.", "zoeira": "Herança material passa. A receita de bolo da avó atravessa gerações e nunca é tributada.", "versao": 1}, {"id": 14, "tema": "1º Princípio", "nivel": "dificil", "pergunta": "A expressão 'pescador de homens', usada no 1º Princípio, tem origem em qual fonte?", "alternativas": ["Nos Evangelhos (chamado de Jesus aos apóstolos)", "Em 'A República', de Platão", "Na Declaração de Independência dos EUA", "Na Ética a Nicômaco, de Aristóteles"], "correta": 0, "explicacao": "É uma referência bíblica (Mt 4,19; Mc 1,17). No manifesto é metáfora para quem forma e liberta os outros, um a um. (Pergunta de contexto.)", "zoeira": "Aristóteles não pescava. Que se saiba.", "versao": 1}, {"id": 15, "tema": "2º Princípio", "nivel": "facil", "pergunta": "Quais são os três pilares da busca da felicidade?", "alternativas": ["Deus, Pátria e Família", "Fortaleza, Prudência e Temperança", "Vida, Propriedade e Paz", "Liberdade, Justiça e Verdade"], "correta": 3, "explicacao": "O 2º Princípio define os três pilares: Liberdade, Justiça e Verdade.", "zoeira": "'Deus, Pátria e Família' cabe num adesivo. 'Liberdade, Justiça e Verdade' dá trabalho todo dia.", "versao": 1}, {"id": 16, "tema": "2º Princípio", "nivel": "medio", "pergunta": "Qual destas NÃO é uma das dimensões da liberdade citadas no 2º Princípio?", "alternativas": ["Intelectual", "Física", "Econômica-coletiva", "De crença"], "correta": 2, "explicacao": "As quatro dimensões são: física, material, intelectual e de crença.", "zoeira": "Liberdade 'econômica-coletiva' é tipo vegano de churrascaria: não existe.", "versao": 1}, {"id": 17, "tema": "2º Princípio", "nivel": "medio", "pergunta": "Segundo o 2º Princípio, a mentira é uma forma de quê?", "alternativas": ["Covardia", "Escravidão", "Fanatismo", "Horário eleitoral gratuito"], "correta": 1, "explicacao": "No pilar Verdade, o manifesto afirma que a mentira é uma forma de escravidão.", "zoeira": "Se mentir desse cadeia, Brasília seria presídio de segurança máxima com ar-condicionado central.", "versao": 1}, {"id": 18, "tema": "2º Princípio", "nivel": "medio", "pergunta": "Como o pilar Verdade é garantido, segundo o 2º Princípio?", "alternativas": ["Pelo acesso a informação descentralizada e distribuída", "Por uma agência estatal de checagem", "Pela censura de conteúdos falsos", "Pela autoridade da imprensa tradicional"], "correta": 0, "explicacao": "A Verdade depende do acesso a informação descentralizada e distribuída — e não de um órgão central que decida o que é verdadeiro.", "zoeira": "Agência estatal de checagem é a raposa fazendo auditoria no galinheiro, com crachá e verba.", "versao": 1}, {"id": 19, "tema": "2º Princípio", "nivel": "dificil", "pergunta": "No 2º Princípio, a Justiça é a ordem que impede que a busca da felicidade seja prejudicada por quem?", "alternativas": ["Pelo mercado", "Apenas por estrangeiros", "Apenas por criminosos", "Por outros indivíduos ou pelo governo"], "correta": 3, "explicacao": "A Justiça protege contra danos causados por outros indivíduos OU pelo próprio governo, e se baseia na lei natural.", "zoeira": "Sim, o governo também atrapalha sua felicidade. Surpresa zero para quem já pagou IPVA.", "versao": 1}, {"id": 20, "tema": "2º Princípio", "nivel": "dificil", "pergunta": "Em que se baseia o pilar Justiça do 2º Princípio?", "alternativas": ["Nos costumes de cada época", "Na jurisprudência do STF", "Na lei natural", "Na vontade da maioria"], "correta": 2, "explicacao": "O pilar Justiça se fundamenta na lei natural — uma ordem moral anterior às leis escritas e reconhecível pela razão.", "zoeira": "A vontade da maioria já elegeu muita gente que você conhece. A lei natural não tem segundo turno.", "versao": 1}];
+const MSG = {"acerto": ["Acertou! Já pode cobrar consultoria do Centrão. Mas não aceite.", "Na mosca. Se fosse concurso público, você já estaria nomeado. Por mérito, olha que raridade.", "Correto! A lanterna acendeu. A conta de luz vem depois.", "Mandou bem. Aristóteles levantou da cadeira e bateu palma.", "Certo! Mais preciso que promessa de campanha. Tá, isso não é difícil.", "Acertou, e sem precisar de emenda parlamentar.", "Correto! O Farol agradece. Brasília lamenta.", "Isso aí! Se continuar assim, vira ministro. Calma, foi só uma ameaça.", "Na lata. Até o STF concordaria, depois de três pedidos de vista.", "Acertou! Sua avó ficaria orgulhosa e faria bolo de cenoura."], "erro": ["Errou. Mas relaxa: tem gente com foro privilegiado que erra mais e ganha mais.", "Não foi dessa vez. Respira, lê a explicação e não culpe o algoritmo.", "Errado! Até o horóscopo do jornal acertou mais hoje.", "Quase. 'Quase' também é o que dizem do Brasil há 500 anos.", "Errou feio, errou rude. Mas um Faroleiro levanta e tenta de novo.", "Resposta incorreta. O político de plantão adorou. Não dê esse gosto a ele.", "Ops. Errar é humano. Persistir no erro é coisa de partido.", "Não. Mas pelo menos você não mudou de opinião para agradar a plateia. Ou mudou?", "Errou. A boa notícia: esse erro não custou nenhum imposto.", "Negativo. Volte uma casa e leia o manifesto sem pular as partes chatas."], "sequencia": {"3": "Três seguidas! Já dá para abrir uma CPI de tanto acerto.", "5": "Cinco seguidas! Isso não é sorte, é formação. Ou cola. Esperamos que formação.", "10": "Dez seguidas! Você está oficialmente iluminando mais que a iluminação pública da sua cidade."}};
+
+/* Parâmetros de pontuação, XP e patentes (avaliação v1.1, §4.3). Configuráveis. */
+const PARAMS = {
+  valorBase: { facil: 20, medio: 40, dificil: 60 },
+  fatorErro: 0.25,
+  objetivoPrincipal: 200,
+  objetivoOpcional: 50,
+  inimigo: 5,
+  tetoInimigos: 100,
+  xp: { objetivoPrincipal: 150, objetivoOpcional: 30, inimigo: 10, acerto: 30, erro: 10 },
+  xpRepeticao: 0.2
+};
+const PATENTES = [
+  { nome: "Sujeito Desconfiado", tom: "Humor", xp: 0, req: null },
+  { nome: "Audiência do YouTube", tom: "Curiosidade", xp: 100, req: "m0" },
+  { nome: "Membro do Canal", tom: "Primeiro vínculo", xp: 300, req: "m1" },
+  { nome: "Membro do Grupo do Wapp", tom: "Participação", xp: 800, req: "m2" },
+  { nome: "Replicador de Conteúdo", tom: "Engajamento", xp: 1500, req: "m4" },
+  { nome: "Carrega-Bandeira", tom: "Compromisso", xp: 2300, req: "m5" },
+  { nome: "Faroleiro Juramentado", tom: "Juramento e disciplina", xp: 3200, req: "m7" },
+  { nome: "Cavaleiro do Farol", tom: "Conquista máxima", xp: null, req: "final" }
+];
+const CAMPANHA = [
+  { id: "m0", n: "0", nome: "Prólogo: A Névoa", desc: "Aprenda a se mover, lutar e faça o juramento.", jogavel: true },
+  { id: "m1", n: "1", nome: "Os Três Pilares", desc: "Acenda Liberdade, Justiça e Verdade na estrada para o litoral.", jogavel: true, pre: "m0" },
+  { id: "m2", n: "2", nome: "A Forja das Virtudes", desc: "Virtudes cardeais, coragem e aversão ao fanatismo." },
+  { id: "m3", n: "3", nome: "Vila da Fraternidade", desc: "Compaixão, reabilitação e cidadania." },
+  { id: "m4", n: "4", nome: "Terras Confiscadas", desc: "Propriedade, autonomia local e abuso de poder." },
+  { id: "m5", n: "5", nome: "O Mercado das Mentiras", desc: "Valores, honra e não induzir ao erro." },
+  { id: "m6", n: "6", nome: "A Cidade sem Lei", desc: "Não assassinar e a corrupção." },
+  { id: "m7", n: "7", nome: "A Travessia", desc: "Cultura Faroleira: dojô, fogueira e Templários." },
+  { id: "final", n: "★", nome: "O Farol", desc: "Prova final. A aprovação concede a patente Cavaleiro do Farol." }
+];
+
+/* Fases desta versão. Coordenadas em pixels; chão no y = 480. */
+const FASES = {
+  m0: {
+    titulo: "Prólogo: A Névoa", kicker: "Missão 0",
+    texto: "A cidade caiu na névoa. Os rádios repetem a mesma mentira e ninguém lembra mais o que é verdade. Você acorda com um tabardo rasgado e uma ideia teimosa: numa ilha distante, ainda existe uma luz. Antes de partir, aprenda a andar, saltar e lutar, e faça o juramento na pedra.",
+    largura: 2500,
+    chao: [[0, 1100], [1220, 2500]],
+    plataformas: [[640, 380, 3], [1330, 370, 2]],
+    placas: [[150, "← → ou A / D para andar", "◀ ▶ para andar"], [520, "Espaço para pular", "PULO para pular"], [890, "J para atacar o boneco", "ATAQUE no boneco"], [1500, "Toque a Pedra do Juramento"]],
+    boneco: 1010,
+    pedra: { x: 1720, nome: "Pedra do Juramento", temas: ["Identidade"], qtd: 3 },
+    inimigos: [2020],
+    pergaminhos: [],
+    estandarte: 2380,
+    objetivos: [
+      { id: "boneco", txt: "Derrotar o boneco de treino" },
+      { id: "pedra", txt: "Fazer o juramento na Pedra (3 perguntas)" },
+      { id: "fim", txt: "Chegar ao estandarte" }
+    ]
+  },
+  m1: {
+    titulo: "Os Três Pilares", kicker: "Missão 1",
+    texto: "Na estrada para o litoral, três torres antigas guardam o que restou: Liberdade, Justiça e Verdade. Saqueadores apagaram os braseiros. Acenda os três pilares respondendo ao que cada um guarda e siga até o estandarte, de onde já se vê o Farol.",
+    largura: 4800,
+    chao: [[0, 900], [1010, 1700], [1830, 2600], [2730, 3500], [3630, 4800]],
+    plataformas: [[580, 370, 3], [1120, 360, 2], [1380, 270, 2], [2040, 370, 3], [2300, 285, 2], [2880, 360, 2], [3110, 265, 2], [3790, 360, 3], [4060, 255, 2]],
+    placas: [[140, "Saqueadores à frente. J para atacar", "Saqueadores à frente. Use ATAQUE"]],
+    pilares: [
+      { x: 1560, nome: "Pilar da Liberdade", temas: ["Introdução"], qtd: 2 },
+      { x: 2460, nome: "Pilar da Justiça", temas: ["1º Princípio"], qtd: 2 },
+      { x: 3360, nome: "Pilar da Verdade", temas: ["2º Princípio"], qtd: 2 }
+    ],
+    inimigos: [720, 1260, 2120, 2290, 3000, 3900, 4230],
+    pergaminhos: [[1444, 230], [3174, 225], [4124, 215]],
+    estandarte: 4660,
+    objetivos: [
+      { id: "pilares", txt: "Acender os 3 pilares (2 perguntas cada)" },
+      { id: "fim", txt: "Chegar ao estandarte" },
+      { id: "perg", txt: "Opcional: encontrar 3 pergaminhos", opc: true }
+    ]
+  }
+};
+
+/* =====================================================================
+   UTILIDADES
+   ===================================================================== */
+const $ = (id) => document.getElementById(id);
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = (arr) => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const fmtTime = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+const lsGet = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* armazenamento indisponível */ } };
+const SCREENS = ["scr-home", "scr-central", "scr-game", "scr-result", "scr-ranking"];
+function show(id) { SCREENS.forEach((s) => { $(s).hidden = s !== id; }); }
+function openModal(id) { $(id).hidden = false; const f = $(id).querySelector("button.primary, button, input"); if (f) setTimeout(() => f.focus(), 30); }
+function closeModal(id) { $(id).hidden = true; }
+
+/* Filtro simples de apelido para o ranking público */
+const PROIBIDAS = ["porra", "caralho", "merda", "puta", "buceta", "viado", "foder", "fdp", "arrombad", "nazi", "hitler"];
+function validarApelido(a) {
+  const s = a.trim();
+  if (s.length < 3) return "Use pelo menos 3 caracteres.";
+  if (!/^[\p{L}\p{N} _.\-]+$/u.test(s)) return "Use só letras, números, espaço, ponto, hífen ou sublinhado.";
+  const low = (s.toLowerCase() + " ");
+  if (PROIBIDAS.some((p) => low.includes(p))) return "Escolha outro apelido. Este não pode aparecer no ranking.";
+  return "";
+}
+
+/* =====================================================================
+   PERSISTÊNCIA: banco compartilhado do artefato, com reserva local
+   ===================================================================== */
+const Store = {
+  db: null, user: null, uid: null, online: false, podeRanking: false,
+  async init() {
+    try {
+      const c = window.claude;
+      if (c && c.use) {
+        const [db, user] = await Promise.all([c.use("db"), c.use("user")]);
+        this.db = db; this.user = user;
+        if (db && user) {
+          this.uid = await user.id();
+          this.online = !!this.uid;
+          const pode = await user.can("data.write");
+          this.podeRanking = this.online && pode !== false;
+        }
+      }
+    } catch (e) { this.online = false; }
+    return this;
+  },
+  async carregarPerfil() {
+    const local = lsGet("farol.perfil", null);
+    if (!this.online) return local;
+    try {
+      const snap = await this.db.doc(`data/users/${this.uid}/perfil`).get();
+      if (snap.exists) return Object.assign({}, snap.data());
+    } catch (e) { /* cai para o local */ }
+    return local;
+  },
+  async salvarPerfil(p) {
+    lsSet("farol.perfil", p);
+    if (!this.online) return "local";
+    try { await this.db.doc(`data/users/${this.uid}/perfil`).set(p); return "online"; }
+    catch (e) { return "local"; }
+  },
+  async publicarRanking(entry) {
+    if (!this.online || !this.podeRanking) return false;
+    try { await this.db.doc(`ranking/${this.uid}`).set(entry); return true; }
+    catch (e) { this.podeRanking = false; return false; }
+  },
+  ouvirRanking(cb) {
+    if (!this.online) { cb(null); return () => {}; }
+    try {
+      return this.db.collection("ranking").orderBy("pontos", "desc").limit(100)
+        .onSnapshot((snap) => cb(snap.docs.map((d) => Object.assign({ id: d.id }, d.data()))), () => cb(null));
+    } catch (e) { cb(null); return () => {}; }
+  }
+};
+
+/* =====================================================================
+   ESTADO DO JOGADOR
+   ===================================================================== */
+let PERFIL = null;
+let RANKING = null;
+let unsubRanking = null;
+const novoPerfil = (apelido) => ({ apelido, xp: 0, missoes: {}, tentativasQuiz: [], modoSerio: false, criadoEm: new Date().toISOString() });
+
+function entradaRanking(p) {
+  return {
+    apelido: p.apelido, pontos: pontosRanking(p), opcionais: opcionaisRanking(p),
+    tempo: Object.values(p.missoes).reduce((s, m) => s + (m.melhor ? m.melhor.tempo : 0), 0),
+    xp: p.xp, patente: PATENTES[patenteIndex(p)].nome,
+    missoes: Object.values(p.missoes).filter((m) => m.concluida).length,
+    atualizadoEm: new Date().toISOString()
+  };
+}
+function pontosRanking(p) { return Object.values(p.missoes || {}).reduce((s, m) => s + (m.melhor ? m.melhor.pontos : 0), 0); }
+function opcionaisRanking(p) { return Object.values(p.missoes || {}).reduce((s, m) => s + (m.melhor ? m.melhor.opcionais : 0), 0); }
+function concluida(p, id) { return !!(p.missoes && p.missoes[id] && p.missoes[id].concluida); }
+function patenteIndex(p) {
+  let idx = 0;
+  PATENTES.forEach((pt, i) => {
+    if (pt.xp === null) { if (concluida(p, "final") && p.provaAprovada) idx = i; return; }
+    if (p.xp >= pt.xp && (!pt.req || concluida(p, pt.req))) idx = i;
+  });
+  return idx;
+}
+function proximaPatenteInfo(p) {
+  const i = patenteIndex(p);
+  const prox = PATENTES[i + 1];
+  if (!prox) return { pct: 100, txt: "Patente máxima alcançada." };
+  if (prox.xp === null) return { pct: 100, txt: "Próxima: Cavaleiro do Farol. Conclua a campanha e seja aprovado na prova final." };
+  const atual = PATENTES[i].xp || 0;
+  const pct = Math.max(0, Math.min(100, ((p.xp - atual) / (prox.xp - atual)) * 100));
+  const falta = Math.max(0, prox.xp - p.xp);
+  const req = prox.req ? CAMPANHA.find((c) => c.id === prox.req) : null;
+  let txt = `Próxima: ${prox.nome}.`;
+  if (falta > 0) txt += ` Faltam ${falta} XP.`;
+  if (req && !concluida(p, req.id)) txt += ` Requer concluir "${req.nome}".`;
+  return { pct, txt };
+}
+
+/* =====================================================================
+   CENTRAL
+   ===================================================================== */
+function renderCentral() {
+  const p = PERFIL;
+  $("c-apelido").textContent = p.apelido;
+  const pi = patenteIndex(p);
+  $("c-patente").textContent = PATENTES[pi].nome;
+  $("c-tom").textContent = `Nível ${pi + 1} de ${PATENTES.length} · ${PATENTES[pi].tom}`;
+  $("c-xp").textContent = p.xp;
+  $("c-pts").textContent = pontosRanking(p);
+  const info = proximaPatenteInfo(p);
+  $("c-xpbar").style.width = info.pct + "%";
+  $("c-xpnext").textContent = info.txt;
+  $("c-pos").textContent = posicaoNoRanking() || "—";
+
+  const lad = $("c-ladder"); lad.innerHTML = "";
+  PATENTES.forEach((pt, i) => {
+    const d = document.createElement("div");
+    d.className = "rank" + (i < pi ? " done" : "") + (i === pi ? " current" : "");
+    d.innerHTML = `<div class="ico"><span>${i + 1}</span></div><small></small>`;
+    d.querySelector("small").textContent = pt.nome;
+    d.title = `Nível ${i + 1}: ${pt.nome} (${pt.tom})` + (pt.xp === null ? ". Requer campanha concluída e prova final aprovada." : pt.xp ? `. Requer ${pt.xp} XP` + (pt.req ? ` e a missão "${CAMPANHA.find((c) => c.id === pt.req).nome}".` : ".") : ". Ao criar a conta.");
+    if (i === pi) d.setAttribute("aria-current", "true");
+    lad.appendChild(d);
+  });
+
+  const ms = $("c-missions"); ms.innerHTML = "";
+  CAMPANHA.forEach((c) => {
+    const feito = concluida(p, c.id);
+    const liberada = c.jogavel && (!c.pre || concluida(p, c.pre));
+    const el = document.createElement("div");
+    el.className = "mission" + (!liberada ? " locked" : "");
+    el.innerHTML = `<div class="n"></div><div><h3></h3><p></p></div><div class="act"></div>`;
+    el.querySelector(".n").textContent = c.n;
+    el.querySelector("h3").textContent = c.nome;
+    const melhor = p.missoes[c.id] && p.missoes[c.id].melhor;
+    el.querySelector("p").textContent = c.desc + (melhor ? ` Melhor resultado: ${melhor.pontos} pts.` : "");
+    const act = el.querySelector(".act");
+    if (liberada) {
+      const b = document.createElement("button");
+      b.className = "btn" + (!feito ? " primary" : "");
+      b.textContent = feito ? "Jogar de novo" : "Jogar";
+      b.addEventListener("click", () => abrirIntro(c.id));
+      act.appendChild(b);
+      if (feito) { const ch = document.createElement("span"); ch.className = "chip ok"; ch.textContent = "Concluída"; ch.style.marginLeft = "8px"; act.appendChild(ch); }
+    } else {
+      const ch = document.createElement("span");
+      ch.className = "chip";
+      ch.textContent = c.jogavel ? "Bloqueada" : "Em breve";
+      if (c.jogavel && c.pre) ch.title = `Conclua a missão anterior`;
+      act.appendChild(ch);
+    }
+    ms.appendChild(el);
+  });
+  $("c-mode").innerHTML = modoTexto();
+  show("scr-central");
+}
+function modoTexto() {
+  if (Store.online && Store.podeRanking) return "<b>Progresso salvo na sua conta</b> e publicado no ranking da campanha.";
+  if (Store.online) return "<b>Progresso salvo na sua conta.</b> Seu acesso a este jogo é só de leitura, então seus pontos não entram no ranking.";
+  return "<b>Modo local:</b> o progresso fica só neste navegador e não entra no ranking. Entre na sua conta para competir.";
+}
+function posicaoNoRanking() {
+  if (!RANKING || !Store.uid) return null;
+  const i = ordenarRanking(RANKING).findIndex((r) => r.id === Store.uid);
+  return i >= 0 ? `${i + 1}º` : null;
+}
+
+/* =====================================================================
+   RANKING
+   ===================================================================== */
+function ordenarRanking(rows) {
+  return rows.slice().sort((a, b) => (b.pontos - a.pontos) || ((b.opcionais || 0) - (a.opcionais || 0)) || ((a.tempo || 1e9) - (b.tempo || 1e9)) || String(a.id).localeCompare(String(b.id)));
+}
+function renderRanking() {
+  const body = $("k-body"); body.innerHTML = "";
+  if (!RANKING) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td colspan="5" class="empty"></td>`;
+    tr.firstChild.textContent = Store.online ? "Carregando o ranking…" : "O ranking online aparece quando você entra na sua conta. No modo local, só o seu resultado fica salvo.";
+    body.appendChild(tr);
+  } else if (!RANKING.length) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td colspan="5" class="empty">Ninguém concluiu uma missão ainda. Seja a primeira luz do ranking.</td>`;
+    body.appendChild(tr);
+  } else {
+    ordenarRanking(RANKING).forEach((r, i) => {
+      const tr = document.createElement("tr");
+      if (r.id === Store.uid) tr.className = "me";
+      tr.innerHTML = `<td class="pos num"></td><td></td><td></td><td class="num"></td><td class="pts num"></td>`;
+      const td = tr.children;
+      td[0].textContent = i + 1;
+      td[1].textContent = (r.apelido || "Faroleiro") + (r.id === Store.uid ? " (você)" : "");
+      td[2].textContent = r.patente || "—";
+      td[3].textContent = r.missoes || 0;
+      td[4].textContent = r.pontos || 0;
+      body.appendChild(tr);
+    });
+  }
+  const regras = [
+    `Pergunta certa: valor-base (fácil ${PARAMS.valorBase.facil}, médio ${PARAMS.valorBase.medio}, difícil ${PARAMS.valorBase.dificil}). Errada: ${PARAMS.fatorErro * 100}% do valor-base, com explicação.`,
+    `Objetivo principal da missão: ${PARAMS.objetivoPrincipal}. Objetivo opcional: ${PARAMS.objetivoOpcional} cada.`,
+    `Inimigo derrotado: ${PARAMS.inimigo}, até ${PARAMS.tetoInimigos} por missão.`,
+    `O ranking soma o melhor resultado de cada missão. Jogar de novo só melhora a posição se você superar seu recorde.`,
+    `XP é separado do ranking: serve para as patentes. Repetir uma missão rende ${PARAMS.xpRepeticao * 100}% do XP.`,
+    `Desempate: mais objetivos opcionais, depois menor tempo.`
+  ];
+  const ul = $("k-rules"); ul.innerHTML = "";
+  regras.forEach((t) => { const li = document.createElement("li"); li.textContent = t; ul.appendChild(li); });
+  $("k-mode").innerHTML = modoTexto();
+}
+
+/* =====================================================================
+   ENTRADA (teclado + toque)
+   ===================================================================== */
+const INPUT = { left: false, right: false, jump: false, attack: false, jumpQueued: false, attackQueued: false };
+document.querySelectorAll("#touch button").forEach((b) => {
+  const k = b.dataset.k;
+  const down = (e) => { e.preventDefault(); INPUT[k] = true; b.classList.add("pressed"); if (k === "jump") INPUT.jumpQueued = true; if (k === "attack") INPUT.attackQueued = true; try { b.setPointerCapture(e.pointerId); } catch (err) { /* opcional */ } };
+  const up = (e) => { e.preventDefault(); INPUT[k] = false; b.classList.remove("pressed"); };
+  b.addEventListener("pointerdown", down);
+  b.addEventListener("pointerup", up);
+  b.addEventListener("pointercancel", up);
+  b.addEventListener("pointerleave", up);
+  b.addEventListener("contextmenu", (e) => e.preventDefault());
+});
+
+/* ---------- celular: orientação, tela cheia e vibração ---------- */
+let portraitOk = lsGet("farol.vertical", false);
+function checarOrientacao() {
+  const mostrar = !$("scr-game").hidden && document.body.classList.contains("touchmode") && innerHeight > innerWidth && !portraitOk;
+  $("rotate").hidden = !mostrar;
+  const s = cena();
+  if (!s || !s.sys || !s.sys.isActive() || s.terminou) return;
+  if (mostrar && !s.pausado) { s.pausado = true; s.pausaGiro = true; s.physics.pause(); }
+  else if (!mostrar && s.pausaGiro) { s.pausaGiro = false; s.pausado = false; s.physics.resume(); }
+}
+window.addEventListener("resize", checarOrientacao);
+window.addEventListener("orientationchange", () => setTimeout(checarOrientacao, 250));
+$("btn-portrait").addEventListener("click", () => { portraitOk = true; lsSet("farol.vertical", true); checarOrientacao(); remedir(); });
+const podeTelaCheia = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+function telaCheia(ligar) {
+  const el = document.documentElement;
+  try {
+    if (ligar && !(document.fullscreenElement || document.webkitFullscreenElement)) {
+      const req = el.requestFullscreen || el.webkitRequestFullscreen;
+      const p = req && req.call(el, { navigationUI: "hide" });
+      const travar = () => { try { screen.orientation.lock("landscape").catch(() => {}); } catch (err) { /* sem suporte */ } };
+      if (p && p.then) p.then(travar).catch(() => {}); else travar();
+    } else if (!ligar && (document.fullscreenElement || document.webkitFullscreenElement)) {
+      (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    }
+  } catch (err) { /* o navegador recusou: segue sem tela cheia */ }
+}
+function vibrar(ms) { try { navigator.vibrate && navigator.vibrate(ms); } catch (err) { /* sem suporte */ } }
+const isTouch = (() => { try { return matchMedia("(pointer: coarse)").matches; } catch (e) { return false; } })();
+function aplicarToque(on) { document.body.classList.toggle("touchmode", !!on); if (typeof remedir === "function") remedir(); }
+/* Impede a página de rolar com Espaço/setas durante a missão. Precisa ser registrado DEPOIS do
+   teclado do Phaser: ele ignora eventos já marcados com preventDefault. */
+let rolagemBloqueada = false;
+function bloquearRolagem() {
+  if (rolagemBloqueada) return;
+  rolagemBloqueada = true;
+  window.addEventListener("keydown", (e) => {
+    if ($("scr-game").hidden) return;
+    if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+    if (["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) e.preventDefault();
+  });
+}
+
+/* =====================================================================
+   QUIZ (modal DOM; pausa a fase)
+   ===================================================================== */
+let streak = 0;
+function sortearPerguntas(temas, qtd, usadas) {
+  let pool = BANCO.filter((q) => temas.includes(q.tema) && !usadas.has(q.id));
+  if (pool.length < qtd) pool = BANCO.filter((q) => temas.includes(q.tema));
+  const faceis = shuffle(pool.filter((q) => q.nivel === "facil"));
+  const outras = shuffle(pool.filter((q) => q.nivel !== "facil"));
+  const sel = [];
+  if (faceis.length) sel.push(faceis.shift());
+  const resto = shuffle(outras.concat(faceis));
+  while (sel.length < qtd && resto.length) sel.push(resto.shift());
+  return sel;
+}
+function rodarQuiz({ nome, perguntas, onResposta, onFim }) {
+  let i = 0;
+  const modal = $("m-quiz");
+  const render = () => {
+    const q = perguntas[i];
+    $("mq-kicker").textContent = nome;
+    $("mq-count").textContent = `Pergunta ${i + 1} de ${perguntas.length}`;
+    $("mq-q").textContent = q.pergunta;
+    $("mq-fb").hidden = true; $("mq-next").hidden = true;
+    const opts = $("mq-opts"); opts.innerHTML = "";
+    const ordem = shuffle(q.alternativas.map((t, idx) => ({ t, idx })));
+    ordem.forEach((o, pos) => {
+      const b = document.createElement("button");
+      b.className = "opt"; b.type = "button";
+      b.innerHTML = `<span class="k">${"ABCD"[pos]}</span><span></span>`;
+      b.lastChild.textContent = o.t;
+      b.dataset.idx = o.idx;
+      b.addEventListener("click", () => responder(o.idx));
+      opts.appendChild(b);
+    });
+    modal.hidden = false;
+    setTimeout(() => opts.firstChild && opts.firstChild.focus(), 30);
+  };
+  const responder = (idx) => {
+    const q = perguntas[i];
+    const ok = idx === q.correta;
+    const base = PARAMS.valorBase[q.nivel] || 20;
+    const pts = ok ? base : Math.round(base * PARAMS.fatorErro);
+    streak = ok ? streak + 1 : 0;
+    [...$("mq-opts").children].forEach((b) => {
+      b.disabled = true;
+      const bi = Number(b.dataset.idx);
+      if (bi === q.correta) b.classList.add("right");
+      else if (bi === idx) b.classList.add("wrong");
+    });
+    const v = $("mq-verdict");
+    v.className = "verdict " + (ok ? "ok" : "no");
+    v.textContent = ok ? `Certo! +${pts} pontos` : `Errado. +${pts} pontos (${PARAMS.fatorErro * 100}% do valor)`;
+    const serio = !!PERFIL.modoSerio;
+    let msg = pick(ok ? MSG.acerto : MSG.erro);
+    if (ok && MSG.sequencia && MSG.sequencia[String(streak)]) msg = MSG.sequencia[String(streak)];
+    $("mq-msg").textContent = serio ? (ok ? "Resposta correta." : "Resposta incorreta. Veja a explicação.") : msg;
+    $("mq-exp").textContent = q.explicacao;
+    $("mq-zoeira").textContent = serio ? "" : (q.zoeira || "");
+    $("mq-zoeira").hidden = serio || !q.zoeira;
+    $("mq-fb").hidden = false;
+    onResposta(q, idx, ok, pts);
+    const nb = $("mq-next");
+    nb.textContent = i + 1 < perguntas.length ? "Próxima pergunta" : "Continuar a missão";
+    nb.hidden = false;
+    nb.onclick = () => { i++; if (i < perguntas.length) render(); else { modal.hidden = true; onFim(); } };
+    setTimeout(() => nb.focus(), 30);
+  };
+  modal.onkeydown = (e) => {
+    if (!$("mq-next").hidden) return;
+    const n = { Digit1: 0, Digit2: 1, Digit3: 2, Digit4: 3, KeyA: 0, KeyB: 1, KeyC: 2, KeyD: 3 }[e.code];
+    if (n !== undefined) { const b = $("mq-opts").children[n]; if (b) b.click(); }
+  };
+  render();
+}
+
+/* =====================================================================
+   TEXTURAS (desenhadas em código, sem arquivos externos)
+   ===================================================================== */
+function gerarTexturas(s) {
+  const g = s.make.graphics({ x: 0, y: 0, add: false });
+  const tex = (k, w, h, fn) => { g.clear(); fn(g); g.generateTexture(k, w, h); };
+
+  tex("ground", 64, 64, (g) => {
+    g.fillStyle(0x2a1f17); g.fillRect(0, 0, 64, 64);
+    g.fillStyle(0x5b3f28); g.fillRect(0, 0, 64, 10);
+    g.fillStyle(0x7a5634); g.fillRect(0, 0, 64, 3);
+    g.fillStyle(0x3a2b1f); [[8, 20, 10, 5], [34, 30, 14, 6], [18, 46, 9, 5], [50, 52, 8, 4]].forEach((r) => g.fillRect(...r));
+  });
+  tex("plat", 64, 18, (g) => {
+    g.fillStyle(0x4a3a2e); g.fillRect(0, 0, 64, 18);
+    g.fillStyle(0x6e5743); g.fillRect(0, 0, 64, 4);
+    g.fillStyle(0x2e241c); g.fillRect(0, 15, 64, 3); g.fillRect(30, 4, 2, 11);
+    g.fillStyle(0x8c7a64); g.fillRect(6, 7, 3, 3); g.fillRect(55, 7, 3, 3);
+  });
+  tex("player", 34, 50, (g) => {
+    g.fillStyle(0x5c1712); g.fillTriangle(6, 16, 28, 16, 30, 44);      // capa
+    g.fillStyle(0x2b2520); g.fillCircle(17, 10, 8);                    // capuz
+    g.fillStyle(0xc49f80); g.fillRect(14, 9, 7, 5);                    // rosto
+    g.fillStyle(0x3d342b); g.fillRect(6, 19, 4, 15); g.fillRect(24, 19, 4, 15); // braços
+    g.fillStyle(0xe9e1d0); g.fillRect(9, 17, 16, 22);                  // tabardo
+    g.fillStyle(0xb3261e); g.fillRect(15, 19, 4, 16); g.fillRect(11, 24, 12, 4); // cruz
+    g.fillStyle(0x3d342b); g.fillRect(11, 39, 5, 11); g.fillRect(19, 39, 5, 11); // pernas
+    g.fillStyle(0xbfc3c7); g.fillRect(27, 26, 3, 14);                  // espada embainhada
+  });
+  tex("slash", 46, 56, (g) => {
+    g.lineStyle(5, 0xffe2a8, 1); g.beginPath(); g.arc(2, 28, 34, -1.15, 1.15); g.strokePath();
+    g.lineStyle(2, 0xffffff, .9); g.beginPath(); g.arc(2, 28, 29, -1.0, 1.0); g.strokePath();
+  });
+  tex("enemy", 34, 48, (g) => {
+    g.fillStyle(0x3b2f26); g.fillRect(8, 14, 18, 24);
+    g.fillStyle(0x6b5a48); g.fillTriangle(4, 18, 10, 12, 10, 22); g.fillTriangle(30, 18, 24, 12, 24, 22);
+    g.fillStyle(0x1f1813); g.fillCircle(17, 9, 8);
+    g.fillStyle(0xe0482f); g.fillRect(11, 7, 5, 3); g.fillRect(18, 7, 5, 3);
+    g.fillStyle(0x7d6a52); g.fillRect(9, 26, 16, 3);
+    g.fillStyle(0x2a211a); g.fillRect(10, 38, 5, 10); g.fillRect(19, 38, 5, 10);
+    g.fillStyle(0x8a8f94); g.fillRect(0, 22, 9, 3);
+  });
+  tex("dummy", 34, 60, (g) => {
+    g.fillStyle(0x6b4a2e); g.fillRect(15, 20, 4, 40); g.fillRect(3, 26, 28, 4);
+    g.fillStyle(0xc9a25a); g.fillCircle(17, 12, 10); g.fillRect(9, 22, 16, 18);
+    g.fillStyle(0xb3261e); g.fillCircle(17, 31, 5);
+    g.fillStyle(0xc9a25a); g.fillCircle(17, 31, 2);
+  });
+  tex("pillar", 64, 190, (g) => {
+    g.fillStyle(0x6f665a); g.fillRect(10, 30, 44, 150);
+    g.fillStyle(0x8c8173); g.fillRect(14, 30, 8, 150);
+    g.fillStyle(0x4f483f); [60, 95, 130, 165].forEach((y) => g.fillRect(10, y, 44, 3));
+    g.fillStyle(0x3a332b); g.fillRect(4, 176, 56, 14); g.fillRect(4, 18, 56, 14);
+    g.fillStyle(0x2a2420); g.fillRect(16, 2, 32, 18);
+    g.fillStyle(0xb3261e); g.fillRect(30, 70, 4, 26); g.fillRect(22, 78, 20, 4);
+  });
+  tex("stone", 74, 56, (g) => {
+    g.fillStyle(0x5d564d); g.fillRoundedRect(0, 8, 74, 48, 10);
+    g.fillStyle(0x777064); g.fillRoundedRect(4, 8, 40, 14, 6);
+    g.fillStyle(0xb3261e); g.fillRect(34, 18, 6, 28); g.fillRect(25, 26, 24, 6);
+  });
+  tex("scroll", 22, 26, (g) => {
+    g.fillStyle(0xe8d6a8); g.fillRect(3, 3, 16, 20);
+    g.fillStyle(0xc4ad7c); g.fillRect(1, 1, 20, 4); g.fillRect(1, 21, 20, 4);
+    g.fillStyle(0xb3261e); g.fillRect(9, 10, 4, 6);
+  });
+  tex("banner", 54, 150, (g) => {
+    g.fillStyle(0x3a2b1f); g.fillRect(4, 0, 5, 150);
+    g.fillStyle(0xe9e1d0); g.fillTriangle(9, 6, 54, 6, 9, 70); g.fillRect(9, 6, 36, 50);
+    g.fillStyle(0xb3261e); g.fillRect(22, 14, 6, 34); g.fillRect(13, 24, 24, 6);
+  });
+  tex("sign", 10, 10, (g) => { g.fillStyle(0x4a3726); g.fillRect(0, 0, 10, 10); });
+  tex("spark", 6, 6, (g) => { g.fillStyle(0xffd28a); g.fillCircle(3, 3, 3); });
+  tex("dust", 4, 4, (g) => { g.fillStyle(0xd9c3a0); g.fillRect(0, 0, 4, 4); });
+
+  // fundos em camadas (repetidos horizontalmente)
+  tex("bg-far", 960, 300, (g) => {
+    g.fillStyle(0x3b2a20, 1);
+    let x = 0; const pts = [];
+    while (x <= 960) { pts.push({ x, y: 160 + Math.sin(x / 70) * 22 + Math.sin(x / 23) * 8 }); x += 24; }
+    g.beginPath(); g.moveTo(0, 300); pts.forEach((p) => g.lineTo(p.x, p.y)); g.lineTo(960, 300); g.closePath(); g.fillPath();
+    g.fillStyle(0x31231b, 1);
+    [[80, 110, 26, 70], [140, 90, 18, 90], [420, 120, 30, 60], [700, 100, 22, 80], [760, 130, 40, 50]].forEach((r) => g.fillRect(...r)); // ruínas
+  });
+  tex("bg-mid", 960, 220, (g) => {
+    g.fillStyle(0x23180f, 1);
+    g.beginPath(); g.moveTo(0, 220);
+    for (let x = 0; x <= 960; x += 32) g.lineTo(x, 110 + Math.sin(x / 110) * 30 + Math.cos(x / 41) * 10);
+    g.lineTo(960, 220); g.closePath(); g.fillPath();
+    g.fillStyle(0x1a120c, 1);
+    [[200, 70, 8, 70], [206, 70, 40, 6], [610, 60, 10, 90], [560, 90, 80, 8]].forEach((r) => g.fillRect(...r)); // postes e sucata
+  });
+  tex("lighthouse", 120, 240, (g) => {
+    g.fillStyle(0x1a1410); g.fillTriangle(0, 240, 120, 240, 60, 150);         // ilha
+    g.fillStyle(0x2a211b); g.fillRect(48, 60, 24, 140);                        // torre
+    g.fillStyle(0x3a2f26); g.fillRect(44, 52, 32, 10);
+    g.fillStyle(0xffd38a); g.fillRect(50, 36, 20, 16);                         // lanterna
+    g.fillStyle(0x2a211b); g.fillTriangle(46, 36, 74, 36, 60, 24);
+  });
+  g.destroy();
+}
+
+/* =====================================================================
+   CENA DA MISSÃO
+   ===================================================================== */
+class Missao extends Phaser.Scene {
+  constructor() { super("Missao"); }
+  init(data) {
+    this.id = data.id;
+    this.fase = FASES[this.id];
+    this.retomada = data.retomada || null;   // estado preservado ao retomar após derrota
+  }
+  create() {
+    const F = this.fase, W = F.largura;
+    if (!this.textures.exists("ground")) gerarTexturas(this);
+    this.reduce = (() => { try { return matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } })();
+
+    // estado da tentativa
+    const r = this.retomada;
+    this.run = r ? r.run : {
+      eventos: new Set(), pontos: 0, xp: 0, linhas: { quiz: 0, objetivos: 0, opcionais: 0, inimigos: 0 },
+      quizOk: 0, quizTotal: 0, usadas: new Set(), concluidos: new Set(), inicio: Date.now(), tempoPausado: 0,
+      tentativas: []
+    };
+    this.vidaMax = 5; this.vida = this.vidaMax;
+    this.checkpoint = r ? r.checkpoint : { x: 300, y: 400 }; // longe dos botões de toque do canto
+    this.pausado = false; this.invuln = 0; this.atkCd = 0; this.facing = 1; this.terminou = false;
+
+    // mundo e fundo
+    this.physics.world.setBounds(0, 0, W, 720);
+    this.physics.world.setBoundsCollision(true, true, true, false);
+    this.cameras.main.setBounds(0, 0, W, 540);
+    const sky = this.add.graphics().setScrollFactor(0).setDepth(-10);
+    sky.fillGradientStyle(0x2c1c14, 0x2c1c14, 0x8a4e24, 0x8a4e24, 1); sky.fillRect(0, 0, 960, 330);
+    sky.fillGradientStyle(0x8a4e24, 0x8a4e24, 0x24170f, 0x24170f, 1); sky.fillRect(0, 330, 960, 210);
+    sky.fillStyle(0xf2b35c, .18); sky.fillCircle(300, 250, 110);
+    sky.fillStyle(0xf6c77a, .32); sky.fillCircle(300, 250, 46);
+    this.farol = this.add.image(880, 420, "lighthouse").setScrollFactor(0).setDepth(-8).setOrigin(.5, 1).setAlpha(.95);
+    this.beam = this.add.graphics().setScrollFactor(0).setDepth(-9);
+    this.bgFar = this.add.tileSprite(0, 210, 960, 300, "bg-far").setOrigin(0, 0).setScrollFactor(0).setDepth(-7);
+    this.bgMid = this.add.tileSprite(0, 330, 960, 220, "bg-mid").setOrigin(0, 0).setScrollFactor(0).setDepth(-6);
+    if (!this.reduce) this.add.particles(0, 0, "dust", { x: { min: 0, max: 960 }, y: { min: 0, max: 540 }, lifespan: 6000, speedX: { min: -30, max: -10 }, speedY: { min: -4, max: 6 }, alpha: { start: .35, end: 0 }, frequency: 220, scale: { min: .5, max: 1 } }).setScrollFactor(0).setDepth(-5);
+
+    // terreno
+    this.solidos = this.physics.add.staticGroup();
+    F.chao.forEach(([x0, x1]) => {
+      const t = this.add.tileSprite(x0, 480, x1 - x0, 240, "ground").setOrigin(0, 0);
+      this.physics.add.existing(t, true); this.solidos.add(t);
+    });
+    this.plats = this.physics.add.staticGroup();
+    F.plataformas.forEach(([x, y, n]) => {
+      const t = this.add.tileSprite(x, y, n * 64, 18, "plat").setOrigin(0, 0);
+      this.physics.add.existing(t, true);
+      t.body.checkCollision.down = false; t.body.checkCollision.left = false; t.body.checkCollision.right = false;
+      this.plats.add(t);
+    });
+
+    // placas
+    const toque = document.body.classList.contains("touchmode");
+    (F.placas || []).forEach(([x, txtTeclado, txtToque]) => {
+      const txt = toque && txtToque ? txtToque : txtTeclado;
+      const tt = this.add.text(x, 404, txt, { fontFamily: "Barlow Condensed, Arial Narrow, sans-serif", fontSize: "17px", color: "#efe6d6", backgroundColor: "#3a2a1dcc", padding: { x: 8, y: 4 } }).setOrigin(.5, 1);
+      this.add.rectangle(x, 440, 4, 40, 0x4a3726).setOrigin(.5, 0);
+      tt.setDepth(1);
+    });
+
+    // jogador
+    this.player = this.physics.add.sprite(this.checkpoint.x, this.checkpoint.y, "player");
+    this.player.body.setSize(20, 46).setOffset(7, 4);
+    this.player.setCollideWorldBounds(true).setDepth(5);
+    this.physics.add.collider(this.player, this.solidos);
+    this.physics.add.collider(this.player, this.plats);
+    this.cameras.main.startFollow(this.player, true, .12, .12, 0, 60);
+    this.slash = this.add.image(0, 0, "slash").setVisible(false).setDepth(6);
+
+    // inimigos
+    this.inimigos = this.physics.add.group();
+    F.inimigos.forEach((x, i) => {
+      if (this.run.eventos.has(`inimigo:${i}`)) return;
+      const e = this.inimigos.create(x, 420, "enemy");
+      e.body.setSize(20, 44).setOffset(7, 4);
+      e.setData({ idx: i, hp: 2, x0: x - 120, x1: x + 120, dir: -1, windup: 0, lunge: 0, hitAt: 0 });
+      e.setDepth(4);
+    });
+    this.physics.add.collider(this.inimigos, this.solidos);
+    this.physics.add.collider(this.inimigos, this.plats);
+    this.physics.add.overlap(this.player, this.inimigos, (p, e) => this.tocarInimigo(e));
+
+    // boneco de treino (Prólogo)
+    if (F.boneco && !this.run.concluidos.has("boneco")) {
+      this.boneco = this.physics.add.staticImage(F.boneco, 450, "dummy").setDepth(3);
+      this.boneco.setData("hp", 3);
+    }
+
+    // pedra do juramento / pilares
+    this.altares = [];
+    const altares = F.pedra ? [Object.assign({ tipo: "pedra", chave: "pedra" }, F.pedra)] : (F.pilares || []).map((p, i) => Object.assign({ tipo: "pilar", chave: `pilar${i}` }, p));
+    altares.forEach((a) => {
+      const img = a.tipo === "pedra" ? this.add.image(a.x, 480, "stone").setOrigin(.5, 1) : this.add.image(a.x, 480, "pillar").setOrigin(.5, 1);
+      img.setDepth(2);
+      const zone = this.add.zone(a.x, 430, 70, 100); this.physics.add.existing(zone, true);
+      const label = this.add.text(a.x, a.tipo === "pedra" ? 410 : 276, a.nome.toUpperCase(), { fontFamily: "Cinzel, Georgia, serif", fontSize: "13px", color: "#efe6d6", stroke: "#110e0b", strokeThickness: 4 }).setOrigin(.5, 1).setDepth(3);
+      const obj = { ...a, img, zone, label, aceso: this.run.concluidos.has(a.chave) };
+      if (obj.aceso) this.acender(obj, true);
+      this.physics.add.overlap(this.player, zone, () => this.ativarAltar(obj));
+      this.altares.push(obj);
+    });
+
+    // pergaminhos (opcionais)
+    this.perg = this.physics.add.staticGroup();
+    (F.pergaminhos || []).forEach(([x, y], i) => {
+      if (this.run.eventos.has(`perg:${i}`)) return;
+      const s = this.perg.create(x, y, "scroll"); s.setData("idx", i).setDepth(3);
+      if (!this.reduce) this.tweens.add({ targets: s, y: y - 6, duration: 900, yoyo: true, repeat: -1, ease: "Sine.inOut" });
+    });
+    this.physics.add.overlap(this.player, this.perg, (p, s) => this.pegarPergaminho(s));
+
+    // estandarte (fim)
+    this.banner = this.add.image(F.estandarte, 480, "banner").setOrigin(.2, 1).setDepth(2);
+    const fim = this.add.zone(F.estandarte, 420, 60, 140); this.physics.add.existing(fim, true);
+    this.physics.add.overlap(this.player, fim, () => this.tentarConcluir());
+
+    // teclado (sem captura global: as teclas não vazam para campos de texto fora do jogo)
+    this.keys = this.input.keyboard.addKeys("LEFT,RIGHT,UP,A,D,W,SPACE,J,K,ESC", false);
+    bloquearRolagem();
+    setTimeout(checarOrientacao, 0);
+
+    this.atualizarHUD();
+    if (r) this.toast("Você voltou ao ponto de controle.");
+  }
+
+  /* ---------- HUD ---------- */
+  atualizarHUD() {
+    const hh = $("h-hearts"); hh.innerHTML = "";
+    for (let i = 0; i < this.vidaMax; i++) { const d = document.createElement("i"); d.className = "heart" + (i >= this.vida ? " off" : ""); hh.appendChild(d); }
+    hh.setAttribute("aria-label", `Vida: ${this.vida} de ${this.vidaMax}`);
+    $("h-score").textContent = this.run.pontos;
+    $("h-obj").textContent = this.textoObjetivo();
+  }
+  textoObjetivo() {
+    const c = this.run.concluidos;
+    if (this.id === "m0") {
+      if (!c.has("boneco")) return document.body.classList.contains("touchmode") ? "Derrote o boneco de treino (ATAQUE)" : "Derrote o boneco de treino (J)";
+      if (!c.has("pedra")) return "Faça o juramento na Pedra";
+      return "Siga até o estandarte";
+    }
+    const acesos = this.altares.filter((a) => a.aceso).length;
+    const pg = this.run.eventos ? [...this.run.eventos].filter((e) => e.startsWith("perg:")).length : 0;
+    if (acesos < 3) return `Pilares acesos: ${acesos}/3 · Pergaminhos: ${pg}/3`;
+    return `Siga até o estandarte · Pergaminhos: ${pg}/3`;
+  }
+  toast(t) {
+    const el = $("toast"); el.textContent = t; el.hidden = false;
+    clearTimeout(this._toastT); this._toastT = setTimeout(() => { el.hidden = true; }, 2600);
+  }
+
+  /* ---------- recompensas (cada evento conta uma vez por tentativa) ---------- */
+  premiar(evento, pontos, xp, linha) {
+    if (this.run.eventos.has(evento)) return false;
+    this.run.eventos.add(evento);
+    this.run.pontos += pontos; this.run.xp += xp;
+    this.run.linhas[linha] += pontos;
+    this.atualizarHUD();
+    if (pontos > 0) this.flutuar(`+${pontos}`);
+    return true;
+  }
+  flutuar(t) {
+    const tx = this.add.text(this.player.x, this.player.y - 40, t, { fontFamily: "Barlow Condensed, sans-serif", fontSize: "20px", color: "#e8a33d", stroke: "#110e0b", strokeThickness: 4 }).setOrigin(.5).setDepth(10);
+    this.tweens.add({ targets: tx, y: tx.y - 36, alpha: 0, duration: 900, onComplete: () => tx.destroy() });
+  }
+
+  /* ---------- combate ---------- */
+  atacar() {
+    if (this.atkCd > 0) return;
+    this.atkCd = 320;
+    const dir = this.facing;
+    this.slash.setPosition(this.player.x + dir * 22, this.player.y).setFlipX(dir < 0).setVisible(true).setAlpha(1);
+    this.tweens.add({ targets: this.slash, alpha: 0, duration: 160, onComplete: () => this.slash.setVisible(false) });
+    const area = new Phaser.Geom.Rectangle(dir > 0 ? this.player.x + 4 : this.player.x - 58, this.player.y - 30, 54, 56);
+    this.inimigos.getChildren().forEach((e) => {
+      if (!e.active) return;
+      if (Phaser.Geom.Rectangle.Overlaps(area, e.getBounds())) this.ferirInimigo(e, dir);
+    });
+    if (this.boneco && this.boneco.active && Phaser.Geom.Rectangle.Overlaps(area, this.boneco.getBounds())) {
+      const hp = this.boneco.getData("hp") - 1; this.boneco.setData("hp", hp);
+      this.tweens.add({ targets: this.boneco, angle: dir * 12, duration: 70, yoyo: true });
+      if (hp <= 0) {
+        this.boneco.destroy(); this.boneco = null;
+        this.run.concluidos.add("boneco");
+        this.toast("Boneco no chão. Agora, o juramento.");
+        this.atualizarHUD();
+      }
+    }
+  }
+  ferirInimigo(e, dir) {
+    const now = this.time.now;
+    if (now - e.getData("hitAt") < 200) return;
+    e.setData("hitAt", now);
+    const hp = e.getData("hp") - 1; e.setData("hp", hp);
+    e.setTintFill(0xffffff); this.time.delayedCall(80, () => e.active && e.clearTint());
+    e.setVelocity(dir * 240, -160);
+    if (hp <= 0) {
+      const idx = e.getData("idx");
+      const ganhos = this.run.linhas.inimigos;
+      const pts = ganhos + PARAMS.inimigo <= PARAMS.tetoInimigos ? PARAMS.inimigo : 0;
+      this.premiar(`inimigo:${idx}`, pts, PARAMS.xp.inimigo, "inimigos");
+      if (!this.reduce) { const p = this.add.particles(e.x, e.y, "spark", { speed: { min: 60, max: 160 }, lifespan: 400, quantity: 10, emitting: false }); p.explode(10); this.time.delayedCall(500, () => p.destroy()); }
+      e.destroy();
+    }
+  }
+  tocarInimigo(e) {
+    if (this.invuln > 0 || this.terminou || this.pausado) return;
+    this.dano(e.x < this.player.x ? 1 : -1);
+  }
+  dano(dirEmpurrao) {
+    this.vida -= 1; this.invuln = 1100; vibrar(45);
+    this.player.setVelocity(dirEmpurrao * 260, -280);
+    this.cameras.main.shake(120, .006);
+    this.atualizarHUD();
+    if (this.vida <= 0) this.derrota();
+  }
+  derrota() {
+    this.pausado = true; this.physics.pause();
+    openModal("m-defeat");
+  }
+
+  /* ---------- altares e quiz ---------- */
+  ativarAltar(a) {
+    if (a.aceso || this.pausado || this.terminou) return;
+    if (a.tipo === "pedra" && !this.run.concluidos.has("boneco")) {
+      if (!this._avisoBoneco) { this.toast("Primeiro derrote o boneco de treino."); this._avisoBoneco = true; this.time.delayedCall(3000, () => this._avisoBoneco = false); }
+      return;
+    }
+    const perguntas = sortearPerguntas(a.temas, a.qtd, this.run.usadas);
+    perguntas.forEach((q) => this.run.usadas.add(q.id));
+    this.pausado = true; this.physics.pause(); this.input.keyboard.enabled = false;
+    rodarQuiz({
+      nome: a.nome, perguntas,
+      onResposta: (q, idx, ok, pts) => {
+        this.run.quizTotal++; if (ok) this.run.quizOk++;
+        this.premiar(`quiz:${q.id}`, pts, ok ? PARAMS.xp.acerto : PARAMS.xp.erro, "quiz");
+        this.run.tentativas.push({ q: q.id, v: q.versao || 1, r: idx, ok, pts, t: new Date().toISOString(), missao: this.id });
+      },
+      onFim: () => {
+        a.aceso = true; this.run.concluidos.add(a.chave);
+        this.acender(a, false);
+        this.checkpoint = { x: a.x, y: 400 };
+        this.vida = this.vidaMax;
+        this.input.keyboard.enabled = true; this.input.keyboard.resetKeys(); this.pausado = false; this.physics.resume();
+        INPUT.left = INPUT.right = false;
+        this.atualizarHUD();
+        this.toast(a.tipo === "pedra" ? "Juramento feito. Vida restaurada e ponto de controle salvo." : `${a.nome} aceso. Vida restaurada e ponto de controle salvo.`);
+      }
+    });
+  }
+  acender(a, instant) {
+    const y = a.tipo === "pedra" ? 440 : 300;
+    const glow = this.add.circle(a.x, y, 46, 0xe8a33d, .22).setDepth(1);
+    if (!this.reduce && !instant) this.tweens.add({ targets: glow, scale: { from: .4, to: 1 }, alpha: { from: .6, to: .22 }, duration: 600 });
+    if (!this.reduce) {
+      this.tweens.add({ targets: glow, alpha: .12, duration: 900, yoyo: true, repeat: -1, ease: "Sine.inOut", delay: 600 });
+      this.add.particles(a.x, y, "spark", { speedY: { min: -60, max: -20 }, speedX: { min: -12, max: 12 }, lifespan: 900, frequency: 120, alpha: { start: 1, end: 0 }, scale: { start: 1, end: .3 } }).setDepth(2);
+    }
+    a.label.setColor("#e8a33d");
+  }
+  pegarPergaminho(s) {
+    const i = s.getData("idx");
+    s.destroy();
+    this.premiar(`perg:${i}`, PARAMS.objetivoOpcional, PARAMS.xp.objetivoOpcional, "opcionais");
+    this.toast("Pergaminho encontrado (objetivo opcional).");
+  }
+  tentarConcluir() {
+    if (this.terminou || this.pausado) return;
+    const c = this.run.concluidos;
+    const falta = this.id === "m0"
+      ? (!c.has("boneco") ? "Derrote o boneco de treino antes de seguir." : !c.has("pedra") ? "Faça o juramento na Pedra antes de seguir." : "")
+      : (this.altares.some((a) => !a.aceso) ? "Acenda os três pilares antes de seguir." : "");
+    if (falta) { if (!this._avisoFim) { this.toast(falta); this._avisoFim = true; this.time.delayedCall(3000, () => this._avisoFim = false); } return; }
+    this.terminou = true;
+    this.premiar("objetivo:principal", PARAMS.objetivoPrincipal, PARAMS.xp.objetivoPrincipal, "objetivos");
+    this.physics.pause();
+    if (!this.reduce) this.cameras.main.flash(500, 232, 163, 61);
+    this.time.delayedCall(700, () => setTimeout(() => concluirMissao(this.id, this.run), 0)); // fora do passo do Phaser
+  }
+
+  /* ---------- laço ---------- */
+  update(time, delta) {
+    if (!this.sys.isActive() || !this.cameras || !this.cameras.main) return;
+    // fundo em paralaxe e facho do farol
+    const cam = this.cameras.main;
+    this.bgFar.tilePositionX = cam.scrollX * .15;
+    this.bgMid.tilePositionX = cam.scrollX * .35;
+    const maxScroll = Math.max(1, this.fase.largura - 960);
+    this.farol.x = 900 - (cam.scrollX / maxScroll) * 330;
+    const ang = this.reduce ? -2.9 : -2.9 + Math.sin(time / 1400) * .55;
+    const fx = this.farol.x, fy = this.farol.y - 196;
+    this.beam.clear(); this.beam.fillStyle(0xffd99a, .16);
+    this.beam.fillTriangle(fx, fy, fx + Math.cos(ang - .09) * 900, fy + Math.sin(ang - .09) * 900, fx + Math.cos(ang + .09) * 900, fy + Math.sin(ang + .09) * 900);
+
+    if (this.pausado || this.terminou) return;
+    const p = this.player, k = this.keys;
+    this.atkCd = Math.max(0, this.atkCd - delta);
+    if (this.invuln > 0) { this.invuln -= delta; p.setAlpha(Math.floor(time / 80) % 2 ? .35 : 1); } else p.setAlpha(1);
+
+    const esq = k.LEFT.isDown || k.A.isDown || INPUT.left;
+    const dir = k.RIGHT.isDown || k.D.isDown || INPUT.right;
+    const noChao = p.body.blocked.down || p.body.touching.down;
+    const vx = esq && !dir ? -230 : dir && !esq ? 230 : 0;
+    if (this.invuln < 900) p.setVelocityX(vx);
+    if (vx) { this.facing = vx > 0 ? 1 : -1; p.setFlipX(this.facing < 0); }
+    const pulo = Phaser.Input.Keyboard.JustDown(k.SPACE) || Phaser.Input.Keyboard.JustDown(k.UP) || Phaser.Input.Keyboard.JustDown(k.W) || INPUT.jumpQueued;
+    INPUT.jumpQueued = false;
+    if (pulo && noChao) p.setVelocityY(-600);
+    if ((k.SPACE.isUp && k.UP.isUp && k.W.isUp && !INPUT.jump) && p.body.velocity.y < -250) p.setVelocityY(p.body.velocity.y * .9); // pulo curto
+    const golpe = Phaser.Input.Keyboard.JustDown(k.J) || Phaser.Input.Keyboard.JustDown(k.K) || INPUT.attackQueued;
+    INPUT.attackQueued = false;
+    if (golpe) this.atacar();
+    if (this.slash.visible) this.slash.setPosition(p.x + this.facing * 22, p.y);
+
+    // queda em buraco
+    if (p.y > 600) {
+      this.vida -= 1; this.atualizarHUD();
+      if (this.vida <= 0) { this.derrota(); return; }
+      p.setPosition(this.checkpoint.x, this.checkpoint.y); p.setVelocity(0, 0); this.invuln = 1000;
+      this.toast("Cuidado com os buracos.");
+    }
+
+    // inimigos: patrulha, aproximação e investida simples
+    this.inimigos.getChildren().forEach((e) => {
+      if (!e.active || !e.body) return;
+      if (e.y > 640) { e.destroy(); return; }
+      const d = e.data.values;
+      const dx = p.x - e.x, dy = Math.abs(p.y - e.y);
+      const perto = Math.abs(dx) < 260 && dy < 90;
+      if (d.lunge > 0) { d.lunge -= delta; return; }
+      if (d.windup > 0) {
+        d.windup -= delta; e.setVelocityX(0);
+        if (d.windup <= 0) { e.clearTint(); e.setVelocityX(Math.sign(dx || 1) * 330); d.lunge = 260; }
+        return;
+      }
+      if (perto && Math.abs(dx) < 70 && (e.body.blocked.down || e.body.touching.down)) { d.windup = 380; e.setTint(0xff7a4d); return; }
+      if (perto) { e.setVelocityX(Math.sign(dx) * 120); e.setFlipX(dx > 0); }
+      else {
+        if (e.x < d.x0) d.dir = 1; else if (e.x > d.x1) d.dir = -1;
+        e.setVelocityX(d.dir * 60); e.setFlipX(d.dir > 0);
+      }
+    });
+  }
+}
+
+/* =====================================================================
+   FLUXO DO JOGO
+   ===================================================================== */
+let game = null;
+let missaoAtual = null;
+function cena() { return game && game.scene.getScene("Missao"); }
+
+function abrirIntro(id) {
+  const F = FASES[id];
+  $("mi-kicker").textContent = F.kicker;
+  $("mi-title").textContent = F.titulo;
+  $("mi-text").textContent = F.texto;
+  const ul = $("mi-obj"); ul.innerHTML = "";
+  F.objetivos.forEach((o) => { const li = document.createElement("li"); li.textContent = o.txt; if (o.opc) li.className = "opc"; ul.appendChild(li); });
+  $("mi-controls").textContent = isTouch || document.body.classList.contains("touchmode")
+    ? "Controles: botões na parte de baixo da tela. Pausa: botão II."
+    : "Controles: ← → ou A/D para andar, Espaço para pular, J para atacar, Esc para pausar. No quiz, use 1 a 4.";
+  $("mi-go").onclick = () => {
+    closeModal("m-intro");
+    if (document.body.classList.contains("touchmode") && podeTelaCheia) telaCheia(true);
+    iniciarMissao(id);
+  };
+  openModal("m-intro");
+}
+$("mi-back").addEventListener("click", () => closeModal("m-intro"));
+
+function iniciarMissao(id, retomada) {
+  missaoAtual = id;
+  show("scr-game");
+  $("toast").hidden = true;
+  if (!game) {
+    game = new Phaser.Game({
+      type: Phaser.AUTO, parent: "game", width: 960, height: 540, backgroundColor: "#120e0b",
+      physics: { default: "arcade", arcade: { gravity: { y: 1350 }, debug: false } },
+      scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
+      render: { pixelArt: false, antialias: true },
+      scene: []
+    });
+    game.scene.add("Missao", Missao, true, { id, retomada });
+  } else {
+    game.scene.start("Missao", { id, retomada });
+  }
+  remedir();
+}
+/* O Phaser mede o contêiner; se ele estava oculto, o canvas fica com 0 px. Remede ao aparecer e a cada mudança de tamanho. */
+function remedir() {
+  if (!game) return;
+  requestAnimationFrame(() => requestAnimationFrame(() => { window.dispatchEvent(new Event("resize")); game.scale.refresh(); }));
+}
+if (window.ResizeObserver) new ResizeObserver(() => { if (!$("scr-game").hidden) remedir(); }).observe($("game"));
+
+function pausar() {
+  const s = cena();
+  if (!s || s.pausado || s.terminou || !$("m-quiz").hidden || !$("rotate").hidden) return;
+  s.pausado = true; s.physics.pause();
+  $("mp-serio").checked = !!PERFIL.modoSerio;
+  openModal("m-pause");
+}
+$("btn-pause").addEventListener("click", pausar);
+$("btn-full").hidden = !podeTelaCheia;
+$("btn-full").addEventListener("click", () => telaCheia(!(document.fullscreenElement || document.webkitFullscreenElement)));
+$("mp-resume").addEventListener("click", () => { closeModal("m-pause"); const s = cena(); if (s) { s.pausado = false; s.physics.resume(); } });
+$("mp-serio").addEventListener("change", (e) => { PERFIL.modoSerio = e.target.checked; Store.salvarPerfil(PERFIL); });
+$("mp-quit").addEventListener("click", () => { closeModal("m-pause"); game.scene.stop("Missao"); renderCentral(); });
+
+$("md-resume").addEventListener("click", () => {
+  closeModal("m-defeat");
+  const s = cena();
+  game.scene.start("Missao", { id: s.id, retomada: { run: s.run, checkpoint: s.checkpoint } });
+});
+$("md-restart").addEventListener("click", () => { closeModal("m-defeat"); game.scene.start("Missao", { id: cena().id }); });
+
+async function concluirMissao(id, run) {
+  game.scene.stop("Missao");
+  const p = PERFIL;
+  const prev = p.missoes[id] || { concluida: false, melhor: null, tentativas: 0 };
+  const repeticao = prev.concluida;
+  const tempo = Math.round((Date.now() - run.inicio) / 1000);
+  const xpGanho = Math.round(run.xp * (repeticao ? PARAMS.xpRepeticao : 1));
+  const patAntes = patenteIndex(p);
+  const opcionais = [...run.eventos].filter((e) => e.startsWith("perg:")).length;
+  const atual = { pontos: run.pontos, opcionais, tempo, quiz: `${run.quizOk}/${run.quizTotal}`, em: new Date().toISOString() };
+  const melhorou = !prev.melhor || atual.pontos > prev.melhor.pontos || (atual.pontos === prev.melhor.pontos && (atual.opcionais > prev.melhor.opcionais || atual.tempo < prev.melhor.tempo));
+  p.missoes[id] = { concluida: true, melhor: melhorou ? atual : prev.melhor, tentativas: (prev.tentativas || 0) + 1 };
+  p.xp += xpGanho;
+  p.tentativasQuiz = (p.tentativasQuiz || []).concat(run.tentativas).slice(-300);
+  const patDepois = patenteIndex(p);
+
+  // tela de resultado
+  const F = FASES[id];
+  $("r-kicker").textContent = `${F.kicker} concluída`;
+  $("r-title").textContent = F.titulo;
+  $("r-pts").textContent = run.pontos;
+  $("r-best").textContent = melhorou ? (prev.melhor ? `Novo recorde (antes: ${prev.melhor.pontos}).` : "Primeiro resultado registrado.") : `Seu recorde continua ${prev.melhor.pontos}.`;
+  $("r-xp").textContent = `+${xpGanho}`;
+  $("r-xpnote").textContent = repeticao ? `Repetição: ${PARAMS.xpRepeticao * 100}% do XP.` : `Total: ${p.xp} XP.`;
+  $("r-quiz").textContent = `${run.quizOk}/${run.quizTotal}`;
+  $("r-time").textContent = fmtTime(tempo);
+  const bd = $("r-breakdown"); bd.innerHTML = "";
+  [["Quiz", run.linhas.quiz], ["Objetivo principal", run.linhas.objetivos], ["Objetivos opcionais", run.linhas.opcionais], [`Inimigos (teto ${PARAMS.tetoInimigos})`, run.linhas.inimigos], ["Total", run.pontos]].forEach(([a, b]) => {
+    const tr = document.createElement("tr"); tr.innerHTML = "<td></td><td class='num'></td>"; tr.children[0].textContent = a; tr.children[1].textContent = b;
+    if (a === "Total") tr.style.fontWeight = "600";
+    bd.appendChild(tr);
+  });
+  const promo = $("r-promo"); promo.innerHTML = "";
+  if (patDepois > patAntes) {
+    const d = document.createElement("div"); d.className = "promo";
+    d.innerHTML = `<span class="label">Nova patente</span><b></b><span class="hint"></span>`;
+    d.querySelector("b").textContent = PATENTES[patDepois].nome;
+    d.querySelector(".hint").textContent = "A luz ficou um pouco mais forte.";
+    promo.appendChild(d);
+  }
+  const nextIdx = CAMPANHA.findIndex((c) => c.id === id) + 1;
+  const next = CAMPANHA[nextIdx];
+  const nb = $("r-next");
+  if (next && next.jogavel) { nb.hidden = false; nb.textContent = `Próxima: ${next.nome}`; nb.onclick = () => abrirIntro(next.id); }
+  else { nb.hidden = true; }
+  $("r-saved").textContent = "Salvando…";
+  show("scr-result");
+
+  const onde = await Store.salvarPerfil(p);
+  const entrou = await Store.publicarRanking(entradaRanking(p));
+  $("r-saved").textContent = onde === "online"
+    ? (entrou ? "Progresso salvo na sua conta e ranking atualizado." : "Progresso salvo na sua conta. Seu acesso é só de leitura, então o ranking não foi atualizado.")
+    : "Progresso salvo neste navegador (modo local).";
+}
+$("r-central").addEventListener("click", renderCentral);
+$("r-ranking").addEventListener("click", () => { renderRanking(); show("scr-ranking"); });
+$("btn-ranking").addEventListener("click", () => { renderRanking(); show("scr-ranking"); });
+$("k-back").addEventListener("click", renderCentral);
+$("btn-settings").addEventListener("click", () => { $("ms-serio").checked = !!PERFIL.modoSerio; $("ms-touch").checked = document.body.classList.contains("touchmode"); openModal("m-settings"); });
+$("ms-serio").addEventListener("change", (e) => { PERFIL.modoSerio = e.target.checked; Store.salvarPerfil(PERFIL); });
+$("ms-touch").addEventListener("change", (e) => { aplicarToque(e.target.checked); lsSet("farol.toque", e.target.checked); });
+$("ms-close").addEventListener("click", () => closeModal("m-settings"));
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape") return;
+  if (!$("m-settings").hidden) closeModal("m-settings");
+  else if (!$("m-intro").hidden) closeModal("m-intro");
+  else if (!$("m-pause").hidden) $("mp-resume").click();
+  else if (!$("scr-game").hidden && $("m-quiz").hidden && $("m-defeat").hidden && $("m-intro").hidden) pausar();
+});
+
+/* =====================================================================
+   INÍCIO
+   ===================================================================== */
+async function boot() {
+  aplicarToque(lsGet("farol.toque", isTouch));
+  $("btn-start").disabled = true;
+  await Store.init();
+  PERFIL = await Store.carregarPerfil();
+  if (PERFIL) PERFIL = Object.assign(novoPerfil(PERFIL.apelido || ""), PERFIL, { missoes: PERFIL.missoes || {}, tentativasQuiz: PERFIL.tentativasQuiz || [] });
+  $("mode-hint").textContent = Store.online
+    ? (Store.podeRanking ? "Você está conectado: o progresso fica na sua conta e entra no ranking." : "Você está conectado, mas com acesso só de leitura: o progresso fica na sua conta, sem entrar no ranking.")
+    : "Sem conta conectada: você joga em modo local, salvo só neste navegador.";
+  if (PERFIL && PERFIL.apelido) $("in-apelido").value = PERFIL.apelido;
+  $("btn-start").disabled = false;
+  let conferido = false;
+  if (Store.online) unsubRanking = Store.ouvirRanking((rows) => {
+    RANKING = rows;
+    if (!conferido && rows && PERFIL && Store.podeRanking) {
+      conferido = true;
+      const meu = rows.find((r) => r.id === Store.uid);
+      const certa = PATENTES[patenteIndex(PERFIL)].nome;
+      if (meu && meu.patente !== certa) Store.publicarRanking(entradaRanking(PERFIL));
+    }
+    if (!$("scr-ranking").hidden) renderRanking();
+    if (!$("scr-central").hidden) $("c-pos").textContent = posicaoNoRanking() || "—";
+  });
+}
+$("form-signin").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const ap = $("in-apelido").value.trim();
+  const erro = validarApelido(ap);
+  $("signin-err").textContent = erro;
+  if (erro) { $("in-apelido").focus(); return; }
+  if (!PERFIL) PERFIL = novoPerfil(ap);
+  else PERFIL.apelido = ap;
+  await Store.salvarPerfil(PERFIL);
+  if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (err) { /* segue */ } }
+  renderCentral();
+});
+boot();
+</script>
+</body>
+</html>
