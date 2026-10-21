@@ -26,16 +26,23 @@ const shot = async (n) => { const r = await send("Page.captureScreenshot", { for
 const log = (...a) => console.log(...a);
 const ok = (cond, msg) => log((cond ? "  OK   " : "  FALHA ") + msg);
 
+// o quiz abre numa tela de confirmação e cada etapa tem um intervalo de segurança: o teste espera como um jogador
 const responderTudo = async () => ev(`
+  const espera = (ms) => new Promise(r => setTimeout(r, ms));
+  if (document.getElementById('m-quiz').hidden) return 'quiz não abriu';
+  await espera(800); document.getElementById('mq-start').click();
   for (let n = 0; n < 6; n++) {
     if (document.getElementById('m-quiz').hidden) break;
+    await espera(550);
     const q = BANCO.find(b => b.pergunta === document.getElementById('mq-q').textContent);
     [...document.getElementById('mq-opts').children].find(o => Number(o.dataset.idx) === q.correta).click();
-    await new Promise(r => setTimeout(r, 150));
+    await espera(500);
     document.getElementById('mq-next').click();
-    await new Promise(r => setTimeout(r, 250));
   }
+  await espera(200);
   return document.getElementById('m-quiz').hidden;`);
+const K = { KeyD: ["d", 68], Digit4: ["4", 52], Digit1: ["1", 49], Enter: ["Enter", 13] };
+const tecla = (code, type, repeat = false) => send("Input.dispatchKeyEvent", { type, code, key: K[code][0], windowsVirtualKeyCode: K[code][1], autoRepeat: repeat, text: type === "keyDown" && code !== "Enter" ? K[code][0] : undefined });
 const ir = (x, y = 430) => ev(`const s=cena(); s.player.setPosition(${x},${y}); s.player.body.setVelocity(0,0);`);
 const acenderTodos = async () => {
   const xs = await ev(`return cena().altares.map(a=>a.x)`);
@@ -56,7 +63,35 @@ log("missões na central:", await ev(`return [...document.querySelectorAll('.mis
 log("\n[Prólogo]");
 await iniciar("m0");
 await ev(`const s=cena(); s.run.concluidos.add('boneco'); s.boneco && s.boneco.destroy(); s.boneco=null;`);
-await ir(1720); await sleep(600); await responderTudo(); await sleep(300);
+// proteção do quiz: chega na pedra SEGURANDO a tecla D (com repetição), aperta 4 cedo demais e repetido
+await ir(1640); await sleep(300);
+await tecla("KeyD", "keyDown");
+for (let i = 0; i < 12; i++) { await tecla("KeyD", "keyDown", true); await sleep(60); }
+await tecla("Digit4", "keyDown"); await tecla("Digit4", "keyUp");
+await tecla("KeyD", "keyUp");
+const prot1 = await ev(`return {quizAberto: !document.getElementById('m-quiz').hidden, naConfirmacao: !document.getElementById('mq-intro').hidden, respostas: cena().run.quizTotal}`);
+ok(prot1.quizAberto && prot1.naConfirmacao && prot1.respostas === 0, "segurar D até a pedra abre a confirmação e não responde nada " + JSON.stringify(prot1));
+await sleep(800);
+await tecla("Enter", "keyDown"); await tecla("Enter", "keyUp"); await sleep(120);
+await tecla("Digit1", "keyDown"); await tecla("Digit1", "keyUp"); // cedo demais: ignorada
+for (let i = 0; i < 6; i++) await tecla("Digit4", "keyDown", true); // repetida: ignorada
+const prot2 = await ev(`return {naPergunta: !document.getElementById('mq-corpo').hidden, respostas: cena().run.quizTotal}`);
+ok(prot2.naPergunta && prot2.respostas === 0, "Enter mostra a pergunta; tecla cedo demais ou repetida não responde " + JSON.stringify(prot2));
+await sleep(600); await tecla("Digit4", "keyUp");
+await tecla("Digit1", "keyDown"); await tecla("Digit1", "keyUp"); await sleep(200);
+ok((await ev(`return cena().run.quizTotal`)) === 1, "depois do intervalo, a tecla 1 responde normalmente");
+await sleep(500); await tecla("Enter", "keyDown"); await tecla("Enter", "keyUp"); await sleep(300);
+// termina a pedra pelo caminho normal (já está na 2ª pergunta)
+await ev(`
+  const espera = (ms) => new Promise(r => setTimeout(r, ms));
+  for (let n = 0; n < 4; n++) {
+    if (document.getElementById('m-quiz').hidden) break;
+    await espera(550);
+    const q = BANCO.find(b => b.pergunta === document.getElementById('mq-q').textContent);
+    [...document.getElementById('mq-opts').children].find(o => Number(o.dataset.idx) === q.correta).click();
+    await espera(500); document.getElementById('mq-next').click();
+  }`);
+await sleep(300);
 log("  resultado:", JSON.stringify(await concluir(2370)));
 log("\n[Missão 1]");
 await ev(`document.getElementById('r-next').click()`); await sleep(300); await ev(`document.getElementById('mi-go').click()`); await sleep(2200);
@@ -150,6 +185,47 @@ log("  objetivo HUD:", await ev(`return document.getElementById('h-obj').textCon
 const r3 = await concluir(4670);
 log("  resultado:", JSON.stringify(r3));
 await shot("c07-resultado-m3");
+
+// ---------- Missões 4 a 6: mestres ----------
+const MESTRES = [
+  { id: "m4", nome: "Cria de Deodoro", fim: 5470, comportamento: `const d=s.chefe.data.values; return d.estado==='golpe' || d.estado==='salto' || s.projeteis.getChildren().some(p=>p.texture.key==='onda')` },
+  { id: "m5", nome: "Bolsolepra", fim: 5470, comportamento: `return s.projeteis.getChildren().filter(p=>p.texture.key==='lepra').length >= 3` },
+  { id: "m6", nome: "Luladrão", fim: 5670, comportamento: `const d=s.chefe.data.values; return d.estado==='investida' || s.projeteis.getChildren().some(p=>p.texture.key==='propina')` }
+];
+for (const M of MESTRES) {
+  log(`\n[${M.id}: mestre ${M.nome}]`);
+  await ev(`document.getElementById('r-next').click()`); await sleep(300);
+  if (!(await ev(`return !document.getElementById('m-intro').hidden`))) { await ev(`abrirIntro('${M.id}')`); await sleep(300); }
+  log("  intro:", await ev(`return document.getElementById('mi-title').textContent`));
+  await ev(`document.getElementById('mi-go').click()`); await sleep(2200);
+  log("  altares:", await acenderTodos());
+  // tentar terminar sem derrotar o mestre
+  await ir(M.fim); await sleep(500);
+  const arena = await ev(`const s=cena(); return {ativo: s.chefeAtivo, barra: !document.getElementById('boss').hidden, nome: document.getElementById('boss-nome').textContent, aviso: document.getElementById('toast').textContent.slice(0,60)}`);
+  ok(arena.ativo && arena.barra, `entrar na arena ativa o mestre e mostra a barra (${arena.nome})`);
+  await ir(M.fim); await sleep(400);
+  ok((await ev(`return document.getElementById('scr-result').hidden`)) === true, "não dá para terminar sem derrotar o mestre");
+  // deixa o mestre lutar por 7 s, com o jogador perto dele
+  await ev(`const s=cena(); s.vida=5; s.atualizarHUD(); window._viu=false; s.player.setPosition(s.chefe.x-150, 440);`);
+  let viu = false;
+  for (let i = 0; i < 70 && !viu; i++) { viu = await ev(`const s=cena(); ${M.comportamento}`); await sleep(100); }
+  await sleep(1500);
+  const luta = await ev(`const s=cena(); return {vida: s.vida, derrota: !document.getElementById('m-defeat').hidden, frames: game.loop.frame}`);
+  ok(viu, `${M.nome} executa o ataque característico`);
+  ok(luta.vida < 5 || luta.derrota, `${M.nome} causa dano (vida ${luta.vida})`);
+  if (luta.derrota) { await ev(`document.getElementById('md-resume').click()`); await sleep(1500); }
+  await shot(`c-${M.id}-mestre`);
+  // derrota o mestre a golpes (com o jogador invulnerável)
+  const golpes = await ev(`const s=cena(); const esp=(ms)=>new Promise(r=>setTimeout(r,ms)); let n=0;
+    for (let i=0;i<40 && s.chefe && s.chefe.active && !s.run.concluidos.has('chefe');i++){ s.invuln=600; s.vida=5; s.atkCd=0; s.player.setPosition(s.chefe.x-40, s.chefe.y); s.facing=1; s.atacar(); n++; await esp(300); }
+    return {golpes:n, derrotado: s.run.concluidos.has('chefe'), barra: !document.getElementById('boss').hidden}`);
+  ok(golpes.derrotado && !golpes.barra, `${M.nome} derrotado em ${golpes.golpes} golpes; barra some`);
+  await sleep(800);
+  const r = await concluir(M.fim);
+  log("  resultado:", JSON.stringify(r));
+  ok(r.pts !== undefined && Number(r.pts) > 0, "missão concluída após derrotar o mestre");
+  log("  quadro:", await ev(`return [...document.querySelectorAll('#r-breakdown tr')].map(t=>t.textContent).join(' | ')`));
+}
 await ev(`document.getElementById('r-central').click()`); await sleep(500);
 log("\ncentral final:", await ev(`return {patente: document.getElementById('c-patente').textContent, xp: document.getElementById('c-xp').textContent, pts: document.getElementById('c-pts').textContent, missoes: [...document.querySelectorAll('.mission .act')].slice(0,5).map(a=>a.textContent).join(' | ')}`));
 await shot("c08-central");

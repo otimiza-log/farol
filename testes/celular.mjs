@@ -63,10 +63,15 @@ log("boneco derrotado por toque:", await ev(`return cena().run.concluidos.has('b
 // quiz em tela baixa
 await ev(`const s=cena(); s.player.setPosition(1700,430)`); await sleep(800);
 await shot("m06-quiz-paisagem");
-await ev(`const opts=[...document.getElementById('mq-opts').children]; opts[0].click();`); await sleep(300);
+log("confirmação do quiz visível:", await ev(`return !document.getElementById('mq-intro').hidden`));
+await sleep(800); await toque('#mq-start', 60); await sleep(650);
+log("opção 1 na tela:", await ev(`const r=document.querySelector('#mq-opts .opt').getBoundingClientRect(); return {top:Math.round(r.top), bottom:Math.round(r.bottom), alturaTela: innerHeight}`));
+await ev(`document.querySelector('#mq-opts .opt').scrollIntoView({block:'nearest'})`); await sleep(100);
+await toque('#mq-opts .opt', 60); await sleep(300);
+log("respondeu pelo toque:", await ev(`return cena().run.quizTotal`));
 log("quiz cabe/rola:", await ev(`const m=document.getElementById('m-quiz'); const b=document.getElementById('mq-next'); b.scrollIntoView({block:'nearest'}); const r=b.getBoundingClientRect(); return {modalAltura:m.clientHeight, conteudo:m.scrollHeight, botaoVisivel: r.bottom<=innerHeight && r.top>=0}`));
 await shot("m07-quiz-feedback-paisagem");
-await ev(`for (let i=0;i<3;i++){ const b=document.getElementById('mq-next'); if(!b.hidden){ b.click(); await new Promise(r=>setTimeout(r,250)); const o=document.getElementById('mq-opts').children[0]; if(o && !document.getElementById('m-quiz').hidden && document.getElementById('mq-next').hidden) { o.click(); await new Promise(r=>setTimeout(r,200)); } } }`);
+await ev(`for (let i=0;i<3;i++){ const b=document.getElementById('mq-next'); if(!b.hidden){ await new Promise(r=>setTimeout(r,450)); b.click(); await new Promise(r=>setTimeout(r,600)); const o=document.getElementById('mq-opts').children[0]; if(o && !document.getElementById('m-quiz').hidden && document.getElementById('mq-next').hidden) { o.click(); await new Promise(r=>setTimeout(r,200)); } } }`);
 await sleep(500);
 log("após quiz:", await ev(`return {quizAberto: !document.getElementById('m-quiz').hidden, pausado: cena().pausado}`));
 

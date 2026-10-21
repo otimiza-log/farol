@@ -11,7 +11,10 @@ AQUI = os.path.join(RAIZ, 'jogo')
 # temas usados pelas missões jogáveis
 TEMAS = {'Identidade', 'Introdução', '1º Princípio', '2º Princípio',          # Prólogo e Missão 1
          '3º Princípio', '5º Princípio', '11º Princípio', '6º e 11º Princípios',  # Missão 2
-         '4º Princípio', '7º Princípio', '12º Princípio'}                      # Missão 3
+         '4º Princípio', '7º Princípio', '12º Princípio',                      # Missão 3
+         '8º Princípio', '10º Princípio', '14º Princípio',                     # Missão 4
+         '6º Princípio', '9º Princípio', '15º Princípio',                      # Missão 5
+         '13º Princípio', 'Conexões'}                                          # Missão 6
 CAMPOS = ('id', 'tema', 'nivel', 'pergunta', 'alternativas', 'correta', 'explicacao', 'zoeira')
 
 def ler(nome):
