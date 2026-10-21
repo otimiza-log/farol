@@ -64,6 +64,9 @@ h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-
 .signin { display: grid; gap: 10px; max-width: 460px; }
 .signin input { background: var(--ink); border: 1px solid var(--line); color: var(--bone); padding: 11px 12px; font: inherit; font-size: 16px; border-radius: 3px; width: 100%; }
 .hint { font-size: 13px; color: var(--muted); margin: 0; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tab { border: 1px solid var(--line); background: transparent; padding: 7px 12px; border-radius: 3px; font-family: var(--hud); letter-spacing: .08em; text-transform: uppercase; font-size: 13px; color: var(--muted); }
+.tab.ativo { color: var(--bone); border-color: var(--ember); background: rgba(232,163,61,.1); }
 .err { color: var(--bad); font-size: 13px; margin: 0; min-height: 1.2em; }
 
 /* ---------- central ---------- */
@@ -228,6 +231,29 @@ details.rules ul { margin: 10px 0 0; padding-left: 18px; color: #d9cdb9; font-si
       <div class="row"><button class="btn primary" type="submit" id="btn-start">Iniciar jornada</button></div>
       <p class="hint" id="mode-hint">Conectando ao ranking…</p>
     </form>
+    <form class="signin" id="form-conta" novalidate hidden>
+      <div class="tabs" role="tablist" aria-label="Conta">
+        <button type="button" class="tab ativo" role="tab" aria-selected="true" data-aba="entrar">Entrar</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-aba="criar">Criar conta</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-aba="esqueci">Esqueci a senha</button>
+      </div>
+      <label class="label" for="ct-apelido">Apelido</label>
+      <input id="ct-apelido" maxlength="16" autocomplete="username" placeholder="Ex.: Lanterna_SP">
+      <div data-so="esqueci" style="display:grid;gap:8px" hidden>
+        <label class="label" for="ct-codigo">Código de redefinição</label>
+        <input id="ct-codigo" maxlength="12" autocomplete="one-time-code" placeholder="Peça o código a um administrador do Farol">
+      </div>
+      <label class="label" for="ct-senha" id="ct-senha-rot">Senha</label>
+      <input id="ct-senha" type="password" maxlength="128" autocomplete="current-password">
+      <div data-so="criar" style="display:grid;gap:10px" hidden>
+        <label class="label" for="ct-email">E-mail (opcional, para recuperar a senha)</label>
+        <input id="ct-email" type="email" maxlength="120" autocomplete="email">
+        <label class="switch" style="align-items:flex-start"><input type="checkbox" id="ct-aceite" style="margin-top:4px"> <span>Li e aceito a <a href="#privacidade" id="ct-priv" style="color:var(--ember)">política de privacidade</a>. Tenho 18 anos ou mais, ou autorização do meu responsável.</span></label>
+      </div>
+      <p class="err" id="ct-err" role="alert"></p>
+      <div class="row"><button class="btn primary" type="submit" id="ct-ok">Entrar</button></div>
+      <p class="hint" id="ct-hint">Seu progresso fica salvo no servidor do Farol e vale para o ranking.</p>
+    </form>
   </div>
 </section>
 
@@ -239,6 +265,7 @@ details.rules ul { margin: 10px 0 0; padding-left: 18px; color: #d9cdb9; font-si
       <div class="row">
         <button class="btn" id="btn-ranking">Ranking</button>
         <button class="btn" id="btn-settings">Ajustes</button>
+        <button class="btn" id="btn-sair" hidden>Sair</button>
       </div>
     </div>
 
@@ -435,12 +462,38 @@ details.rules ul { margin: 10px 0 0; padding-left: 18px; color: #d9cdb9; font-si
   </div>
 </div>
 
+<div class="modal" id="m-priv" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mpv-title">
+    <h2 id="mpv-title">Política de privacidade</h2>
+    <p>O jogo guarda apenas o necessário para funcionar: seu <b>apelido</b>, sua <b>senha</b> (cifrada, nunca em texto aberto), o <b>e-mail</b>, se você informar, e o seu <b>progresso</b> (missões, pontos, XP, patente e respostas do quiz e da prova).</p>
+    <p>O apelido, a patente e os pontos aparecem no <b>ranking público</b>. O e-mail não aparece para ninguém e só serve para recuperar a senha. Também registramos o endereço IP em tentativas de login, para proteger as contas.</p>
+    <p>Os dados ficam no servidor do Farol da Liberdade e não são vendidos nem compartilhados. Você pode <b>excluir sua conta e todos os dados</b> a qualquer momento em Ajustes.</p>
+    <div class="row"><button class="btn primary" id="mpv-ok">Entendi</button></div>
+  </div>
+</div>
+
+<div class="modal" id="m-erro" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="me-title">
+    <h2 id="me-title">Não deu para falar com o servidor</h2>
+    <p id="me-txt"></p>
+    <div class="row"><button class="btn primary" id="me-tentar">Tentar de novo</button><button class="btn" id="me-voltar">Voltar à central</button></div>
+  </div>
+</div>
+
 <div class="modal" id="m-settings" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ms-title">
     <h2 id="ms-title">Ajustes</h2>
     <label class="switch"><input type="checkbox" id="ms-serio"> Modo sério (sem comentários cômicos no quiz)</label>
     <label class="switch"><input type="checkbox" id="ms-touch"> Mostrar controles de toque</label>
     <div class="row"><button class="btn primary" id="ms-close">Fechar</button></div>
+    <div id="ms-conta" style="display:grid;gap:8px;border-top:1px solid var(--line);padding-top:12px" hidden>
+      <div class="label">Conta</div>
+      <p class="hint">Excluir a conta apaga seu apelido, seu progresso, suas respostas e sua posição no ranking. Não dá para desfazer.</p>
+      <label class="label" for="ms-senha">Sua senha</label>
+      <input id="ms-senha" type="password" autocomplete="current-password" style="background:var(--ink);border:1px solid var(--line);color:var(--bone);padding:9px 10px;border-radius:3px;font:inherit">
+      <div class="row"><button class="btn" id="ms-excluir">Excluir minha conta</button></div>
+      <p class="err" id="ms-err" role="alert"></p>
+    </div>
   </div>
 </div>
 
@@ -462,6 +515,7 @@ details.rules ul { margin: 10px 0 0; padding-left: 18px; color: #d9cdb9; font-si
    DADOS (injetados por build_jogo.py a partir dos JSONs do quiz)
    ===================================================================== */
 const BANCO = /*__BANCO__*/[];
+const MODO_SERVIDOR = /*__SERVIDOR__*/false; // true na versão da VPS: contas, quiz e pontos conferidos pelo servidor
 const MSG = /*__MSG__*/{};
 
 /* Parâmetros de pontuação, XP e patentes (avaliação v1.1, §4.3). Configuráveis. */
@@ -915,6 +969,7 @@ function renderCentral() {
   show("scr-central");
 }
 function modoTexto() {
+  if (MODO_SERVIDOR) return "<b>Progresso salvo no servidor do Farol</b> e publicado no ranking da campanha.";
   if (Store.online && Store.podeRanking) return "<b>Progresso salvo na sua conta</b> e publicado no ranking da campanha.";
   if (Store.online) return "<b>Progresso salvo na sua conta.</b> Seu acesso a este jogo é só de leitura, então seus pontos não entram no ranking.";
   return "<b>Modo local:</b> o progresso fica só neste navegador e não entra no ranking. Entre na sua conta para competir.";
@@ -1048,7 +1103,11 @@ function sortearPerguntas(temas, qtd, usadas) {
    3) teclas repetidas (segurar D, Espaço...) são ignoradas e só 1 a 4 respondem;
    4) o foco fica no painel, nunca num botão que um Espaço segurado acionaria. */
 const QUIZ_ESPERA = { abrir: 700, pergunta: 450, feedback: 400 };
-function rodarQuiz({ nome, perguntas, onResposta, onFim }) {
+function rodarQuiz({ nome, perguntas, onResposta, onFim, corrigir }) {
+  corrigir = corrigir || (async (q, idx) => {
+    const ok = idx === q.correta, base = PARAMS.valorBase[q.nivel] || 20;
+    return { ok, correta: q.correta, explicacao: q.explicacao, zoeira: q.zoeira || "", pontos: ok ? base : Math.round(base * PARAMS.fatorErro) };
+  });
   let i = 0, etapa = "intro", armadoEm = 0;
   const modal = $("m-quiz"), sheet = $("mq-sheet");
   const armar = (ms) => { armadoEm = performance.now() + ms; };
@@ -1088,17 +1147,26 @@ function rodarQuiz({ nome, perguntas, onResposta, onFim }) {
     });
     armar(QUIZ_ESPERA.pergunta); focarPainel();
   };
-  const responder = (idx) => {
-    etapa = "feedback";
+  const responder = async (idx) => {
+    etapa = "corrigindo";
     const q = perguntas[i];
-    const ok = idx === q.correta;
-    const base = PARAMS.valorBase[q.nivel] || 20;
-    const pts = ok ? base : Math.round(base * PARAMS.fatorErro);
+    const botoes = [...$("mq-opts").children];
+    botoes.forEach((b) => { b.disabled = true; });
+    let r;
+    try { r = await corrigir(q, idx); }
+    catch (e) {
+      botoes.forEach((b) => { b.disabled = false; });
+      etapa = "pergunta"; armar(QUIZ_ESPERA.pergunta);
+      const v = $("mq-verdict"); v.className = "verdict no"; v.textContent = e.message || "Não deu para conferir a resposta. Tente de novo.";
+      $("mq-msg").textContent = ""; $("mq-exp").textContent = ""; $("mq-zoeira").hidden = true; $("mq-fb").hidden = false;
+      return;
+    }
+    etapa = "feedback";
+    const ok = r.ok, pts = r.pontos;
     streak = ok ? streak + 1 : 0;
-    [...$("mq-opts").children].forEach((b) => {
-      b.disabled = true;
+    botoes.forEach((b) => {
       const bi = Number(b.dataset.idx);
-      if (bi === q.correta) b.classList.add("right");
+      if (bi === r.correta) b.classList.add("right");
       else if (bi === idx) b.classList.add("wrong");
     });
     const v = $("mq-verdict");
@@ -1108,9 +1176,9 @@ function rodarQuiz({ nome, perguntas, onResposta, onFim }) {
     let msg = pick(ok ? MSG.acerto : MSG.erro);
     if (ok && MSG.sequencia && MSG.sequencia[String(streak)]) msg = MSG.sequencia[String(streak)];
     $("mq-msg").textContent = serio ? (ok ? "Resposta correta." : "Resposta incorreta. Veja a explicação.") : msg;
-    $("mq-exp").textContent = q.explicacao;
-    $("mq-zoeira").textContent = serio ? "" : (q.zoeira || "");
-    $("mq-zoeira").hidden = serio || !q.zoeira;
+    $("mq-exp").textContent = r.explicacao;
+    $("mq-zoeira").textContent = serio ? "" : (r.zoeira || "");
+    $("mq-zoeira").hidden = serio || !r.zoeira;
     $("mq-fb").hidden = false;
     onResposta(q, idx, ok, pts);
     const nb = $("mq-next");
@@ -1657,6 +1725,7 @@ class Missao extends Phaser.Scene {
     this.run.eventos.add(evento);
     this.run.pontos += pontos; this.run.xp += xp;
     this.run.linhas[linha] += pontos;
+    if (MODO_SERVIDOR && !evento.startsWith("quiz:") && evento !== "objetivo:principal") Api.evento(evento);
     this.atualizarHUD();
     if (pontos > 0) this.flutuar(`+${pontos}`);
     return true;
@@ -1688,6 +1757,7 @@ class Missao extends Phaser.Scene {
       if (hp <= 0) {
         this.boneco.destroy(); this.boneco = null;
         this.run.concluidos.add("boneco");
+        if (MODO_SERVIDOR) Api.evento("boneco");
         this.toast("Boneco no chão. Agora, o juramento.");
         this.atualizarHUD();
       }
@@ -1728,32 +1798,53 @@ class Missao extends Phaser.Scene {
 
   /* ---------- altares e quiz ---------- */
   ativarAltar(a) {
-    if (a.aceso || this.pausado || this.terminou) return;
+    if (a.aceso || this.pausado || this.terminou || this._buscandoQuiz) return;
     if (a.tipo === "pedra" && !this.run.concluidos.has("boneco")) {
       if (!this._avisoBoneco) { this.toast("Primeiro derrote o boneco de treino."); this._avisoBoneco = true; this.time.delayedCall(3000, () => this._avisoBoneco = false); }
       return;
     }
-    const perguntas = sortearPerguntas(a.temas, a.qtd, this.run.usadas);
-    perguntas.forEach((q) => this.run.usadas.add(q.id));
     this.pausado = true; this.physics.pause(); this.input.keyboard.enabled = false;
-    rodarQuiz({
-      nome: a.nome, perguntas,
+    const retomar = () => { this.input.keyboard.enabled = true; this.input.keyboard.resetKeys(); this.pausado = false; this.physics.resume(); INPUT.left = INPUT.right = false; };
+    const acenderAltar = () => {
+      a.aceso = true; this.run.concluidos.add(a.chave);
+      this.acender(a, false);
+      this.checkpoint = { x: a.x, y: 400 };
+      this.vida = this.vidaMax;
+      retomar();
+      this.atualizarHUD();
+      this.toast(a.tipo === "pedra" ? "Juramento feito. Vida restaurada e ponto de controle salvo." : `${a.nome} aceso. Vida restaurada e ponto de controle salvo.`);
+    };
+    const abrir = (perguntas, corrigir) => rodarQuiz({
+      nome: a.nome, perguntas, corrigir,
       onResposta: (q, idx, ok, pts) => {
         this.run.quizTotal++; if (ok) this.run.quizOk++;
         this.premiar(`quiz:${q.id}`, pts, ok ? PARAMS.xp.acerto : PARAMS.xp.erro, "quiz");
         this.run.tentativas.push({ q: q.id, v: q.versao || 1, r: idx, ok, pts, t: new Date().toISOString(), missao: this.id });
       },
-      onFim: () => {
-        a.aceso = true; this.run.concluidos.add(a.chave);
-        this.acender(a, false);
-        this.checkpoint = { x: a.x, y: 400 };
-        this.vida = this.vidaMax;
-        this.input.keyboard.enabled = true; this.input.keyboard.resetKeys(); this.pausado = false; this.physics.resume();
-        INPUT.left = INPUT.right = false;
-        this.atualizarHUD();
-        this.toast(a.tipo === "pedra" ? "Juramento feito. Vida restaurada e ponto de controle salvo." : `${a.nome} aceso. Vida restaurada e ponto de controle salvo.`);
-      }
+      onFim: acenderAltar
     });
+    if (!MODO_SERVIDOR) {
+      const perguntas = sortearPerguntas(a.temas, a.qtd, this.run.usadas);
+      perguntas.forEach((q) => this.run.usadas.add(q.id));
+      abrir(perguntas);
+      return;
+    }
+    // modo servidor: o servidor sorteia (sem gabarito) e corrige cada resposta
+    this._buscandoQuiz = true;
+    Api.fila.then(() => Api.req("POST", "/api/corrida/quiz", { corrida: CORRIDA, altar: a.chave }))
+      .then((r) => {
+        this._buscandoQuiz = false;
+        const pendentes = r.perguntas.filter((q) => !q.respondida);
+        if (!pendentes.length) { acenderAltar(); return; }
+        abrir(pendentes, (q, idx) => Api.req("POST", "/api/corrida/responder", { corrida: CORRIDA, pergunta: q.id, resposta: idx }));
+      })
+      .catch((e) => {
+        this._buscandoQuiz = false;
+        if (e.status === 401) return;
+        retomar();
+        this.player.setX(this.player.x + (this.player.x < a.x ? -90 : 90)); // sai de cima do marco para não reabrir em loop
+        this.toast(e.message, 4000);
+      });
   }
   acender(a, instant) {
     const y = a.brilhoY;
@@ -2172,7 +2263,14 @@ function abrirIntro(id) {
 }
 $("mi-back").addEventListener("click", () => closeModal("m-intro"));
 
-function iniciarMissao(id, retomada) {
+async function iniciarMissao(id, retomada) {
+  if (MODO_SERVIDOR && !retomada) {
+    try { const r = await Api.req("POST", "/api/corrida/iniciar", { missao: id }); CORRIDA = r.corrida; }
+    catch (e) { if (e.status !== 401) mostrarErro(e, e.status === 0 || e.status >= 500 ? () => iniciarMissao(id) : null); return; }
+  }
+  iniciarCena(id, retomada);
+}
+function iniciarCena(id, retomada) {
   missaoAtual = id;
   show("scr-game");
   $("toast").hidden = true;
@@ -2216,45 +2314,68 @@ $("md-resume").addEventListener("click", () => {
   const s = cena();
   game.scene.start("Missao", { id: s.id, retomada: { run: s.run, checkpoint: s.checkpoint } });
 });
-$("md-restart").addEventListener("click", () => { closeModal("m-defeat"); game.scene.start("Missao", { id: cena().id }); });
+$("md-restart").addEventListener("click", () => { closeModal("m-defeat"); iniciarMissao(cena().id); });
 
 async function concluirMissao(id, run) {
   game.scene.stop("Missao");
   const p = PERFIL;
-  const prev = p.missoes[id] || { concluida: false, melhor: null, tentativas: 0 };
-  const repeticao = prev.concluida;
-  const tempo = Math.round((Date.now() - run.inicio) / 1000);
-  const xpGanho = Math.round(run.xp * (repeticao ? PARAMS.xpRepeticao : 1));
-  const patAntes = patenteIndex(p);
-  const opcionais = [...run.eventos].filter((e) => e.startsWith("col:") || e.startsWith("mor:")).length;
-  const atual = { pontos: run.pontos, opcionais, tempo, quiz: `${run.quizOk}/${run.quizTotal}`, em: new Date().toISOString() };
-  const melhorou = !prev.melhor || atual.pontos > prev.melhor.pontos || (atual.pontos === prev.melhor.pontos && (atual.opcionais > prev.melhor.opcionais || atual.tempo < prev.melhor.tempo));
-  p.missoes[id] = { concluida: true, melhor: melhorou ? atual : prev.melhor, tentativas: (prev.tentativas || 0) + 1 };
-  p.xp += xpGanho;
-  p.tentativasQuiz = (p.tentativasQuiz || []).concat(run.tentativas).slice(-300);
-  const patDepois = patenteIndex(p);
+  let res;
+  if (MODO_SERVIDOR) {
+    $("r-saved").textContent = "";
+    try {
+      await Api.fila;
+      const eventos = [...run.eventos].filter((e) => !e.startsWith("quiz:") && e !== "objetivo:principal");
+      if (run.concluidos.has("boneco")) eventos.push("boneco");
+      const r = await Api.req("POST", "/api/corrida/concluir", { corrida: CORRIDA, eventos });
+      PERFIL = perfilDoServidor(r.perfil);
+      const R = r.resultado;
+      res = { pontos: R.pontos, xp: R.xp, linhas: R.linhas, quizOk: R.quizOk, quizTotal: R.quizTotal, tempo: R.tempo,
+        repeticao: R.repeticao, melhorou: R.melhorou, melhorAnterior: R.melhorAnterior, patAntes: r.patenteAntes, patDepois: r.patenteDepois,
+        salvo: "Resultado conferido e salvo no servidor do Farol. O ranking já está atualizado." };
+      CORRIDA = null;
+      carregarRankingServidor();
+    } catch (e) {
+      if (e.status === 401) return;
+      mostrarErro(e, e.status === 0 || e.status >= 500 ? () => concluirMissao(id, run) : null);
+      return;
+    }
+  } else {
+    const prev = p.missoes[id] || { concluida: false, melhor: null, tentativas: 0 };
+    const repeticao = prev.concluida;
+    const tempo = Math.round((Date.now() - run.inicio) / 1000);
+    const xpGanho = Math.round(run.xp * (repeticao ? PARAMS.xpRepeticao : 1));
+    const patAntes = patenteIndex(p);
+    const opcionais = [...run.eventos].filter((e) => e.startsWith("col:") || e.startsWith("mor:")).length;
+    const atual = { pontos: run.pontos, opcionais, tempo, quiz: `${run.quizOk}/${run.quizTotal}`, em: new Date().toISOString() };
+    const melhorou = !prev.melhor || atual.pontos > prev.melhor.pontos || (atual.pontos === prev.melhor.pontos && (atual.opcionais > prev.melhor.opcionais || atual.tempo < prev.melhor.tempo));
+    p.missoes[id] = { concluida: true, melhor: melhorou ? atual : prev.melhor, tentativas: (prev.tentativas || 0) + 1 };
+    p.xp += xpGanho;
+    p.tentativasQuiz = (p.tentativasQuiz || []).concat(run.tentativas).slice(-300);
+    res = { pontos: run.pontos, xp: xpGanho, linhas: run.linhas, quizOk: run.quizOk, quizTotal: run.quizTotal, tempo, repeticao, melhorou,
+      melhorAnterior: prev.melhor ? prev.melhor.pontos : null, patAntes, patDepois: patenteIndex(p), salvo: null };
+  }
 
   // tela de resultado
-  const F = FASES[id];
+  const F = FASES[id], L = res.linhas;
   $("r-kicker").textContent = `${F.kicker} concluída`;
   $("r-title").textContent = F.titulo;
-  $("r-pts").textContent = run.pontos;
-  $("r-best").textContent = melhorou ? (prev.melhor ? `Novo recorde (antes: ${prev.melhor.pontos}).` : "Primeiro resultado registrado.") : `Seu recorde continua ${prev.melhor.pontos}.`;
-  $("r-xp").textContent = `+${xpGanho}`;
-  $("r-xpnote").textContent = repeticao ? `Repetição: ${PARAMS.xpRepeticao * 100}% do XP.` : `Total: ${p.xp} XP.`;
-  $("r-quiz").textContent = `${run.quizOk}/${run.quizTotal}`;
-  $("r-time").textContent = fmtTime(tempo);
+  $("r-pts").textContent = res.pontos;
+  $("r-best").textContent = res.melhorou ? (res.melhorAnterior !== null ? `Novo recorde (antes: ${res.melhorAnterior}).` : "Primeiro resultado registrado.") : `Seu recorde continua ${res.melhorAnterior}.`;
+  $("r-xp").textContent = `+${res.xp}`;
+  $("r-xpnote").textContent = res.repeticao ? `Repetição: ${PARAMS.xpRepeticao * 100}% do XP.` : `Total: ${PERFIL.xp} XP.`;
+  $("r-quiz").textContent = `${res.quizOk}/${res.quizTotal}`;
+  $("r-time").textContent = fmtTime(res.tempo);
   const bd = $("r-breakdown"); bd.innerHTML = "";
-  [["Quiz", run.linhas.quiz], ...(FASES[id].chefe ? [["Mestre derrotado", run.linhas.chefe || 0]] : []), ["Objetivo principal", run.linhas.objetivos], ["Objetivos opcionais", run.linhas.opcionais], [`Inimigos (teto ${PARAMS.tetoInimigos})`, run.linhas.inimigos], ["Total", run.pontos]].forEach(([a, b]) => {
+  [["Quiz", L.quiz], ...(F.chefe ? [["Mestre derrotado", L.chefe || 0]] : []), ["Objetivo principal", L.objetivos], ["Objetivos opcionais", L.opcionais], [`Inimigos (teto ${PARAMS.tetoInimigos})`, L.inimigos], ["Total", res.pontos]].forEach(([a, b]) => {
     const tr = document.createElement("tr"); tr.innerHTML = "<td></td><td class='num'></td>"; tr.children[0].textContent = a; tr.children[1].textContent = b;
     if (a === "Total") tr.style.fontWeight = "600";
     bd.appendChild(tr);
   });
   const promo = $("r-promo"); promo.innerHTML = "";
-  if (patDepois > patAntes) {
+  if (res.patDepois > res.patAntes) {
     const d = document.createElement("div"); d.className = "promo";
     d.innerHTML = `<span class="label">Nova patente</span><b></b><span class="hint"></span>`;
-    d.querySelector("b").textContent = PATENTES[patDepois].nome;
+    d.querySelector("b").textContent = PATENTES[res.patDepois].nome;
     d.querySelector(".hint").textContent = "A luz ficou um pouco mais forte.";
     promo.appendChild(d);
   }
@@ -2264,9 +2385,10 @@ async function concluirMissao(id, run) {
   if (next && next.prova) { nb.hidden = false; nb.textContent = "Ir para a prova final"; nb.onclick = abrirProva; }
   else if (next && next.jogavel) { nb.hidden = false; nb.textContent = `Próxima: ${next.nome}`; nb.onclick = () => abrirIntro(next.id); }
   else { nb.hidden = true; }
-  $("r-saved").textContent = "Salvando…";
   show("scr-result");
+  if (res.salvo) { $("r-saved").textContent = res.salvo; return; }
 
+  $("r-saved").textContent = "Salvando…";
   const onde = await Store.salvarPerfil(p);
   const entrou = await Store.publicarRanking(entradaRanking(p));
   $("r-saved").textContent = onde === "online"
@@ -2320,9 +2442,24 @@ function abrirProva() {
   $("pv-espera").textContent = espera ? `Nova tentativa liberada em ${espera.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}.` : "";
   b.textContent = pv.aprovada ? "Refazer a prova (treino)" : "Começar a prova";
 }
-function iniciarProva() {
-  if (provaEspera(PERFIL)) return;
-  PROVA = { qs: montarProva(), i: 0, resp: [], sel: null, armadoEm: 0, treino: !!provaDe(PERFIL).aprovada };
+async function iniciarProva() {
+  if (MODO_SERVIDOR) {
+    $("pv-start").disabled = true;
+    try {
+      const r = await Api.req("POST", "/api/prova/iniciar");
+      PROVA = { id: r.prova, qs: r.perguntas, i: 0, resp: [], sel: null, armadoEm: 0, treino: !!provaDe(PERFIL).aprovada };
+    } catch (e) {
+      $("pv-start").disabled = false;
+      $("pv-espera").textContent = e.dados && e.dados.liberaEm
+        ? `Nova tentativa liberada em ${new Date(e.dados.liberaEm).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}.`
+        : e.message;
+      return;
+    }
+    $("pv-start").disabled = false;
+  } else {
+    if (provaEspera(PERFIL)) return;
+    PROVA = { qs: montarProva(), i: 0, resp: [], sel: null, armadoEm: 0, treino: !!provaDe(PERFIL).aprovada };
+  }
   $("pv-intro").hidden = true; $("pv-exec").hidden = false;
   renderProva();
 }
@@ -2375,60 +2512,78 @@ $("pv-res-back").addEventListener("click", renderCentral);
 $("pv-sair").addEventListener("click", () => { PROVA = null; renderCentral(); });
 
 async function finalizarProva() {
-  const S = PROVA, p = PERFIL, pv = provaDe(p), P = PARAMS.prova;
-  const acertos = S.resp.filter((r) => r.ok).length, total = S.resp.length, nota = acertos / total;
-  const aprovado = nota >= P.notaMinima;
-  const patAntes = patenteIndex(p);
-  pv.tentativas.push({ em: new Date().toISOString(), acertos, total, nota, aprovado, treino: S.treino, respostas: S.resp.map((r) => ({ q: r.q.id, v: r.q.versao || 1, r: r.idx, ok: r.ok })) });
-  pv.tentativas = pv.tentativas.slice(-20);
-  if (aprovado && !pv.aprovada) {
-    pv.aprovada = true; p.provaAprovada = true;
-    p.missoes.final = { concluida: true, melhor: null, tentativas: pv.tentativas.length };
+  const S = PROVA, P = PARAMS.prova;
+  let G; // resultado corrigido: { acertos, total, nota, aprovado, revisao[], patAntes, patDepois, salvo }
+  if (MODO_SERVIDOR) {
+    $("pv-ok").disabled = true;
+    try {
+      const r = await Api.req("POST", "/api/prova/enviar", { prova: S.id, respostas: S.resp.map((x) => ({ pergunta: x.q.id, resposta: x.idx })) });
+      PERFIL = perfilDoServidor(r.perfil);
+      G = { acertos: r.acertos, total: r.total, nota: r.nota, aprovado: r.aprovado, revisao: r.revisao, patAntes: r.patenteAntes, patDepois: r.patenteDepois, salvo: "Resultado corrigido e salvo no servidor do Farol." };
+      carregarRankingServidor();
+    } catch (e) {
+      $("pv-ok").disabled = false;
+      if (e.status !== 401) mostrarErro(e, () => finalizarProva());
+      return;
+    }
+  } else {
+    const p = PERFIL, pv = provaDe(p);
+    const acertos = S.resp.filter((r) => r.ok).length, total = S.resp.length, nota = acertos / total;
+    const aprovado = nota >= P.notaMinima;
+    const patAntes = patenteIndex(p);
+    pv.tentativas.push({ em: new Date().toISOString(), acertos, total, nota, aprovado, treino: S.treino, respostas: S.resp.map((r) => ({ q: r.q.id, v: r.q.versao || 1, r: r.idx, ok: r.ok })) });
+    pv.tentativas = pv.tentativas.slice(-20);
+    if (aprovado && !pv.aprovada) {
+      pv.aprovada = true; p.provaAprovada = true;
+      p.missoes.final = { concluida: true, melhor: null, tentativas: pv.tentativas.length };
+    }
+    G = { acertos, total, nota, aprovado, patAntes, patDepois: patenteIndex(p), salvo: null,
+      revisao: S.resp.map((r) => ({ pergunta: r.q.pergunta, alternativas: r.q.alternativas, resposta: r.idx, correta: r.q.correta, ok: r.ok, explicacao: r.q.explicacao })) };
   }
-  const patDepois = patenteIndex(p);
   PROVA = null;
 
   $("pv-exec").hidden = true; $("pv-res").hidden = false;
-  $("pv-nota").textContent = `${Math.round(nota * 100)}%`;
-  $("pv-acertos").textContent = `${acertos} de ${total} acertos`;
+  $("pv-nota").textContent = `${Math.round(G.nota * 100)}%`;
+  $("pv-acertos").textContent = `${G.acertos} de ${G.total} acertos`;
   const v = $("pv-veredito");
-  v.className = "verdict " + (aprovado ? "ok" : "no");
-  v.textContent = aprovado ? "Aprovado." : `Ainda não. A nota mínima é ${Math.round(P.notaMinima * 100)}%.`;
+  v.className = "verdict " + (G.aprovado ? "ok" : "no");
+  v.textContent = G.aprovado ? "Aprovado." : `Ainda não. A nota mínima é ${Math.round(P.notaMinima * 100)}%.`;
   const promo = $("pv-promo"); promo.innerHTML = "";
-  if (patDepois > patAntes) {
+  if (G.patDepois > G.patAntes) {
     const d = document.createElement("div"); d.className = "promo";
     d.innerHTML = `<span class="label">Patente máxima</span><b></b><span class="hint"></span>`;
-    d.querySelector("b").textContent = PATENTES[patDepois].nome;
+    d.querySelector("b").textContent = PATENTES[G.patDepois].nome;
     d.querySelector(".hint").textContent = "Luz firme, madeira de lei e olho aberto. Agora vá abrir os olhos de uma pessoa por mês.";
     promo.appendChild(d);
-  } else if (!aprovado) {
+  } else if (!G.aprovado) {
     const libera = new Date(Date.now() + P.intervaloHoras * 3600e3);
     const d = document.createElement("p"); d.className = "hint";
     d.textContent = `Seu progresso na campanha continua guardado. Revise as explicações abaixo e tente de novo a partir de ${libera.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}.`;
     promo.appendChild(d);
   }
   const lista = $("pv-revisao"); lista.innerHTML = "";
-  S.resp.forEach((r, k) => {
+  G.revisao.forEach((r, k) => {
     const det = document.createElement("details");
     det.className = "rev " + (r.ok ? "ok" : "no");
     if (!r.ok) det.open = true;
     det.innerHTML = `<summary><span class="rv-n"></span><span class="rv-q"></span></summary><p class="rv-a"></p><p class="rv-c"></p><p class="rv-e"></p>`;
     det.querySelector(".rv-n").textContent = `${k + 1}. ${r.ok ? "✓" : "✗"}`;
-    det.querySelector(".rv-q").textContent = r.q.pergunta;
-    det.querySelector(".rv-a").textContent = `Sua resposta: ${r.q.alternativas[r.idx]}`;
-    det.querySelector(".rv-c").textContent = r.ok ? "" : `Correta: ${r.q.alternativas[r.q.correta]}`;
-    det.querySelector(".rv-e").textContent = r.q.explicacao;
+    det.querySelector(".rv-q").textContent = r.pergunta;
+    det.querySelector(".rv-a").textContent = `Sua resposta: ${r.resposta >= 0 ? r.alternativas[r.resposta] : "(sem resposta)"}`;
+    det.querySelector(".rv-c").textContent = r.ok ? "" : `Correta: ${r.alternativas[r.correta]}`;
+    det.querySelector(".rv-e").textContent = r.explicacao;
     lista.appendChild(det);
   });
+  if (G.salvo) { $("pv-salvo").textContent = G.salvo; return; }
   $("pv-salvo").textContent = "Salvando…";
-  const onde = await Store.salvarPerfil(p);
-  if (patDepois !== patAntes) await Store.publicarRanking(entradaRanking(p));
+  const onde = await Store.salvarPerfil(PERFIL);
+  if (G.patDepois !== G.patAntes) await Store.publicarRanking(entradaRanking(PERFIL));
   $("pv-salvo").textContent = onde === "online" ? "Resultado salvo na sua conta." : "Resultado salvo neste navegador (modo local).";
 }
 
 $("r-central").addEventListener("click", renderCentral);
-$("r-ranking").addEventListener("click", () => { renderRanking(); show("scr-ranking"); });
-$("btn-ranking").addEventListener("click", () => { renderRanking(); show("scr-ranking"); });
+$("r-ranking").addEventListener("click", () => abrirRanking());
+$("btn-ranking").addEventListener("click", () => abrirRanking());
 $("k-back").addEventListener("click", renderCentral);
 $("btn-settings").addEventListener("click", () => { $("ms-serio").checked = !!PERFIL.modoSerio; $("ms-touch").checked = document.body.classList.contains("touchmode"); openModal("m-settings"); });
 $("ms-serio").addEventListener("change", (e) => { PERFIL.modoSerio = e.target.checked; Store.salvarPerfil(PERFIL); });
@@ -2443,10 +2598,151 @@ document.addEventListener("keydown", (e) => {
 });
 
 /* =====================================================================
+   MODO SERVIDOR (VPS): contas, partidas validadas, quiz corrigido no servidor,
+   ranking real e prova final. No artefato/arquivo local, MODO_SERVIDOR = false.
+   ===================================================================== */
+let CORRIDA = null;               // partida atual no servidor
+const Api = {
+  fila: Promise.resolve(),        // eventos de jogo vão em ordem; quiz e conclusão esperam a fila
+  async req(metodo, url, corpo) {
+    let r;
+    try {
+      r = await fetch(url, {
+        method: metodo, credentials: "same-origin",
+        headers: { "Content-Type": "application/json", "X-Requested-With": "farol" },
+        body: corpo ? JSON.stringify(corpo) : undefined
+      });
+    } catch (e) { const err = new Error("Sem conexão com o servidor. Verifique a internet e tente de novo."); err.status = 0; throw err; }
+    let dados = {};
+    try { dados = await r.json(); } catch (e) { /* resposta sem JSON */ }
+    if (!r.ok) {
+      const err = new Error(dados.erro || `Erro ${r.status}`); err.status = r.status; err.dados = dados;
+      if (r.status === 401 && !/\/api\/(login|cadastro|redefinir|eu\/excluir)$/.test(url) && PERFIL) sessaoExpirada();
+      throw err;
+    }
+    return dados;
+  },
+  evento(evento) {
+    if (!CORRIDA) return;
+    const corrida = CORRIDA;
+    this.fila = this.fila.then(() => this.req("POST", "/api/corrida/evento", { corrida, evento })).catch(() => { /* reenviado na conclusão */ });
+  }
+};
+function perfilDoServidor(p) { return Object.assign(novoPerfil(p.apelido), p, { missoes: p.missoes || {}, tentativasQuiz: [] }); }
+function sessaoExpirada() {
+  PERFIL = null; CORRIDA = null;
+  try { if (game) game.scene.stop("Missao"); } catch (e) { /* cena já parada */ }
+  document.querySelectorAll(".modal").forEach((m) => { m.hidden = true; });
+  mostrarConta("entrar", "Sua sessão terminou. Entre de novo.");
+}
+let _tentarDeNovo = null;
+function mostrarErro(e, tentar) {
+  $("me-txt").textContent = e && e.message ? e.message : "Tente de novo em instantes.";
+  _tentarDeNovo = tentar || null;
+  $("me-tentar").hidden = !tentar;
+  openModal("m-erro");
+}
+$("me-tentar").addEventListener("click", () => { closeModal("m-erro"); const f = _tentarDeNovo; _tentarDeNovo = null; if (f) f(); });
+$("me-voltar").addEventListener("click", () => { closeModal("m-erro"); _tentarDeNovo = null; try { if (game) game.scene.stop("Missao"); } catch (e) { /* ok */ } renderCentral(); });
+async function carregarRankingServidor() {
+  try { const r = await Api.req("GET", "/api/ranking"); RANKING = r.linhas; Store.uid = r.eu; }
+  catch (e) { if (e.status !== 401) RANKING = RANKING || null; }
+  if (!$("scr-ranking").hidden) renderRanking();
+  if (!$("scr-central").hidden) $("c-pos").textContent = posicaoNoRanking() || "—";
+}
+function abrirRanking() { renderRanking(); show("scr-ranking"); if (MODO_SERVIDOR) carregarRankingServidor(); }
+
+/* ---------- tela de conta ---------- */
+let abaConta = "entrar";
+function mostrarConta(aba, aviso) {
+  abaConta = aba;
+  document.querySelectorAll("#form-conta .tab").forEach((t) => { const on = t.dataset.aba === aba; t.classList.toggle("ativo", on); t.setAttribute("aria-selected", String(on)); });
+  document.querySelectorAll("#form-conta [data-so]").forEach((el) => { el.hidden = el.dataset.so !== aba; });
+  $("ct-senha-rot").textContent = aba === "esqueci" ? "Nova senha" : "Senha";
+  $("ct-senha").autocomplete = aba === "entrar" ? "current-password" : "new-password";
+  $("ct-ok").textContent = aba === "entrar" ? "Entrar" : aba === "criar" ? "Criar conta e jogar" : "Redefinir a senha";
+  $("ct-err").textContent = aviso || "";
+  $("ct-hint").textContent = aba === "criar" ? "Senha com pelo menos 8 caracteres. O apelido aparece no ranking."
+    : aba === "esqueci" ? "Peça um código a um administrador do Farol (ele gera pelo servidor). O código vale 24 horas."
+    : "Seu progresso fica salvo no servidor do Farol e vale para o ranking.";
+  show("scr-home");
+}
+document.querySelectorAll("#form-conta .tab").forEach((t) => t.addEventListener("click", () => mostrarConta(t.dataset.aba)));
+$("ct-priv").addEventListener("click", (e) => { e.preventDefault(); openModal("m-priv"); });
+$("mpv-ok").addEventListener("click", () => closeModal("m-priv"));
+$("form-conta").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const apelido = $("ct-apelido").value.trim(), senha = $("ct-senha").value;
+  const erroAp = abaConta === "criar" ? validarApelido(apelido) : (apelido ? "" : "Informe seu apelido.");
+  if (erroAp) { $("ct-err").textContent = erroAp; $("ct-apelido").focus(); return; }
+  if (senha.length < (abaConta === "entrar" ? 1 : 8)) { $("ct-err").textContent = abaConta === "entrar" ? "Informe sua senha." : "A senha precisa de pelo menos 8 caracteres."; $("ct-senha").focus(); return; }
+  if (abaConta === "criar" && !$("ct-aceite").checked) { $("ct-err").textContent = "Para criar a conta, aceite a política de privacidade."; return; }
+  $("ct-ok").disabled = true; $("ct-err").textContent = "";
+  try {
+    if (abaConta === "esqueci") {
+      await Api.req("POST", "/api/redefinir", { apelido, codigo: $("ct-codigo").value.trim(), novaSenha: senha });
+      $("ct-senha").value = ""; mostrarConta("entrar", "");
+      $("ct-hint").textContent = "Senha redefinida. Entre com a nova senha.";
+      return;
+    }
+    const r = abaConta === "criar"
+      ? await Api.req("POST", "/api/cadastro", { apelido, senha, email: $("ct-email").value.trim() || null, aceite: true })
+      : await Api.req("POST", "/api/login", { apelido, senha });
+    $("ct-senha").value = "";
+    entrarComPerfil(r.perfil);
+  } catch (err) {
+    $("ct-err").textContent = err.message;
+  } finally { $("ct-ok").disabled = false; }
+});
+function entrarComPerfil(p) {
+  PERFIL = perfilDoServidor(p);
+  Store.online = true; Store.podeRanking = true; Store.uid = PERFIL.id;
+  $("btn-sair").hidden = false; $("ms-conta").hidden = false;
+  renderCentral();
+  carregarRankingServidor();
+}
+$("btn-sair").addEventListener("click", async () => {
+  try { await Api.req("POST", "/api/sair"); } catch (e) { /* sai mesmo assim */ }
+  PERFIL = null; RANKING = null; CORRIDA = null;
+  mostrarConta("entrar", "");
+});
+$("ms-excluir").addEventListener("click", async () => {
+  const senha = $("ms-senha").value;
+  if (!senha) { $("ms-err").textContent = "Digite sua senha para confirmar."; return; }
+  if (!$("ms-excluir").dataset.confirmar) { $("ms-excluir").dataset.confirmar = "1"; $("ms-excluir").textContent = "Confirmar: excluir para sempre"; $("ms-err").textContent = "Isso apaga sua conta, seu progresso e sua posição no ranking. Não dá para desfazer."; return; }
+  try {
+    await Api.req("POST", "/api/eu/excluir", { senha });
+    closeModal("m-settings");
+    PERFIL = null; RANKING = null;
+    mostrarConta("criar", "Conta excluída. Seus dados foram apagados.");
+  } catch (err) { $("ms-err").textContent = err.message; }
+  finally { delete $("ms-excluir").dataset.confirmar; $("ms-excluir").textContent = "Excluir minha conta"; $("ms-senha").value = ""; }
+});
+
+if (MODO_SERVIDOR) {
+  Object.assign(Store, {
+    async init() { return this; },
+    async carregarPerfil() { return null; },
+    async salvarPerfil(p) {
+      try { const r = await Api.req("POST", "/api/eu/prefs", { modoSerio: !!p.modoSerio }); return "online"; }
+      catch (e) { return "erro"; }
+    },
+    async publicarRanking() { return true; },
+    ouvirRanking() { carregarRankingServidor(); return () => {}; }
+  });
+}
+
+/* =====================================================================
    INÍCIO
    ===================================================================== */
 async function boot() {
   aplicarToque(lsGet("farol.toque", isTouch));
+  if (MODO_SERVIDOR) {
+    $("form-signin").hidden = true; $("form-conta").hidden = false;
+    try { const r = await Api.req("GET", "/api/eu"); entrarComPerfil(r.perfil); }
+    catch (e) { mostrarConta("entrar", e.status === 0 ? e.message : ""); }
+    return;
+  }
   $("btn-start").disabled = true;
   await Store.init();
   PERFIL = await Store.carregarPerfil();

@@ -3,3 +3,6 @@ __pycache__/
 .DS_Store
 Thumbs.db
 saida-testes/
+servidor/dados/
+servidor/node_modules/
+dados-teste/

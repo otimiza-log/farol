@@ -1,0 +1,15 @@
+{
+  "name": "farol-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "API do jogo Farol da Liberdade: contas, progresso, ranking e prova final",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node iniciar.mjs",
+    "test": "node --test teste/*.test.mjs"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^11.10.0"
+  }
+}

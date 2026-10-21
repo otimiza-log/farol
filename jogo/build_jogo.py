@@ -1,11 +1,17 @@
-"""Gera jogo/farol-da-liberdade.html (artefato claude.ai) e jogo/index.html (servidores comuns, ex.: VPS).
+"""Gera as duas versões do jogo a partir do template e dos bancos de perguntas.
 
 Uso:  python jogo/build_jogo.py
 Edite as perguntas nos JSONs de conteudo/ e rode de novo: o jogo não precisa de mudança no código.
 
-O jogo recebe o banco inteiro:
-- módulo Manifesto: usado pelas missões 0 a 6 (por tema) e pela prova final (sorteio entre todos os princípios);
-- módulo Cultura Faroleira: usado pela Missão 7; o tema ganha o prefixo "Cultura · " para não colidir com os
+- jogo/farol-da-liberdade.html: artefato do claude.ai e jogo offline. Leva o banco inteiro (com gabarito)
+  e funciona sozinho, salvando no navegador (ou no banco do artefato).
+- jogo/offline.html: o mesmo jogo offline como documento completo (bom para celular). Contém o gabarito.
+- jogo/index.html: versão da VPS (modo servidor). Não leva banco nem gabarito: o servidor (pasta servidor/)
+  sorteia as perguntas, corrige as respostas e calcula pontos, XP, patentes e ranking.
+
+O banco tem dois módulos:
+- Manifesto: missões 0 a 6 (por tema) e prova final (sorteio entre todos os princípios);
+- Cultura Faroleira: Missão 7; o tema ganha o prefixo "Cultura · " para não colidir com os
   temas do Manifesto (os dois módulos têm um tema "Identidade").
 """
 import json, os
@@ -33,28 +39,46 @@ mensagens = ler('quiz-mensagens.json')
 msg = {k: mensagens[k] for k in ('acerto', 'erro', 'sequencia')}
 
 with open(os.path.join(AQUI, 'farol-template.html'), encoding='utf-8') as f:
-    html = f.read()
+    template = f.read()
 
-dump = lambda o: json.dumps(o, ensure_ascii=False).replace('</', '<\\/')
-assert '/*__BANCO__*/[]' in html and '/*__MSG__*/{}' in html
-html = html.replace('/*__BANCO__*/[]', dump(banco)).replace('/*__MSG__*/{}', dump(msg))
+def dump(o):
+    return json.dumps(o, ensure_ascii=False).replace('</', '<\\/')
 
-# 1) versão para o artefato do claude.ai (o claude.ai acrescenta <head> e viewport ao publicar)
+for marca in ('/*__BANCO__*/[]', '/*__MSG__*/{}', '/*__SERVIDOR__*/false'):
+    assert marca in template, f'marca {marca} não encontrada no template'
+
+# 1) artefato do claude.ai / offline (o claude.ai acrescenta <head> e viewport ao publicar)
+html = template.replace('/*__BANCO__*/[]', dump(banco)).replace('/*__MSG__*/{}', dump(msg))
 saida = os.path.join(AQUI, 'farol-da-liberdade.html')
 with open(saida, 'w', encoding='utf-8') as f:
     f.write(html)
 
-# 2) versão completa para qualquer servidor (VPS, GitHub Pages): documento com <head> e viewport de celular
-corte = html.index('<!-- ============ TELA: INÍCIO')
-cabeca, corpo = html[:corte], html[corte:]
-standalone = ('<!doctype html>\n<html lang="pt-BR">\n<head>\n<meta charset="utf-8">\n'
-              '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
-              '<meta name="theme-color" content="#110e0b">\n'
-              '<meta name="mobile-web-app-capable" content="yes">\n'
-              '<meta name="apple-mobile-web-app-capable" content="yes">\n'
-              '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n'
-              + cabeca + '</head>\n<body>\n' + corpo + '</body>\n</html>\n')
+def documento(corpo_html):
+    """documento completo com <head> e viewport de celular (no artefato, o claude.ai faz isso sozinho)"""
+    corte = corpo_html.index('<!-- ============ TELA: INÍCIO')
+    cabeca, corpo = corpo_html[:corte], corpo_html[corte:]
+    return ('<!doctype html>\n<html lang="pt-BR">\n<head>\n<meta charset="utf-8">\n'
+            '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
+            '<meta name="theme-color" content="#110e0b">\n'
+            '<meta name="mobile-web-app-capable" content="yes">\n'
+            '<meta name="apple-mobile-web-app-capable" content="yes">\n'
+            '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">\n'
+            + cabeca + '</head>\n<body>\n' + corpo + '</body>\n</html>\n')
+
+# 2) VPS (modo servidor): sem banco e sem gabarito
+html_servidor = (template.replace('/*__BANCO__*/[]', '[]')
+                 .replace('/*__MSG__*/{}', dump(msg))
+                 .replace('/*__SERVIDOR__*/false', 'true'))
 index = os.path.join(AQUI, 'index.html')
 with open(index, 'w', encoding='utf-8') as f:
-    f.write(standalone)
-print(f'{len(banco)} perguntas ({len(manifesto["perguntas"])} manifesto + {len(cultura["perguntas"])} cultura) -> {saida} e {index}')
+    f.write(documento(html_servidor))
+
+# 3) offline com viewport de celular (abrir direto no navegador). NÃO publicar na VPS: contém o gabarito.
+offline = os.path.join(AQUI, 'offline.html')
+with open(offline, 'w', encoding='utf-8') as f:
+    f.write(documento(html))
+
+print(f'{len(banco)} perguntas ({len(manifesto["perguntas"])} manifesto + {len(cultura["perguntas"])} cultura)')
+print(f'  artefato: {saida}')
+print(f'  offline (celular): {offline}')
+print(f'  VPS (modo servidor, sem gabarito): {index}')

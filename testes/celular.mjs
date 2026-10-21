@@ -1,12 +1,13 @@
 // Teste de celular (toque real via CDP) sobre jogo/index.html
 import { spawn } from "node:child_process";
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, rmSync } from "node:fs";
 import path from "node:path";
 import os from "node:os";
 
 const [, , htmlPath, outDir, chrome] = process.argv;
 mkdirSync(outDir, { recursive: true });
 const port = 9337;
+rmSync(path.join(os.tmpdir(), "farol-e2e-mob"), { recursive: true, force: true }); // perfil limpo a cada execução
 const proc = spawn(chrome, ["--headless=new", `--remote-debugging-port=${port}`, `--user-data-dir=${path.join(os.tmpdir(), "farol-e2e-mob")}`, "--no-first-run", "about:blank"], { stdio: "ignore" });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let targets;

@@ -73,6 +73,9 @@ h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-
 .signin { display: grid; gap: 10px; max-width: 460px; }
 .signin input { background: var(--ink); border: 1px solid var(--line); color: var(--bone); padding: 11px 12px; font: inherit; font-size: 16px; border-radius: 3px; width: 100%; }
 .hint { font-size: 13px; color: var(--muted); margin: 0; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tab { border: 1px solid var(--line); background: transparent; padding: 7px 12px; border-radius: 3px; font-family: var(--hud); letter-spacing: .08em; text-transform: uppercase; font-size: 13px; color: var(--muted); }
+.tab.ativo { color: var(--bone); border-color: var(--ember); background: rgba(232,163,61,.1); }
 .err { color: var(--bad); font-size: 13px; margin: 0; min-height: 1.2em; }
 
 /* ---------- central ---------- */
@@ -239,6 +242,29 @@ details.rules ul { margin: 10px 0 0; padding-left: 18px; color: #d9cdb9; font-si
       <div class="row"><button class="btn primary" type="submit" id="btn-start">Iniciar jornada</button></div>
       <p class="hint" id="mode-hint">Conectando ao ranking…</p>
     </form>
+    <form class="signin" id="form-conta" novalidate hidden>
+      <div class="tabs" role="tablist" aria-label="Conta">
+        <button type="button" class="tab ativo" role="tab" aria-selected="true" data-aba="entrar">Entrar</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-aba="criar">Criar conta</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-aba="esqueci">Esqueci a senha</button>
+      </div>
+      <label class="label" for="ct-apelido">Apelido</label>
+      <input id="ct-apelido" maxlength="16" autocomplete="username" placeholder="Ex.: Lanterna_SP">
+      <div data-so="esqueci" style="display:grid;gap:8px" hidden>
+        <label class="label" for="ct-codigo">Código de redefinição</label>
+        <input id="ct-codigo" maxlength="12" autocomplete="one-time-code" placeholder="Peça o código a um administrador do Farol">
+      </div>
+      <label class="label" for="ct-senha" id="ct-senha-rot">Senha</label>
+      <input id="ct-senha" type="password" maxlength="128" autocomplete="current-password">
+      <div data-so="criar" style="display:grid;gap:10px" hidden>
+        <label class="label" for="ct-email">E-mail (opcional, para recuperar a senha)</label>
+        <input id="ct-email" type="email" maxlength="120" autocomplete="email">
+        <label class="switch" style="align-items:flex-start"><input type="checkbox" id="ct-aceite" style="margin-top:4px"> <span>Li e aceito a <a href="#privacidade" id="ct-priv" style="color:var(--ember)">política de privacidade</a>. Tenho 18 anos ou mais, ou autorização do meu responsável.</span></label>
+      </div>
+      <p class="err" id="ct-err" role="alert"></p>
+      <div class="row"><button class="btn primary" type="submit" id="ct-ok">Entrar</button></div>
+      <p class="hint" id="ct-hint">Seu progresso fica salvo no servidor do Farol e vale para o ranking.</p>
+    </form>
   </div>
 </section>
 
@@ -250,6 +276,7 @@ details.rules ul { margin: 10px 0 0; padding-left: 18px; color: #d9cdb9; font-si
       <div class="row">
         <button class="btn" id="btn-ranking">Ranking</button>
         <button class="btn" id="btn-settings">Ajustes</button>
+        <button class="btn" id="btn-sair" hidden>Sair</button>
       </div>
     </div>
 
@@ -446,12 +473,38 @@ details.rules ul { margin: 10px 0 0; padding-left: 18px; color: #d9cdb9; font-si
   </div>
 </div>
 
+<div class="modal" id="m-priv" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mpv-title">
+    <h2 id="mpv-title">Política de privacidade</h2>
+    <p>O jogo guarda apenas o necessário para funcionar: seu <b>apelido</b>, sua <b>senha</b> (cifrada, nunca em texto aberto), o <b>e-mail</b>, se você informar, e o seu <b>progresso</b> (missões, pontos, XP, patente e respostas do quiz e da prova).</p>
+    <p>O apelido, a patente e os pontos aparecem no <b>ranking público</b>. O e-mail não aparece para ninguém e só serve para recuperar a senha. Também registramos o endereço IP em tentativas de login, para proteger as contas.</p>
+    <p>Os dados ficam no servidor do Farol da Liberdade e não são vendidos nem compartilhados. Você pode <b>excluir sua conta e todos os dados</b> a qualquer momento em Ajustes.</p>
+    <div class="row"><button class="btn primary" id="mpv-ok">Entendi</button></div>
+  </div>
+</div>
+
+<div class="modal" id="m-erro" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="me-title">
+    <h2 id="me-title">Não deu para falar com o servidor</h2>
+    <p id="me-txt"></p>
+    <div class="row"><button class="btn primary" id="me-tentar">Tentar de novo</button><button class="btn" id="me-voltar">Voltar à central</button></div>
+  </div>
+</div>
+
 <div class="modal" id="m-settings" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ms-title">
     <h2 id="ms-title">Ajustes</h2>
     <label class="switch"><input type="checkbox" id="ms-serio"> Modo sério (sem comentários cômicos no quiz)</label>
     <label class="switch"><input type="checkbox" id="ms-touch"> Mostrar controles de toque</label>
     <div class="row"><button class="btn primary" id="ms-close">Fechar</button></div>
+    <div id="ms-conta" style="display:grid;gap:8px;border-top:1px solid var(--line);padding-top:12px" hidden>
+      <div class="label">Conta</div>
+      <p class="hint">Excluir a conta apaga seu apelido, seu progresso, suas respostas e sua posição no ranking. Não dá para desfazer.</p>
+      <label class="label" for="ms-senha">Sua senha</label>
+      <input id="ms-senha" type="password" autocomplete="current-password" style="background:var(--ink);border:1px solid var(--line);color:var(--bone);padding:9px 10px;border-radius:3px;font:inherit">
+      <div class="row"><button class="btn" id="ms-excluir">Excluir minha conta</button></div>
+      <p class="err" id="ms-err" role="alert"></p>
+    </div>
   </div>
 </div>
 
@@ -472,7 +525,8 @@ details.rules ul { margin: 10px 0 0; padding-left: 18px; color: #d9cdb9; font-si
 /* =====================================================================
    DADOS (injetados por build_jogo.py a partir dos JSONs do quiz)
    ===================================================================== */
-const BANCO = [{"id": 1, "tema": "Identidade", "nivel": "facil", "pergunta": "Qual é a razão social da entidade cujo nome fantasia é Farol da Liberdade?", "alternativas": ["Instituto Conservador-Liberal", "Centro de Estudos da Liberdade (CEL)", "Movimento Brasil Livre", "Instituto Força Brasil"], "correta": 1, "explicacao": "O Farol da Liberdade é o nome fantasia do Centro de Estudos da Liberdade (CEL), fundado pelos irmãos Abraham e Arthur Weintraub.", "zoeira": "Nome fantasia bonito, razão social de cartório. Igual político: um nome pra campanha, outro pro processo.", "modulo": "manifesto", "versao": 1}, {"id": 2, "tema": "Identidade", "nivel": "facil", "pergunta": "Qual destes NÃO é um dos quatro valores do Farol da Liberdade?", "alternativas": ["Igualdade de resultados", "Liberdade", "Racionalidade", "Valores tradicionais"], "correta": 0, "explicacao": "Os quatro valores são: Liberdade, Valores tradicionais, Racionalidade e Defesa das minorias. 'Igualdade de resultados' não faz parte deles.", "zoeira": "Igualdade de resultados só existe em dois lugares: no cemitério e na fila do INSS.", "modulo": "manifesto", "versao": 1}, {"id": 3, "tema": "Identidade", "nivel": "facil", "pergunta": "Segundo o manifesto, qual é a menor de todas as minorias?", "alternativas": ["A família", "O nascituro", "A comunidade local", "O indivíduo"], "correta": 3, "explicacao": "O valor 'Defesa das minorias' especifica que a menor delas é o indivíduo. Defender minorias é, antes de tudo, defender cada pessoa.", "zoeira": "A menor minoria é o indivíduo. A segunda menor é a de quem leu o manifesto até o fim. Parabéns, você está nas duas.", "modulo": "manifesto", "versao": 1}, {"id": 4, "tema": "Identidade", "nivel": "facil", "pergunta": "A partir do material-base de quem o Manifesto Conservador foi discutido e reestruturado?", "alternativas": ["Olavo de Carvalho", "Edmund Burke", "Abraham Weintraub", "Arthur Weintraub"], "correta": 2, "explicacao": "O manifesto foi reestruturado por conservadores a partir de material-base do economista e professor Abraham Bragança de Vasconcellos Weintraub.", "zoeira": "Edmund Burke morreu em 1797. Tem álibi.", "modulo": "manifesto", "versao": 1}, {"id": 5, "tema": "Introdução", "nivel": "facil", "pergunta": "Por que, segundo a Introdução, todo ser humano tem igual dignidade?", "alternativas": ["Porque todos nascem na mesma condição social", "Porque é reflexo do Criador", "Porque todos pagam impostos", "Porque a Constituição assim determina"], "correta": 1, "explicacao": "A Introdução afirma que todo ser humano tem igual dignidade por ser reflexo do Criador, devendo ser livre para escolher e arcar com as consequências.", "zoeira": "A Constituição tem mais emenda que colcha de vó. A dignidade veio antes, e sem jabuti.", "modulo": "manifesto", "versao": 1}, {"id": 6, "tema": "Introdução", "nivel": "facil", "pergunta": "Qual é a instituição mais importante, segundo a Introdução do manifesto?", "alternativas": ["A família", "O Estado", "O grupo de WhatsApp da família", "A Igreja"], "correta": 0, "explicacao": "A Introdução diz que o governo existe para permitir a busca da felicidade por indivíduos e famílias, sendo estas as instituições mais importantes.", "zoeira": "O Estado como instituição mais importante? Só na opinião do próprio Estado.", "modulo": "manifesto", "versao": 1}, {"id": 7, "tema": "Introdução", "nivel": "medio", "pergunta": "Na Introdução, drogas e promiscuidade são apontadas como condutas que ferem qual direito básico?", "alternativas": ["Paz", "Propriedade", "Vida", "Família"], "correta": 3, "explicacao": "Os pares são: Vida (homicídio, aborto); Propriedade (roubo, furto, corrupção); Paz (distúrbios); Família (drogas, promiscuidade).", "zoeira": "Drogas e promiscuidade: a dupla sertaneja que mais desfez família no Brasil. E sem precisar de turnê.", "modulo": "manifesto", "versao": 1}, {"id": 8, "tema": "Introdução", "nivel": "medio", "pergunta": "Segundo a Introdução, a corrupção fere diretamente qual direito básico?", "alternativas": ["Família", "Paz", "Propriedade", "Liberdade de crença"], "correta": 2, "explicacao": "Na Introdução, corrupção aparece junto com roubo e furto como violação da Propriedade. (No 13º Princípio, ela também é chamada de assassinato indireto.)", "zoeira": "Aqui a corrupção é roubo. Spoiler: no 13º Princípio ela é promovida a assassinato. Plano de carreira invejável.", "modulo": "manifesto", "versao": 1}, {"id": 9, "tema": "Introdução", "nivel": "medio", "pergunta": "Para o manifesto, qual é a finalidade do governo?", "alternativas": ["Conduzir a moral religiosa da nação", "Permitir a busca da felicidade, mantendo ordem e justiça", "Administrar a economia em nome do povo", "Garantir igualdade material entre todos"], "correta": 1, "explicacao": "O governo existe para permitir que indivíduos, famílias e outros grupos busquem a felicidade, com normas que garantam ordem e justiça.", "zoeira": "Se o papel do governo fosse administrar a economia com sucesso, o Brasil seria a Suíça. Olhe pela janela.", "modulo": "manifesto", "versao": 1}, {"id": 10, "tema": "1º Princípio", "nivel": "facil", "pergunta": "Segundo o 1º Princípio, qual é a base do conservadorismo?", "alternativas": ["O indivíduo forte, livre e capaz de decidir o próprio destino", "A tradição religiosa", "O Estado forte", "O influenciador com mais seguidores"], "correta": 0, "explicacao": "O 1º Princípio coloca como alicerce o indivíduo forte, livre e capaz de decidir o próprio destino.", "zoeira": "Estado forte é aquele que você sustenta com força. Uns 40% do seu salário de força.", "modulo": "manifesto", "versao": 1}, {"id": 11, "tema": "1º Princípio", "nivel": "medio", "pergunta": "No 1º Princípio, o que deve fazer quem se libertou da 'prisão mental' imposta por movimentos totalitários?", "alternativas": ["Denunciar os totalitários às autoridades", "Fundar um partido político", "Afastar-se de quem ainda está preso", "Libertar, um a um, os que estão ao seu redor, como 'pescador de homens'"], "correta": 3, "explicacao": "O manifesto pede que a pessoa liberta ajude a libertar os demais, um a um, como um 'pescador de homens' — a essência da missão do Faroleiro.", "zoeira": "Pescador de homens. Não confundir com pescador de emenda parlamentar, espécie muito mais comum no Planalto.", "modulo": "manifesto", "versao": 1}, {"id": 12, "tema": "1º Princípio", "nivel": "medio", "pergunta": "Complete segundo o 1º Princípio: 'Não existe nação livre sem...'", "alternativas": ["...forças armadas", "...economia de mercado", "...indivíduos livres", "...um governo forte"], "correta": 2, "explicacao": "O manifesto afirma que, sem a família transmitindo valores e patrimônio, a nação perece — e que não há nação livre sem indivíduos livres.", "zoeira": "Sem indivíduos livres não há nação livre, só plateia batendo palma em live oficial.", "modulo": "manifesto", "versao": 1}, {"id": 13, "tema": "1º Princípio", "nivel": "dificil", "pergunta": "Segundo o 1º Princípio, o que a família transmite entre gerações?", "alternativas": ["Somente a fé religiosa", "Valores, tradições e patrimônio cultural e material", "Filiação partidária", "Apenas bens materiais (herança)"], "correta": 1, "explicacao": "A família é o núcleo natural pelo qual se transmitem valores, tradições e patrimônio cultural E material.", "zoeira": "Herança material passa. A receita de bolo da avó atravessa gerações e nunca é tributada.", "modulo": "manifesto", "versao": 1}, {"id": 14, "tema": "1º Princípio", "nivel": "dificil", "pergunta": "A expressão 'pescador de homens', usada no 1º Princípio, tem origem em qual fonte?", "alternativas": ["Nos Evangelhos (chamado de Jesus aos apóstolos)", "Em 'A República', de Platão", "Na Declaração de Independência dos EUA", "Na Ética a Nicômaco, de Aristóteles"], "correta": 0, "explicacao": "É uma referência bíblica (Mt 4,19; Mc 1,17). No manifesto é metáfora para quem forma e liberta os outros, um a um. (Pergunta de contexto.)", "zoeira": "Aristóteles não pescava. Que se saiba.", "modulo": "manifesto", "versao": 1}, {"id": 15, "tema": "2º Princípio", "nivel": "facil", "pergunta": "Quais são os três pilares da busca da felicidade?", "alternativas": ["Deus, Pátria e Família", "Fortaleza, Prudência e Temperança", "Vida, Propriedade e Paz", "Liberdade, Justiça e Verdade"], "correta": 3, "explicacao": "O 2º Princípio define os três pilares: Liberdade, Justiça e Verdade.", "zoeira": "'Deus, Pátria e Família' cabe num adesivo. 'Liberdade, Justiça e Verdade' dá trabalho todo dia.", "modulo": "manifesto", "versao": 1}, {"id": 16, "tema": "2º Princípio", "nivel": "medio", "pergunta": "Qual destas NÃO é uma das dimensões da liberdade citadas no 2º Princípio?", "alternativas": ["Intelectual", "Física", "Econômica-coletiva", "De crença"], "correta": 2, "explicacao": "As quatro dimensões são: física, material, intelectual e de crença.", "zoeira": "Liberdade 'econômica-coletiva' é tipo vegano de churrascaria: não existe.", "modulo": "manifesto", "versao": 1}, {"id": 17, "tema": "2º Princípio", "nivel": "medio", "pergunta": "Segundo o 2º Princípio, a mentira é uma forma de quê?", "alternativas": ["Covardia", "Escravidão", "Fanatismo", "Horário eleitoral gratuito"], "correta": 1, "explicacao": "No pilar Verdade, o manifesto afirma que a mentira é uma forma de escravidão.", "zoeira": "Se mentir desse cadeia, Brasília seria presídio de segurança máxima com ar-condicionado central.", "modulo": "manifesto", "versao": 1}, {"id": 18, "tema": "2º Princípio", "nivel": "medio", "pergunta": "Como o pilar Verdade é garantido, segundo o 2º Princípio?", "alternativas": ["Pelo acesso a informação descentralizada e distribuída", "Por uma agência estatal de checagem", "Pela censura de conteúdos falsos", "Pela autoridade da imprensa tradicional"], "correta": 0, "explicacao": "A Verdade depende do acesso a informação descentralizada e distribuída — e não de um órgão central que decida o que é verdadeiro.", "zoeira": "Agência estatal de checagem é a raposa fazendo auditoria no galinheiro, com crachá e verba.", "modulo": "manifesto", "versao": 1}, {"id": 19, "tema": "2º Princípio", "nivel": "dificil", "pergunta": "No 2º Princípio, a Justiça é a ordem que impede que a busca da felicidade seja prejudicada por quem?", "alternativas": ["Pelo mercado", "Apenas por estrangeiros", "Apenas por criminosos", "Por outros indivíduos ou pelo governo"], "correta": 3, "explicacao": "A Justiça protege contra danos causados por outros indivíduos OU pelo próprio governo, e se baseia na lei natural.", "zoeira": "Sim, o governo também atrapalha sua felicidade. Surpresa zero para quem já pagou IPVA.", "modulo": "manifesto", "versao": 1}, {"id": 20, "tema": "2º Princípio", "nivel": "dificil", "pergunta": "Em que se baseia o pilar Justiça do 2º Princípio?", "alternativas": ["Nos costumes de cada época", "Na jurisprudência do STF", "Na lei natural", "Na vontade da maioria"], "correta": 2, "explicacao": "O pilar Justiça se fundamenta na lei natural — uma ordem moral anterior às leis escritas e reconhecível pela razão.", "zoeira": "A vontade da maioria já elegeu muita gente que você conhece. A lei natural não tem segundo turno.", "modulo": "manifesto", "versao": 1}, {"id": 21, "tema": "3º Princípio", "nivel": "facil", "pergunta": "Quais são as quatro virtudes cardeais?", "alternativas": ["Fé, Esperança, Caridade e Justiça", "Fortaleza, Justiça, Prudência e Temperança", "Coragem, Honra, Lealdade e Verdade", "Liberdade, Justiça, Verdade e Família"], "correta": 1, "explicacao": "O 3º Princípio pede o cultivo das virtudes cardeais: Fortaleza, Justiça, Prudência e Temperança.", "zoeira": "Confundir com as teologais é perdoável. Confundir com 'Cargo, Emenda, Verba e Centrão' já é deformação profissional.", "modulo": "manifesto", "versao": 1}, {"id": 22, "tema": "3º Princípio", "nivel": "medio", "pergunta": "No manifesto, 'equilíbrio e autocontrole' definem qual virtude?", "alternativas": ["Temperança", "Justiça", "Fortaleza", "Prudência"], "correta": 0, "explicacao": "Temperança = equilíbrio e autocontrole. Fortaleza = constância e firmeza; Justiça = imparcialidade e veracidade; Prudência = agir com sabedoria.", "zoeira": "Temperança é aquilo que some dos comentários de rede social depois das duas da manhã.", "modulo": "manifesto", "versao": 1}, {"id": 23, "tema": "3º Princípio", "nivel": "medio", "pergunta": "No manifesto, 'constância e firmeza' definem qual virtude?", "alternativas": ["Prudência", "Coragem", "Temperança", "Fortaleza"], "correta": 3, "explicacao": "Fortaleza é definida como constância e firmeza. (Coragem é tema do 5º Princípio, mas não é uma das quatro virtudes cardeais listadas.)", "zoeira": "Fortaleza é constância e firmeza. O oposto da opinião de político em ano eleitoral.", "modulo": "manifesto", "versao": 1}, {"id": 24, "tema": "3º Princípio", "nivel": "dificil", "pergunta": "A palavra 'justiça' aparece no 2º e no 3º Princípio. Qual a diferença?", "alternativas": ["No 2º refere-se à justiça divina; no 3º, à justiça social", "São idênticas", "No 2º é pilar (ordem social baseada na lei natural); no 3º é virtude pessoal (imparcialidade e veracidade)", "No 2º é virtude pessoal; no 3º é o Poder Judiciário"], "correta": 2, "explicacao": "Justiça-pilar é a ordem que protege a busca da felicidade; justiça-virtude é a disposição pessoal de ser imparcial e verdadeiro.", "zoeira": "Uma justiça é a ordem social, a outra é a virtude pessoal. O Brasil conseguiu ficar sem as duas ao mesmo tempo.", "modulo": "manifesto", "versao": 1}, {"id": 25, "tema": "3º Princípio", "nivel": "dificil", "pergunta": "Por que as virtudes são chamadas 'cardeais'?", "alternativas": ["Porque apontam os quatro pontos cardeais", "Do latim 'cardo' (dobradiça): são as virtudes sobre as quais as demais giram", "Porque foram definidas pelos cardeais da Igreja", "Porque eram exigidas dos governantes romanos"], "correta": 1, "explicacao": "'Cardo' significa dobradiça; as virtudes cardeais são o eixo das demais. Vêm de Platão e Aristóteles e foram incorporadas pela tradição cristã. (Pergunta de contexto.)", "zoeira": "Cardo é dobradiça. Sem ela a porta da moral sai do trilho, e o jeitinho entra sem bater.", "modulo": "manifesto", "versao": 1}, {"id": 26, "tema": "4º Princípio", "nivel": "facil", "pergunta": "Segundo o 4º Princípio, quem deve receber ajuda permanente?", "alternativas": ["Crianças e incapazes", "Ninguém", "Idosos e mulheres", "Todos os desempregados"], "correta": 0, "explicacao": "A ajuda permanente cabe apenas a crianças e incapazes. Para os demais adultos, o amparo deve ajudá-los a se reerguer.", "zoeira": "Ajuda permanente para todo desempregado tem outro nome técnico: curral eleitoral.", "modulo": "manifesto", "versao": 1}, {"id": 27, "tema": "4º Princípio", "nivel": "medio", "pergunta": "Como o governo deve amparar os necessitados, segundo o 4º Princípio?", "alternativas": ["Não deve amparar; isso cabe só à caridade privada", "De forma paternalista e permanente", "Apenas por meio de igrejas", "De forma fraterna, para que se reergam"], "correta": 3, "explicacao": "O amparo deve ser fraterno, não patriarcal/paternalista: o objetivo é que a pessoa se reerga e conquiste independência.", "zoeira": "O fraterno te ajuda a levantar. O paternalista te carrega no colo até a próxima eleição, e cobra o frete.", "modulo": "manifesto", "versao": 1}, {"id": 28, "tema": "4º Princípio", "nivel": "medio", "pergunta": "João, adulto e capaz, perdeu o emprego. Segundo o 4º Princípio, qual a atitude correta?", "alternativas": ["Deve receber auxílio permanente do Estado", "Só a família pode ajudá-lo", "Pode ser amparado de forma fraterna, buscando recuperar a maior independência possível", "Ele não deve receber nenhuma ajuda"], "correta": 2, "explicacao": "O manifesto quer uma sociedade de ajuda mútua e admite amparo do governo, mas fraterno e voltado para a independência — não permanente para adultos capazes.", "zoeira": "João precisa de uma mão, não de uma coleira com logotipo do governo.", "modulo": "manifesto", "versao": 1}, {"id": 29, "tema": "4º Princípio", "nivel": "dificil", "pergunta": "Qual é a razão, dada no 4º Princípio, para que todo adulto busque a maior independência possível?", "alternativas": ["Para não depender de Deus", "Para não ser um peso para os outros", "Para pagar mais impostos", "Para acumular riqueza"], "correta": 1, "explicacao": "O adulto deve buscar independência para não ser um peso para os outros — expressão de responsabilidade individual.", "zoeira": "'Para não depender de Deus' foi a alternativa mais ousada da história deste quiz. Respeitamos a coragem, não a resposta.", "modulo": "manifesto", "versao": 1}, {"id": 30, "tema": "5º Princípio", "nivel": "facil", "pergunta": "Qual virtude o 5º Princípio chama de fundamental?", "alternativas": ["Coragem", "Paciência para aguentar o Congresso", "Prudência", "Humildade"], "correta": 0, "explicacao": "O 5º Princípio trata da coragem como virtude fundamental: a pessoa honesta deve expressar sua opinião política sem receio.", "zoeira": "Humildade é linda, mas não segura opinião política no almoço de domingo com o tio do zap.", "modulo": "manifesto", "versao": 1}, {"id": 31, "tema": "5º Princípio", "nivel": "medio", "pergunta": "Maria defende uma ideia entre amigos conservadores e a ideia oposta no trabalho, para agradar os colegas. Qual princípio ela fere mais diretamente?", "alternativas": ["14º – Abuso de poder", "8º – Propriedade privada", "7º – Reabilitação social", "5º – Coragem"], "correta": 3, "explicacao": "O 5º Princípio diz que é errado mudar de opinião conforme o ambiente para agradar grupos. (Também se relaciona ao 9º, que condena agir diferente do que se defende.)", "zoeira": "Maria não é camaleão, mas está fazendo um esforço admirável para virar um.", "modulo": "manifesto", "versao": 1}, {"id": 32, "tema": "6º Princípio", "nivel": "facil", "pergunta": "Segundo o 6º Princípio, defender valores, princípios e crenças é:", "alternativas": ["Opcional", "Algo a evitar em público", "Um direito e um dever do cidadão", "Tarefa exclusiva dos líderes"], "correta": 2, "explicacao": "O 6º Princípio afirma que é direito E dever do cidadão defender seus valores, princípios e crenças.", "zoeira": "Opcional é a sobremesa. Defender valores é o prato principal, e ninguém sai da mesa antes.", "modulo": "manifesto", "versao": 1}, {"id": 33, "tema": "6º Princípio", "nivel": "medio", "pergunta": "Segundo o 6º Princípio, em que se devem basear as negociações políticas?", "alternativas": ["No pragmatismo", "Nas virtudes aristotélicas", "Nos interesses do partido", "Na vontade da maioria"], "correta": 1, "explicacao": "As negociações políticas devem se basear nas virtudes aristotélicas — e os valores fundamentais não entram na negociação.", "zoeira": "Pragmatismo é o nome chique de 'me dá um ministério que eu voto'.", "modulo": "manifesto", "versao": 1}, {"id": 34, "tema": "6º Princípio", "nivel": "dificil", "pergunta": "Qual é a condição para a tolerância a práticas religiosas, segundo o 6º Princípio?", "alternativas": ["Respeitarem as liberdades individuais", "Serem cristãs", "Serem praticadas apenas em privado", "Serem registradas no governo"], "correta": 0, "explicacao": "As práticas religiosas devem ser toleradas desde que respeitem as liberdades individuais — tolerância condicionada, não absoluta.", "zoeira": "Religião registrada no governo: imagine o cartório da fé com fila de seis horas e senha de papel.", "modulo": "manifesto", "versao": 1}, {"id": 35, "tema": "6º e 11º Princípios", "nivel": "dificil", "pergunta": "O manifesto diz que valores fundamentais são inegociáveis. Isso é fanatismo?", "alternativas": ["O manifesto não trata disso", "Sim, mas é um fanatismo positivo", "Sim, qualquer valor inegociável é fanatismo", "Não: fanatismo é impor valores pela força, sem diálogo, e rejeitar o contraditório"], "correta": 3, "explicacao": "Firmeza nos valores (6º) é virtude. O fanático (11º) é irracional, avesso ao contraditório e impõe crenças pela força. A diferença está na imposição e na recusa ao diálogo.", "zoeira": "Valor inegociável é coluna vertebral. Fanatismo é coluna vertebral com porrete.", "modulo": "manifesto", "versao": 1}, {"id": 36, "tema": "7º Princípio", "nivel": "facil", "pergunta": "Segundo o 7º Princípio, a reincidência no crime deve:", "alternativas": ["Ser ignorada se houver arrependimento", "Levar à pena de morte", "Agravar a penalidade", "Ser perdoada"], "correta": 2, "explicacao": "O manifesto deseja investir na reabilitação, mas a reincidência agrava a penalidade.", "zoeira": "Reincidência perdoada é assinatura mensal do crime, com fidelidade e cashback.", "modulo": "manifesto", "versao": 1}, {"id": 37, "tema": "7º Princípio", "nivel": "medio", "pergunta": "Quais são as etapas da reabilitação segundo o 7º Princípio?", "alternativas": ["Indulto, anistia e perdão", "Arrependimento, confissão e redenção, com o cumprimento da pena", "Educação, trabalho e liberdade", "Terapia, multa e soltura"], "correta": 1, "explicacao": "A reabilitação passa por arrependimento, confissão e redenção — e inclui o cumprimento da pena.", "zoeira": "Indulto, anistia e perdão: o Combo Brasília Feliz. O manifesto não comprou.", "modulo": "manifesto", "versao": 1}, {"id": 38, "tema": "7º Princípio", "nivel": "dificil", "pergunta": "Um condenado mostra arrependimento sincero. Pelo 7º Princípio, ele deve ser dispensado da pena?", "alternativas": ["Não: a reabilitação inclui o cumprimento da pena", "Sim, se confessar publicamente", "Sim, o arrependimento basta", "Depende da vontade da vítima"], "correta": 0, "explicacao": "Reabilitar não substitui a pena: arrependimento, confissão e redenção caminham junto com o cumprimento da pena.", "zoeira": "Arrependimento sem cumprir pena é dieta sem fechar a boca.", "modulo": "manifesto", "versao": 1}, {"id": 39, "tema": "8º Princípio", "nivel": "facil", "pergunta": "Segundo o 8º Princípio, de onde vêm os bens conquistados?", "alternativas": ["Do Estado", "Da Mega da Virada", "Da herança apenas", "Do trabalho"], "correta": 3, "explicacao": "Os bens conquistados são frutos do trabalho; por isso roubar, enganar ou danificar equivale a tirar parte da vida das pessoas.", "zoeira": "O Estado não produz bens, ele redistribui os seus, com taxa de conveniência.", "modulo": "manifesto", "versao": 1}, {"id": 40, "tema": "8º Princípio", "nivel": "medio", "pergunta": "Segundo o 8º Princípio, como vive a pessoa sem direito à propriedade privada?", "alternativas": ["Sob proteção do Estado", "Em liberdade espiritual", "Como escravo", "Em igualdade"], "correta": 2, "explicacao": "O manifesto afirma que, sem direito à propriedade privada, a pessoa vive como escravo.", "zoeira": "Sem propriedade você vive como escravo. Com IPTU, como inquilino da prefeitura. Pequenos avanços.", "modulo": "manifesto", "versao": 1}, {"id": 41, "tema": "8º Princípio", "nivel": "dificil", "pergunta": "Uma lei autoriza o governo a desapropriar terras sem motivo justo e sem indenização justa. Segundo o 8º Princípio:", "alternativas": ["É correto se a maioria aprovar", "É errado, mesmo sendo legal", "É correto, pois está na lei", "É correto se for para fins sociais"], "correta": 1, "explicacao": "O 8º Princípio diz que desapropriar sem motivo justo e sem justa compensação é errado MESMO QUE LEGAL — o justo está acima do meramente legal (lei natural).", "zoeira": "'Mas estava na lei!' disse todo mundo que fez besteira com carimbo oficial na história.", "modulo": "manifesto", "versao": 1}, {"id": 42, "tema": "8º Princípio", "nivel": "dificil", "pergunta": "Que filósofo é associado à ideia de que a propriedade é extensão do trabalho, e o trabalho, extensão da pessoa?", "alternativas": ["John Locke", "Jean-Jacques Rousseau", "Karl Marx", "Thomas Hobbes"], "correta": 0, "explicacao": "John Locke, no 'Segundo Tratado sobre o Governo' (1689), fundamenta a propriedade no trabalho — ideia que ecoa no 8º Princípio. (Pergunta de contexto.)", "zoeira": "Marx ficou com a mais-valia. Locke ficou com a sua casa e, detalhe importante, deixou ela com você.", "modulo": "manifesto", "versao": 1}, {"id": 43, "tema": "9º Princípio", "nivel": "facil", "pergunta": "Segundo o 9º Princípio, os fins legitimam os meios?", "alternativas": ["Sim, se o fim for bom", "Só na política", "Só em situações de guerra", "Não, os fins não legitimam os meios"], "correta": 3, "explicacao": "O 9º Princípio afirma expressamente que os fins não legitimam os meios.", "zoeira": "Se os fins justificassem os meios, todo corrupto seria herói da própria biografia. Aliás, eles já se acham.", "modulo": "manifesto", "versao": 1}, {"id": 44, "tema": "9º Princípio", "nivel": "medio", "pergunta": "Qual destas condutas NÃO está entre as condenadas pelo 9º Princípio?", "alternativas": ["Agir diferente do que se defende verbalmente", "Não cumprir compromissos firmados", "Mudar de opinião após um bom argumento", "Associar-se a pessoas desonestas"], "correta": 2, "explicacao": "O manifesto condena mudar de opinião para agradar grupos (5º), não por convencimento racional — a racionalidade é um dos valores do movimento.", "zoeira": "Mudar de opinião diante de um bom argumento é inteligência. Mudar diante de um cargo é Centrão.", "modulo": "manifesto", "versao": 1}, {"id": 45, "tema": "9º Princípio", "nivel": "medio", "pergunta": "O 9º Princípio diz que não se deve 'prostituir-se' física ou intelectualmente. Em troca de quê?", "alternativas": ["De cargos públicos", "De dinheiro ou aprovação de um grupo", "De sexo ou drogas", "De poder ou fama"], "correta": 1, "explicacao": "O texto condena vender-se, física ou intelectualmente, por dinheiro ou pela aprovação de um grupo.", "zoeira": "Vender-se pela aprovação do grupo: o esporte olímpico das redes sociais, com pódio em likes.", "modulo": "manifesto", "versao": 1}, {"id": 46, "tema": "9º Princípio", "nivel": "dificil", "pergunta": "Quantos itens compõem o 9º Princípio (honrar a palavra, ser honesto e fiel)?", "alternativas": ["3", "5", "7", "10"], "correta": 2, "explicacao": "São 7: não mentir; coerência; cumprir compromissos; não induzir ao erro; não se 'prostituir'; não se associar a desonestos; fins não legitimam meios.", "zoeira": "Sete itens. Se você chutou dez, achou que eram os Mandamentos. Quase, mas Moisés não terceirizou.", "modulo": "manifesto", "versao": 1}, {"id": 47, "tema": "10º Princípio", "nivel": "facil", "pergunta": "Desde quando, segundo o 10º Princípio, os direitos fundamentais devem ser protegidos?", "alternativas": ["Desde o registro civil", "Desde o nascimento", "Desde a maioridade", "Desde a concepção"], "correta": 3, "explicacao": "O 10º Princípio afirma que os direitos fundamentais de todo ser humano devem ser protegidos desde a concepção.", "zoeira": "Proteção desde o registro civil? Então quem nasceu sem cartório não existe. Os cartórios adoraram a ideia.", "modulo": "manifesto", "versao": 1}, {"id": 48, "tema": "10º Princípio", "nivel": "medio", "pergunta": "O desejo de 'autonomia local para criar leis adequadas ao modo de vida da comunidade' expressa qual ideia?", "alternativas": ["Separatismo", "Democracia direta nacional", "Subsidiariedade / descentralização", "Centralização federal"], "correta": 2, "explicacao": "É a lógica da subsidiariedade e do federalismo: decisões no nível mais próximo das pessoas. Liga-se à rejeição de movimentos centralizadores.", "zoeira": "Centralização federal é Brasília decidindo o horário do seu churrasco e cobrando taxa pela fumaça.", "modulo": "manifesto", "versao": 1}, {"id": 49, "tema": "10º Princípio", "nivel": "medio", "pergunta": "Qual destes é um dos anseios do 10º Princípio?", "alternativas": ["Ter um governo central forte", "Ser senhor da própria vida, assumindo as consequências das escolhas", "Ter renda garantida pelo Estado", "Eliminar as tradições antigas"], "correta": 1, "explicacao": "O 10º Princípio inclui o desejo de ser senhor da própria vida, assumindo responsabilidades e consequências.", "zoeira": "Renda garantida pelo Estado funciona muito bem até o Estado mandar a fatura.", "modulo": "manifesto", "versao": 1}, {"id": 50, "tema": "11º Princípio", "nivel": "facil", "pergunta": "O 11º Princípio pede que o Faroleiro seja avesso a quê?", "alternativas": ["Ao fanatismo", "À religião", "Ao debate", "À política"], "correta": 0, "explicacao": "O 11º Princípio é a aversão ao fanatismo.", "zoeira": "Avesso ao debate? Isso é perfil de comentarista de portal, não de Faroleiro.", "modulo": "manifesto", "versao": 1}, {"id": 51, "tema": "11º Princípio", "nivel": "medio", "pergunta": "Qual destas características NÃO descreve o fanático, segundo o 11º Princípio?", "alternativas": ["Impõe crenças pela força", "Intemperante", "Avesso ao contraditório", "Firme e prudente"], "correta": 3, "explicacao": "O fanático é irracional, déspota, avesso ao contraditório, intemperante, intransigente, intolerante e impõe crenças pela força. Firmeza e prudência são virtudes (3º).", "zoeira": "Firme e prudente é elogio. Se você marcou isso como fanatismo, andou lendo manchete demais.", "modulo": "manifesto", "versao": 1}, {"id": 52, "tema": "11º Princípio", "nivel": "dificil", "pergunta": "O fanatismo é o oposto direto de qual virtude cardeal, considerando a descrição do 11º Princípio?", "alternativas": ["Nenhuma", "Justiça", "Temperança", "Fortaleza"], "correta": 2, "explicacao": "O fanático é 'intemperante' e 'exacerbado' — o oposto da Temperança (equilíbrio e autocontrole). Também contraria o valor da racionalidade.", "zoeira": "O fanático e a temperança se cruzam na rua e fingem que não se conhecem.", "modulo": "manifesto", "versao": 1}, {"id": 53, "tema": "12º Princípio", "nivel": "facil", "pergunta": "Segundo o 12º Princípio, qual é a melhor forma de praticar a caridade?", "alternativas": ["Doar para ONGs", "A política justa", "Postar story com #gratidão", "Pagar impostos"], "correta": 1, "explicacao": "O 12º Princípio afirma que a política justa é a melhor forma de praticar a caridade.", "zoeira": "Doar para ONG é bonito. Saber para onde a ONG mandou o dinheiro é mais bonito ainda.", "modulo": "manifesto", "versao": 1}, {"id": 54, "tema": "12º Princípio", "nivel": "medio", "pergunta": "Diante de causas sociais, o 12º Princípio pede que o cidadão priorize:", "alternativas": ["A família", "O partido", "A carreira", "A igreja"], "correta": 0, "explicacao": "Um dos deveres de cidadania é priorizar a família diante de causas sociais.", "zoeira": "Priorizar o partido diante da família? Nem político faz isso. Ah, espera, faz sim.", "modulo": "manifesto", "versao": 1}, {"id": 55, "tema": "12º Princípio", "nivel": "medio", "pergunta": "Qual destes NÃO é um dos cinco deveres de cidadania do 12º Princípio?", "alternativas": ["Exercer um ofício útil", "Zelar pela próxima geração", "Acompanhar a política e exigir representatividade", "Filiar-se a um partido"], "correta": 3, "explicacao": "Os cinco deveres: ofício útil; acompanhar a política e exigir representatividade; incentivar a caridade; priorizar a família; zelar pela próxima geração. Filiação partidária não está na lista.", "zoeira": "Filiar-se a partido não é dever cívico. É escolha. Às vezes, um erro com carteirinha.", "modulo": "manifesto", "versao": 1}, {"id": 56, "tema": "13º Princípio", "nivel": "facil", "pergunta": "Segundo o 13º Princípio, a corrupção é uma forma de quê?", "alternativas": ["Falta administrativa", "Abuso de poder apenas", "Assassinato indireto", "Crime menor"], "correta": 2, "explicacao": "O 13º Princípio afirma que a corrupção é uma forma indireta de assassinato.", "zoeira": "'Crime menor'? Conta isso pro hospital que ficou sem remédio.", "modulo": "manifesto", "versao": 1}, {"id": 57, "tema": "13º Princípio", "nivel": "medio", "pergunta": "Em que situação o 13º Princípio admite tirar a vida de alguém?", "alternativas": ["Em caso de grave ofensa à honra", "Em defesa própria ou de terceiros", "Nunca", "Por decisão do Estado"], "correta": 1, "explicacao": "É errado tirar a vida, direta ou indiretamente, salvo em defesa própria ou de terceiros.", "zoeira": "Ofensa à honra não autoriza homicídio. Nem no Twitter, nem no grupo do condomínio.", "modulo": "manifesto", "versao": 1}, {"id": 58, "tema": "13º Princípio", "nivel": "medio", "pergunta": "Que tipos de violência o 13º Princípio condena?", "alternativas": ["Física e psicológica", "Somente a praticada pelo Estado", "Somente a armada", "Somente a física"], "correta": 0, "explicacao": "O 13º Princípio considera errado o uso da violência, física ou psicológica.", "zoeira": "Violência psicológica também conta. Sim, inclusive aquela praticada no grupo da família.", "modulo": "manifesto", "versao": 1}, {"id": 59, "tema": "13º Princípio", "nivel": "dificil", "pergunta": "Quantas exceções o 13º Princípio prevê para o aborto, e qual é?", "alternativas": ["Três: as previstas no Código Penal", "Nenhuma", "Duas: risco de morte da mãe e estupro", "Uma: risco de morte da mãe"], "correta": 3, "explicacao": "O manifesto prevê uma única exceção: risco de morte da mãe. Não menciona outras hipóteses.", "zoeira": "Uma exceção só. Se você marcou três, andou lendo o Código Penal em vez do manifesto.", "modulo": "manifesto", "versao": 1}, {"id": 60, "tema": "13º Princípio", "nivel": "dificil", "pergunta": "Por que faz sentido chamar a corrupção de 'assassinato indireto'?", "alternativas": ["Porque ambos são crimes hediondos", "Porque a lei pune os dois igualmente", "Porque o dinheiro desviado deixa de salvar vidas (saúde, segurança, saneamento)", "Porque corruptos costumam ser violentos"], "correta": 2, "explicacao": "Recursos desviados faltam em hospitais, segurança e infraestrutura, custando vidas. É a mesma lógica do 8º: tirar bens é tirar parte da vida.", "zoeira": "O dinheiro do hospital virou lancha. A conta, como sempre, ficou com o paciente.", "modulo": "manifesto", "versao": 1}, {"id": 61, "tema": "14º Princípio", "nivel": "facil", "pergunta": "O 14º Princípio trata do combate a quê?", "alternativas": ["Ao fanatismo", "Ao abuso de poder", "À corrupção eleitoral", "À pobreza"], "correta": 1, "explicacao": "O 14º Princípio é combater o abuso de poder.", "zoeira": "Combater a pobreza dá voto. Combater o abuso de poder dá processo. Adivinha qual é mais popular em Brasília.", "modulo": "manifesto", "versao": 1}, {"id": 62, "tema": "14º Princípio", "nivel": "medio", "pergunta": "Uma autoridade decide algo fora da sua competência legal. Segundo o 14º Princípio, isso é:", "alternativas": ["Abuso de poder", "Coragem política", "Autonomia local", "Aceitável se a intenção for boa"], "correta": 0, "explicacao": "É errado decidir além das próprias competências, ignorando normas ou leis. E, pelo 9º, os fins não legitimam os meios.", "zoeira": "'A intenção era boa' é o epitáfio favorito de toda autoridade que extrapolou.", "modulo": "manifesto", "versao": 1}, {"id": 63, "tema": "14º Princípio", "nivel": "dificil", "pergunta": "Quais são as duas formas de abuso de poder descritas no 14º Princípio?", "alternativas": ["Omissão e negligência", "Corrupção e nepotismo", "Censura e perseguição", "Decidir além da competência e decidir arbitrariamente para privilegiar alguém"], "correta": 3, "explicacao": "(1) Decidir além das próprias competências; (2) decidir arbitrariamente para privilegiar indivíduo ou grupo — no Direito, excesso de poder e desvio de finalidade.", "zoeira": "Excesso de poder e desvio de finalidade: a dupla mais escalada da República, titular absoluta.", "modulo": "manifesto", "versao": 1}, {"id": 64, "tema": "15º Princípio", "nivel": "facil", "pergunta": "O 15º Princípio condena:", "alternativas": ["Fazer críticas ao governo", "Discordar dos líderes", "Induzir o outro ao erro", "Trabalhar aos domingos"], "correta": 2, "explicacao": "O 15º Princípio é não induzir o outro ao erro: maus conselhos, ensinamentos falsos, armadilhas injustificadas e acusações sem fatos.", "zoeira": "Discordar dos líderes não está na lista de pecados. Aqui é Farol, não seita.", "modulo": "manifesto", "versao": 1}, {"id": 65, "tema": "15º Princípio", "nivel": "medio", "pergunta": "Pedro espalha nas redes que um vizinho é ladrão, sem nenhuma prova. Qual princípio ele fere mais diretamente?", "alternativas": ["8º – Propriedade privada", "15º – Não induzir o outro ao erro", "4º – Compaixão", "10º – Direitos e anseios"], "correta": 1, "explicacao": "O 15º Princípio condena afirmações que prejudiquem a imagem de alguém sem fatos que as sustentem.", "zoeira": "Pedro não é jornalista investigativo. É só fofoqueiro com Wi-Fi.", "modulo": "manifesto", "versao": 1}, {"id": 66, "tema": "15º Princípio", "nivel": "dificil", "pergunta": "Segundo o 15º Princípio, armar uma armadilha contra alguém é sempre errado?", "alternativas": ["Não: é errado quando não há justificativa plausível, como uma investigação policial", "Não, se ninguém descobrir", "Não, se for contra um adversário político", "Sim, sempre"], "correta": 0, "explicacao": "O texto condena armadilhas SEM justificativa plausível e cita a investigação policial como exemplo de justificativa válida.", "zoeira": "'Se ninguém descobrir' é o lema não oficial de metade da República.", "modulo": "manifesto", "versao": 1}, {"id": 67, "tema": "Conexões", "nivel": "dificil", "pergunta": "A ideia de 'não induzir o outro ao erro' aparece em quais princípios?", "alternativas": ["No 2º e no 11º", "Só no 15º", "No 5º e no 6º", "No 9º (como item) e no 15º (como princípio próprio)"], "correta": 3, "explicacao": "Ela surge como um dos sete itens do 9º Princípio e é desenvolvida como princípio autônomo no 15º.", "zoeira": "Aparecer duas vezes não é repetição, é reforço. Induzir ao erro é praticamente esporte nacional.", "modulo": "manifesto", "versao": 1}, {"id": 68, "tema": "Conexões", "nivel": "dificil", "pergunta": "Quais princípios impõem limites ao poder do Estado?", "alternativas": ["3º, 5º e 11º", "1º, 7º e 12º", "2º, 4º, 8º, 10º e 14º", "6º, 9º e 15º"], "correta": 2, "explicacao": "2º (Justiça contra o governo), 4º (amparo não paternalista), 8º (desapropriação), 10º (autonomia local) e 14º (abuso de poder).", "zoeira": "Cinco princípios para segurar o Estado. E ainda parece pouco.", "modulo": "manifesto", "versao": 1}, {"id": 69, "tema": "Conexões", "nivel": "dificil", "pergunta": "Em quais princípios Aristóteles está presente, direta ou indiretamente?", "alternativas": ["1º e 13º", "3º (virtudes cardeais) e 6º (virtudes aristotélicas na negociação)", "8º e 10º", "11º e 15º"], "correta": 1, "explicacao": "O 3º trata das virtudes cardeais, desenvolvidas por Aristóteles; o 6º cita expressamente as virtudes aristotélicas como base das negociações políticas.", "zoeira": "Aristóteles tem 2.400 anos e continua mais atualizado que muito deputado.", "modulo": "manifesto", "versao": 1}, {"id": 70, "tema": "Considerações finais", "nivel": "facil", "pergunta": "Como o próprio manifesto se define nas considerações finais?", "alternativas": ["Uma ferramenta de consulta, conhecimento e guia", "Um dogma que não admite crítica", "Um programa partidário", "Um estatuto jurídico"], "correta": 0, "explicacao": "O manifesto se apresenta como ferramenta de consulta, conhecimento e guia, e valoriza a crítica e o contraditório.", "zoeira": "Um manifesto que diz não ser dogma. Raro como político que devolve dinheiro por conta própria.", "modulo": "manifesto", "versao": 1}, {"id": 71, "tema": "Considerações finais", "nivel": "medio", "pergunta": "Que tipo de movimento o manifesto rejeita nas considerações finais?", "alternativas": ["Movimentos estudantis", "Movimentos liberais", "Movimentos religiosos", "Movimentos centralizadores que proíbem a crítica e o contraditório"], "correta": 3, "explicacao": "O manifesto rejeita movimentos centralizadores que proíbem a crítica e o contraditório, e valoriza o debate de ideias.", "zoeira": "O manifesto rejeita quem proíbe a crítica. Inclusive, se um dia for o caso, o próprio Farol.", "modulo": "manifesto", "versao": 1}, {"id": 72, "tema": "Considerações finais", "nivel": "medio", "pergunta": "Qual frase resume a síntese conservadora das considerações finais?", "alternativas": ["Voltar ao passado a qualquer custo", "Mudar tudo para que nada mude", "Preservar e aperfeiçoar tudo o que é bom e funcional para as futuras gerações", "Destruir o velho para construir o novo"], "correta": 2, "explicacao": "O manifesto defende preservar e aperfeiçoar o que é bom e funcional — reforma prudente, no espírito de Edmund Burke.", "zoeira": "'Mudar tudo para que nada mude' é Lampedusa. E também o manual não oficial de toda reforma tributária.", "modulo": "manifesto", "versao": 1}, {"id": 73, "tema": "Considerações finais", "nivel": "facil", "pergunta": "Como o manifesto é encerrado?", "alternativas": ["Com o Hino Nacional", "Com uma oração pedindo sabedoria e orientação pelo caminho da Verdade", "Com um cupom de desconto da loja", "Com a assinatura dos fundadores"], "correta": 1, "explicacao": "O manifesto termina com uma oração pedindo sabedoria e orientação pelo caminho da Verdade.", "zoeira": "Hino Nacional seria bonito, mas ninguém lembra a segunda estrofe. Admita.", "modulo": "manifesto", "versao": 1}, {"id": 74, "tema": "Números", "nivel": "facil", "pergunta": "Quantos princípios tem o Manifesto Conservador do Farol da Liberdade?", "alternativas": ["10", "12", "15", "20"], "correta": 2, "explicacao": "São 15 princípios.", "zoeira": "Quinze princípios. Menos que o número de ministérios, mais que os escrúpulos de alguns ministros.", "modulo": "manifesto", "versao": 1}, {"id": 75, "tema": "Números", "nivel": "medio", "pergunta": "Quantos deveres de cidadania lista o 12º Princípio?", "alternativas": ["3", "4", "5", "7"], "correta": 2, "explicacao": "São 5: ofício útil; acompanhar a política; incentivar a caridade; priorizar a família; zelar pela próxima geração.", "zoeira": "Cinco deveres. Pagar imposto não entrou na lista porque o governo cuida disso sozinho, com muito carinho.", "modulo": "manifesto", "versao": 1}, {"id": "C1", "tema": "Cultura · Natureza do movimento", "nivel": "facil", "pergunta": "Como o Farol da Liberdade define a si mesmo?", "alternativas": ["Uma instituição de caridade", "Um movimento civilizatório", "Um partido político conservador", "Uma igreja cristã"], "correta": 1, "explicacao": "Abraham afirma que o Farol é um movimento civilizatório. Não é partido, não é movimento político e não é projeto de poder.", "zoeira": "Partido? Não. Igreja? Não. Caridade? Também não. ONG de fachada? Muito menos.", "modulo": "cultura", "versao": 1}, {"id": "C2", "tema": "Cultura · Natureza do movimento", "nivel": "facil", "pergunta": "Quais são os dois alicerces da civilização que o Farol almeja?", "alternativas": ["Razão greco-romana e valores judaico-cristãos", "Mercado livre e Estado mínimo", "Tradição portuguesa e catolicismo", "Nacionalismo e militarismo"], "correta": 0, "explicacao": "O movimento busca uma civilização ocidental brasileira baseada na lógica e na razão greco-romanas e nos valores judaico-cristãos (Antigo e Novo Testamento).", "zoeira": "Sócrates e Moisés numa mesa de bar. O Farol pagou a cerveja e anotou tudo.", "modulo": "cultura", "versao": 1}, {"id": "C3", "tema": "Cultura · Natureza do movimento", "nivel": "medio", "pergunta": "Segundo Abraham, qual é o centro do movimento civilizatório do Farol?", "alternativas": ["A nação e o território", "O líder do movimento", "O partido", "O indivíduo e a família"], "correta": 3, "explicacao": "O movimento se baseia no indivíduo e na família, e não no partido, na nação ou no solo. Isso está em linha com o 1º Princípio do manifesto.", "zoeira": "O líder como centro do movimento? Isso já tem nome, e quase sempre termina em '-ismo'.", "modulo": "cultura", "versao": 1}, {"id": "C4", "tema": "Cultura · Natureza do movimento", "nivel": "medio", "pergunta": "Por que, segundo Abraham, ter o poder não basta?", "alternativas": ["Porque o Farol não quer disputar eleições", "Porque o STF impede qualquer mudança", "Porque sem um movimento civilizatório para orientar, não se sabe o que fazer com o poder", "Porque o poder corrompe sempre"], "correta": 2, "explicacao": "O Farol não é projeto de poder: sem valores e rumo civilizatório, o poder na mão só gera erros. Primeiro vem a formação, depois o poder.", "zoeira": "Poder sem rumo é Ferrari na mão de quem não tirou carta.", "modulo": "cultura", "versao": 1}, {"id": "C5", "tema": "Cultura · Natureza do movimento", "nivel": "dificil", "pergunta": "Que definição de conservador Abraham usa ao descrever a civilização desejada?", "alternativas": ["Manter tudo como está", "Preservar o que é bom e corrigir o que é errado, buscando uma civilização melhor que a passada", "Rejeitar qualquer influência estrangeira", "Voltar exatamente à civilização ocidental do passado"], "correta": 1, "explicacao": "O conservador preserva o que é bom e corrige o que é errado. A meta é uma civilização ocidental melhor do que a do passado, o que ecoa as Considerações finais do manifesto.", "zoeira": "Não é saudade do passado, é revisão de garantia com troca das peças defeituosas.", "modulo": "cultura", "versao": 1}, {"id": "C6", "tema": "Cultura · Identidade", "nivel": "facil", "pergunta": "Complete o post fixado do Farol no X: 'Cada um de nós é uma luz, juntos, somos...'", "alternativas": ["...o Farol da Liberdade", "...o Brasil verdadeiro", "...a nova direita", "...a reação conservadora"], "correta": 0, "explicacao": "O post fixado começa com essa frase, que resume a ideia de cada Faroleiro como uma luz e do movimento como o farol.", "zoeira": "'A nova direita' já teve tantas versões que precisa de controle de versão no GitHub.", "modulo": "cultura", "versao": 1}, {"id": "C7", "tema": "Cultura · Identidade", "nivel": "medio", "pergunta": "Segundo o post fixado no X, quais grupos 'não têm lugar' no Farol?", "alternativas": ["Evangélicos e católicos", "Liberais e libertários", "Ateus e agnósticos", "Bolsonaristas, petistas e centrão"], "correta": 3, "explicacao": "O post afirma que bolsonaristas, petistas e o centrão não têm lugar no movimento. Liberais, ateus e pessoas de várias religiões podem participar.", "zoeira": "Lista curta, mas cobre uns 90% de Brasília.", "modulo": "cultura", "versao": 1}, {"id": "C8", "tema": "Cultura · Identidade", "nivel": "medio", "pergunta": "A bio de Abraham no Instagram traz o lema 'Non nobis, Domine'. Qual a sua origem?", "alternativas": ["Lema da Revolução Francesa", "Lema da bandeira dos EUA", "Salmo 115, lema dos Cavaleiros Templários", "Divisa da Companhia de Jesus"], "correta": 2, "explicacao": "'Não a nós, Senhor' (Sl 115) era o lema dos Templários, ordem que Abraham cita como inspiração para o Farol.", "zoeira": "Não a nós, Senhor. E muito menos ao Fundo Partidário.", "modulo": "cultura", "versao": 1}, {"id": "C9", "tema": "Cultura · Religião", "nivel": "facil", "pergunta": "O Farol da Liberdade é uma igreja ou movimento religioso?", "alternativas": ["Não, e rejeita qualquer religião", "Não, mas se baseia nos valores bíblicos", "Sim, é uma igreja evangélica", "Sim, é um movimento católico"], "correta": 1, "explicacao": "O Farol não é igreja nem movimento religioso, mas se baseia nos valores do Antigo e do Novo Testamento e reconhece a importância da religião numa civilização.", "zoeira": "Não é igreja: ninguém passa a sacolinha. Só o PIX, se você quiser.", "modulo": "cultura", "versao": 1}, {"id": "C10", "tema": "Cultura · Religião", "nivel": "medio", "pergunta": "Qual é a associação cristã irmã do Farol, com CNPJ próprio?", "alternativas": ["Via Veritas Vita", "Raiz Cristã", "Instituto Força Brasil", "Centro de Estudos da Liberdade"], "correta": 0, "explicacao": "A Via Veritas Vita é uma associação religiosa cristã separada do Farol. Raiz Cristã é o nome de um programa, e o CEL é a razão social do próprio Farol.", "zoeira": "Raiz Cristã é programa, Via Veritas Vita tem CNPJ. Até a fé precisa de contador.", "modulo": "cultura", "versao": 1}, {"id": "C11", "tema": "Cultura · Religião", "nivel": "medio", "pergunta": "Um ateu que concorda com a mensagem moral bíblica pode ser Faroleiro?", "alternativas": ["Só como apoiador, não como Faroleiro", "Não, só cristãos", "Só se se converter em até um ano", "Sim, não é preciso crer no transcendente, basta concordar com a mensagem"], "correta": 3, "explicacao": "Ateus, agnósticos, judeus, budistas, umbandistas e outros podem ser Faroleiros se concordarem com a mensagem. Já para a Via Veritas Vita, que é cristã, não faria sentido.", "zoeira": "Ateu pode. O que não pode é ateu de caráter.", "modulo": "cultura", "versao": 1}, {"id": "C12", "tema": "Cultura · Religião", "nivel": "medio", "pergunta": "Qual destes grupos Abraham declarou incompatível com o Farol?", "alternativas": ["Budistas", "Judeus", "Satanistas", "Umbandistas"], "correta": 2, "explicacao": "Abraham diz explicitamente que satanistas não podem ser Faroleiros, enquanto budistas, judeus e umbandistas podem.", "zoeira": "O budista medita, o umbandista defuma e o satanista fica do lado de fora do grupo do WhatsApp.", "modulo": "cultura", "versao": 1}, {"id": "C13", "tema": "Cultura · Religião", "nivel": "dificil", "pergunta": "Por que, segundo Abraham, a religião é importante num movimento civilizatório?", "alternativas": ["Porque a lei brasileira exige", "Porque não existe civilização sem algum compromisso transcendente", "Porque as igrejas financiam o movimento", "Porque garante votos"], "correta": 1, "explicacao": "Para Abraham, toda civilização tem um vínculo transcendente. Ele cita como exemplos a Europa enfraquecida ao abandonar o cristianismo e o comunismo como 'religião sem Deus'.", "zoeira": "Até o comunismo tinha santo, liturgia e procissão. Só faltava Deus. E comida.", "modulo": "cultura", "versao": 1}, {"id": "C14", "tema": "Cultura · Política", "nivel": "facil", "pergunta": "Segundo Aristóteles, citado por Abraham, a política é:", "alternativas": ["A mais nobre das atividades humanas", "Um jogo de interesses", "Um mal necessário", "Tarefa exclusiva dos governantes"], "correta": 0, "explicacao": "O ser humano é um animal político, e a política (diferente de politicagem) é a mais nobre das atividades: entender o outro e agir em conjunto por um objetivo maior.", "zoeira": "Política é nobre. Politicagem é o que acontece quando o nobre vende o título no leilão.", "modulo": "cultura", "versao": 1}, {"id": "C15", "tema": "Cultura · Política", "nivel": "medio", "pergunta": "O Farol pode ter parceria com partidos ou um partido próprio?", "alternativas": ["Nunca, isso é proibido", "Sim, e o Farol é um partido", "Só com o PL", "Sim, mas o Farol em si não é partido nem movimento político"], "correta": 3, "explicacao": "Dentro do movimento civilizatório, pode haver parcerias ou partido, de preferência conservador. Mas o Farol continua não sendo partido nem projeto de poder.", "zoeira": "O Farol pode ter partido. O que não pode é partido ter o Farol.", "modulo": "cultura", "versao": 1}, {"id": "C16", "tema": "Cultura · Política", "nivel": "medio", "pergunta": "Quem, além dos conservadores, pode estar no Farol, segundo Abraham?", "alternativas": ["Qualquer pessoa, sem critério", "Comunistas moderados", "Liberais e até social-democratas que combatam a corrupção e defendam a liberdade", "Apenas conservadores 'raiz'"], "correta": 2, "explicacao": "Não é preciso ser conservador puro. Liberais e social-democratas que combatam a corrupção são bem-vindos. Comunistas são incompatíveis.", "zoeira": "Social-democrata que combate corrupção: espécie rara, em extinção, mas bem-vinda.", "modulo": "cultura", "versao": 1}, {"id": "C17", "tema": "Cultura · Política", "nivel": "dificil", "pergunta": "Quais são as premissas mínimas exigidas de um candidato associado ao Farol?", "alternativas": ["Ter mandato anterior", "Não roubar, não ser corrupto e não ser mentiroso contumaz", "Ser filiado há 10 anos", "Ser rico e famoso"], "correta": 1, "explicacao": "Abraham cita essas premissas básicas, que ecoam o 9º (honestidade) e o 13º (corrupção como assassinato indireto) Princípios.", "zoeira": "Três requisitos simples. Bastariam para reprovar metade do Congresso na primeira fase.", "modulo": "cultura", "versao": 1}, {"id": "C18", "tema": "Cultura · O Faroleiro", "nivel": "facil", "pergunta": "O Faroleiro é um simples apoiador do movimento?", "alternativas": ["Não, é membro de uma elite moral e comportamental", "Sim, basta fazer doações", "Sim, basta seguir nas redes", "Não, é um funcionário pago"], "correta": 0, "explicacao": "Abraham afirma que o Faroleiro não é o apoiador comum. É parte de uma elite moral e comportamental, e não econômica.", "zoeira": "Apoiador curte o post. Faroleiro levanta do sofá.", "modulo": "cultura", "versao": 1}, {"id": "C19", "tema": "Cultura · O Faroleiro", "nivel": "facil", "pergunta": "Qual a missão do Faroleiro, na ordem certa?", "alternativas": ["Primeiro eleger candidatos, depois mudar a si mesmo", "Primeiro arrecadar, depois formar", "Primeiro ganhar seguidores, depois agir", "Primeiro mudar a si mesmo, depois abrir os olhos de quem está ao redor"], "correta": 3, "explicacao": "'Você primeiro, depois as pessoas ao seu redor': ser senhor do próprio destino e então iluminar os outros, como o 'pescador de homens' do 1º Princípio.", "zoeira": "Querer consertar o mundo sem arrumar o próprio quarto é especialidade de diretório acadêmico.", "modulo": "cultura", "versao": 1}, {"id": "C20", "tema": "Cultura · O Faroleiro", "nivel": "medio", "pergunta": "Qual a meta de formação citada por Abraham para um Faroleiro?", "alternativas": ["Viralizar uma dancinha por semana", "Eleger um vereador por cidade", "Abrir os olhos de uma pessoa por mês", "Doar um salário por ano"], "correta": 2, "explicacao": "Um Faroleiro que abre os olhos de uma pessoa por mês 'já está giga'. Abrir os olhos de 30 pessoas vale mais que eleger um vereador.", "zoeira": "Uma pessoa por mês. Mais lento que dancinha viral, mas não morre em 24 horas.", "modulo": "cultura", "versao": 1}, {"id": "C21", "tema": "Cultura · Metáforas", "nivel": "medio", "pergunta": "Na metáfora da fogueira, o que representa a 'madeira de lei'?", "alternativas": ["Os vídeos virais", "Os Faroleiros sólidos e bem formados", "Os políticos aliados", "O dinheiro das doações"], "correta": 1, "explicacao": "Jornal e álcool (barulho, views, likes) são fogo de palha. O que mantém a fogueira acesa, até na chuva, é a madeira robusta: os Faroleiros formados.", "zoeira": "Viral é jornal com álcool: faz fumaça bonita e vira cinza antes do almoço.", "modulo": "cultura", "versao": 1}, {"id": "C22", "tema": "Cultura · Metáforas", "nivel": "medio", "pergunta": "Que ambiente Abraham usa como modelo para a convivência no Farol?", "alternativas": ["Um dojô de artes marciais", "Um retiro de meditação com Wi-Fi grátis", "Uma Smart Fit", "Um quartel"], "correta": 0, "explicacao": "O Farol é um dojô: há hierarquia e respeito, a correção dura ('escovada') educa e o desleal é expulso. 'Não é uma Smart Fit': os membros não são clientes.", "zoeira": "Não é Smart Fit: aqui ninguém cancela a matrícula pelo app reclamando do ar-condicionado.", "modulo": "cultura", "versao": 1}, {"id": "C23", "tema": "Cultura · Metáforas", "nivel": "medio", "pergunta": "Qual ordem histórica Abraham cita como inspiração para o Farol?", "alternativas": ["Os Bandeirantes", "Os Jesuítas", "Os Maçons", "Os Templários"], "correta": 3, "explicacao": "Os Templários. Abraham pergunta se um novato da ordem desrespeitaria um templário veterano sem consequência, para ilustrar a disciplina esperada.", "zoeira": "Jesuíta ensinava, maçom guardava segredo, bandeirante andava. Templário segurava a linha.", "modulo": "cultura", "versao": 1}, {"id": "C24", "tema": "Cultura · Conduta", "nivel": "medio", "pergunta": "Um Faroleiro discorda de uma decisão da liderança. Qual a postura esperada?", "alternativas": ["Atacar publicamente nas redes", "Sair e fundar outro grupo", "Questionar com boa-fé e educação e, se se sentir injustiçado, apresentar sua defesa", "Ficar calado sempre"], "correta": 2, "explicacao": "Pode-se questionar 'de igual para igual', com educação. Quem se sentir injustiçado deve procurar a liderança e se defender, e a decisão pode ser revista.", "zoeira": "Atacar a liderança nas redes é o jeito mais rápido de virar ex-Faroleiro com print emoldurado.", "modulo": "cultura", "versao": 1}, {"id": "C25", "tema": "Cultura · Conduta", "nivel": "medio", "pergunta": "Os líderes do Farol são empregados dos Faroleiros?", "alternativas": ["Sim, recebem por live", "Não, também são Faroleiros e o trabalho é voluntário", "Sim, são pagos pelas doações", "Sim, e dá para pedir reembolso se não gostar da live"], "correta": 1, "explicacao": "Abraham ressalta que ele, Arthur, Eric e Gabriel são Faroleiros como os demais, sem salário. Por isso devem ser tratados como mestres de dojô, não como prestadores de serviço.", "zoeira": "Ninguém aqui é seu garçom. Se quiser atendimento, ligue para o SAC da operadora e boa sorte.", "modulo": "cultura", "versao": 1}, {"id": "C26", "tema": "Cultura · Conduta", "nivel": "medio", "pergunta": "Um Faroleiro quer ir a um evento incompatível com os valores do Farol. O que vale?", "alternativas": ["Como indivíduo é livre, mas não pode associar o nome ou a camisa do Farol ao evento", "Precisa de autorização por escrito", "É expulso automaticamente", "Pode ir e levar a bandeira do Farol"], "correta": 0, "explicacao": "A liberdade individual é respeitada (desde que não haja crime), mas a marca do Farol não pode ser ligada a eventos ou pessoas que maculem seus valores.", "zoeira": "Você é livre para ir aonde quiser. A camiseta do Farol, não.", "modulo": "cultura", "versao": 1}, {"id": "C27", "tema": "Cultura · Conduta", "nivel": "dificil", "pergunta": "Qual o padrão de conduta sexual que Abraham cobra de Faroleiros homossexuais?", "alternativas": ["Devem esconder a orientação", "Não podem participar", "Nenhum padrão", "O mesmo autocontrole cobrado dos heterossexuais"], "correta": 3, "explicacao": "Homossexuais podem ser Faroleiros se aceitarem os valores. Como os heterossexuais, devem se controlar. Crimes levam à exclusão, e a marca do Farol não vai a paradas gays.", "zoeira": "Autocontrole é regra para todo mundo. Inclusive para quem comenta em rede social de madrugada.", "modulo": "cultura", "versao": 1}, {"id": "C28", "tema": "Cultura · Conduta", "nivel": "facil", "pergunta": "O Farol é uma instituição de caridade?", "alternativas": ["Não, e proíbe caridade", "Sim, só para famílias conservadoras", "Não. Ações como campanha do agasalho são permitidas, mas não são o foco", "Sim, o foco é assistência social"], "correta": 2, "explicacao": "A caridade pontual ajuda uma família, mas não muda a realidade de uma nação. O foco é formar guerreiros. Lembre o 12º Princípio: a política justa é a melhor forma de caridade.", "zoeira": "Campanha do agasalho esquenta uma família. Política justa esquenta o país inteiro, e não dá bolinha.", "modulo": "cultura", "versao": 1}, {"id": "C29", "tema": "Cultura · Programas", "nivel": "facil", "pergunta": "Qual é o programa de análise política semanal de Abraham Weintraub?", "alternativas": ["Farol News", "Weintraub Sem Filtro (WSF)", "Raiz Cristã", "Reação Conservadora"], "correta": 1, "explicacao": "O Weintraub Sem Filtro (WSF) é o programa de análise política, com centenas de episódios numerados.", "zoeira": "Sem filtro mesmo. Às vezes até sem freio.", "modulo": "cultura", "versao": 1}, {"id": "C30", "tema": "Cultura · Programas", "nivel": "facil", "pergunta": "Qual programa do canal do Farol trata de fé e atualidade à luz da Bíblia?", "alternativas": ["Raiz Cristã", "Farol News", "WSF", "Lanterna do Abe"], "correta": 0, "explicacao": "O Raiz Cristã, no canal do Farol, aborda temas como família, sexualidade, Igreja e perseguição a cristãos pela ótica bíblica.", "zoeira": "Bíblia numa mão, manchete na outra e paciência de Jó no meio.", "modulo": "cultura", "versao": 1}, {"id": "C31", "tema": "Cultura · Programas", "nivel": "medio", "pergunta": "Qual programa é o mais doutrinário e formativo, com aulas como 'Os rumos do Farol' e 'As bases de nossa revolução'?", "alternativas": ["Farol News", "Farol Cuts", "Reação Conservadora", "Lanterna do Abe"], "correta": 3, "explicacao": "O Lanterna do Abe é a aula-conversa de Abraham com Eric Ferreira e convidados, onde se discute a identidade e os rumos do movimento.", "zoeira": "Lanterna do Abe: porque até farol começa com uma lanterninha.", "modulo": "cultura", "versao": 1}, {"id": "C32", "tema": "Cultura · Estrutura", "nivel": "medio", "pergunta": "Qual destes NÃO é um núcleo de bastidores do Farol citado pela liderança?", "alternativas": ["Jurídico", "Farol da Saúde", "Núcleo de marketing eleitoral pago (com coffee break)", "Inteligência e segurança"], "correta": 2, "explicacao": "A liderança citou núcleos jurídico, Farol da Saúde (médicos), meio ambiente, inteligência e segurança, previdência e religioso. O trabalho é voluntário.", "zoeira": "Marketing eleitoral pago? Os líderes nem salário têm, imagine marqueteiro com estagiário.", "modulo": "cultura", "versao": 1}, {"id": "C33", "tema": "Cultura · Estrutura", "nivel": "dificil", "pergunta": "Qual centro, criado por Abraham e Arthur na universidade, deu origem ao Farol?", "alternativas": ["O MEC", "Um centro de estudos fundado na Unifesp", "O Banco Votorantim", "O Instituto Liberal"], "correta": 1, "explicacao": "Abraham conta que um centro de estudos criado por eles na Universidade Federal de São Paulo, com projetos com instituições do mercado, deu origem ao Farol.", "zoeira": "Nasceu dentro de uma universidade federal. Onde, segundo os próprios, foram recebidos com muito carinho. Só que não.", "modulo": "cultura", "versao": 1}, {"id": "C34", "tema": "Cultura · Revolução", "nivel": "dificil", "pergunta": "Segundo 'As bases de nossa revolução', quem costuma fazer as revoluções?", "alternativas": ["A classe média instruída e sem perspectiva ('desmobilizada')", "Os bilionários", "Os militares", "Os mais miseráveis, movidos pela fome"], "correta": 0, "explicacao": "Abraham argumenta, com as revoluções americana, francesa e russa como exemplos, que quem lidera rupturas é a classe média com formação e recursos, mas sem perspectiva. Quem passa fome luta pelo próximo prato.", "zoeira": "Quem passa fome luta pelo almoço. Quem tem diploma e dirige Uber luta por tudo, e ainda avalia o passageiro.", "modulo": "cultura", "versao": 1}, {"id": "C35", "tema": "Cultura · Revolução", "nivel": "dificil", "pergunta": "Que crítica Abraham faz à estratégia de Olavo de Carvalho?", "alternativas": ["Que era radical demais", "Nenhuma, segue Olavo integralmente", "Que ignorava a economia", "Que 'conquistar universidades e criar alta cultura' não funcionou na prática"], "correta": 3, "explicacao": "Abraham reconhece Olavo como grande filósofo, mas diz que a estratégia falhou: as instituições continuaram iguais, e parte dos herdeiros dessa 'alta cultura' teria se acomodado.", "zoeira": "Conquistar as universidades? Tentaram. A reitoria continua lá, igualzinha, tomando café.", "modulo": "cultura", "versao": 1}, {"id": "C36", "tema": "Cultura · Revolução", "nivel": "dificil", "pergunta": "Qual destas NÃO é uma das propostas de 'ruptura' citadas por Abraham?", "alternativas": ["Fechar municípios que não se sustentam", "Confisco alargado dos bens de corruptos", "Estatização dos bancos", "Autonomia regional para cada região decidir quão conservadora quer ser"], "correta": 2, "explicacao": "Abraham citou confisco alargado, pena de morte para corruptos, fechamento de municípios inviáveis e autonomia regional. Estatizar bancos contraria a defesa da propriedade privada (8º Princípio).", "zoeira": "Estatizar banco é a ideia que o Farol menos defenderia. Perde só para imposto sobre churrasco.", "modulo": "cultura", "versao": 1}, {"id": "C37", "tema": "Cultura · Revolução", "nivel": "medio", "pergunta": "Se o dinheiro recuperado da corrupção fosse devolvido às famílias, quem decidiria como gastá-lo, segundo Abraham?", "alternativas": ["O governo", "A própria família, livremente e dentro da lei", "O Farol", "Um conselho de especialistas"], "correta": 1, "explicacao": "'Quem sou eu para dizer como você vai gastar o seu dinheiro?' Cada um faz suas escolhas com juízo e vive com o resultado, ao contrário dos 'ismos' que decidem pelo indivíduo.", "zoeira": "Pode gastar com pinga, com puxadinho ou com a sogra. O dinheiro é seu. O Estado que se contente.", "modulo": "cultura", "versao": 1}, {"id": "C38", "tema": "Cultura · Posicionamento", "nivel": "medio", "pergunta": "Por que, segundo Abraham, o Farol continua criticando Bolsonaro?", "alternativas": ["Porque o bolsonarismo ainda seria uma força capaz de inviabilizar novas lideranças à direita", "Por vingança pessoal apenas", "Porque foi pedido pelo PT", "Porque Bolsonaro é comunista"], "correta": 0, "explicacao": "Abraham diz que o bolsonarismo não é 'cachorro morto': ainda teria força para barrar outros nomes. Antes de alguém virar Faroleiro, precisaria perceber que, para o Farol, Bolsonaro mentiu e se corrompeu.", "zoeira": "Cachorro morto não late. Esse, segundo o Farol, ainda late e morde quem passa pela direita.", "modulo": "cultura", "versao": 1}, {"id": "C39", "tema": "Cultura · Manifesto x Discurso", "nivel": "dificil", "pergunta": "Qual destas falas dos canais está em TENSÃO com o 13º Princípio do manifesto (que admite tirar uma vida apenas em legítima defesa)?", "alternativas": ["Defesa do confisco alargado", "Defesa da autonomia regional", "Defesa da família", "Defesa da pena de morte para corruptos"], "correta": 3, "explicacao": "O manifesto só admite tirar a vida em legítima defesa (própria ou de terceiros). A pena de morte para corruptos, defendida em live, vai além dessa exceção. É um ponto para debate nos grupos de formação.", "zoeira": "Nem todo debate cabe num quiz. Esse aqui rende mais no churrasco de sábado, com moderação e picanha.", "modulo": "cultura", "versao": 1}, {"id": "C40", "tema": "Cultura · Manifesto x Discurso", "nivel": "dificil", "pergunta": "O que permanece igual entre o manifesto e o discurso atual dos canais?", "alternativas": ["A crítica nominal a políticos", "A tese de separação do país", "A centralidade do indivíduo e da família e o combate à corrupção", "O modelo do dojô"], "correta": 2, "explicacao": "Indivíduo, família e combate à corrupção são o fio condutor dos dois. Crítica nominal, separatismo e dojô aparecem só no discurso dos canais.", "zoeira": "Muda o tom, muda o alvo, mas família e combate à corrupção seguem sendo o arroz com feijão.", "modulo": "cultura", "versao": 1}];
+const BANCO = [];
+const MODO_SERVIDOR = true; // true na versão da VPS: contas, quiz e pontos conferidos pelo servidor
 const MSG = {"acerto": ["Acertou! Já pode cobrar consultoria do Centrão. Mas não aceite.", "Na mosca. Se fosse concurso público, você já estaria nomeado. Por mérito, olha que raridade.", "Correto! A lanterna acendeu. A conta de luz vem depois.", "Mandou bem. Aristóteles levantou da cadeira e bateu palma.", "Certo! Mais preciso que promessa de campanha. Tá, isso não é difícil.", "Acertou, e sem precisar de emenda parlamentar.", "Correto! O Farol agradece. Brasília lamenta.", "Isso aí! Se continuar assim, vira ministro. Calma, foi só uma ameaça.", "Na lata. Até o STF concordaria, depois de três pedidos de vista.", "Acertou! Sua avó ficaria orgulhosa e faria bolo de cenoura."], "erro": ["Errou. Mas relaxa: tem gente com foro privilegiado que erra mais e ganha mais.", "Não foi dessa vez. Respira, lê a explicação e não culpe o algoritmo.", "Errado! Até o horóscopo do jornal acertou mais hoje.", "Quase. 'Quase' também é o que dizem do Brasil há 500 anos.", "Errou feio, errou rude. Mas um Faroleiro levanta e tenta de novo.", "Resposta incorreta. O político de plantão adorou. Não dê esse gosto a ele.", "Ops. Errar é humano. Persistir no erro é coisa de partido.", "Não. Mas pelo menos você não mudou de opinião para agradar a plateia. Ou mudou?", "Errou. A boa notícia: esse erro não custou nenhum imposto.", "Negativo. Volte uma casa e leia o manifesto sem pular as partes chatas."], "sequencia": {"3": "Três seguidas! Já dá para abrir uma CPI de tanto acerto.", "5": "Cinco seguidas! Isso não é sorte, é formação. Ou cola. Esperamos que formação.", "10": "Dez seguidas! Você está oficialmente iluminando mais que a iluminação pública da sua cidade."}};
 
 /* Parâmetros de pontuação, XP e patentes (avaliação v1.1, §4.3). Configuráveis. */
@@ -926,6 +980,7 @@ function renderCentral() {
   show("scr-central");
 }
 function modoTexto() {
+  if (MODO_SERVIDOR) return "<b>Progresso salvo no servidor do Farol</b> e publicado no ranking da campanha.";
   if (Store.online && Store.podeRanking) return "<b>Progresso salvo na sua conta</b> e publicado no ranking da campanha.";
   if (Store.online) return "<b>Progresso salvo na sua conta.</b> Seu acesso a este jogo é só de leitura, então seus pontos não entram no ranking.";
   return "<b>Modo local:</b> o progresso fica só neste navegador e não entra no ranking. Entre na sua conta para competir.";
@@ -1059,7 +1114,11 @@ function sortearPerguntas(temas, qtd, usadas) {
    3) teclas repetidas (segurar D, Espaço...) são ignoradas e só 1 a 4 respondem;
    4) o foco fica no painel, nunca num botão que um Espaço segurado acionaria. */
 const QUIZ_ESPERA = { abrir: 700, pergunta: 450, feedback: 400 };
-function rodarQuiz({ nome, perguntas, onResposta, onFim }) {
+function rodarQuiz({ nome, perguntas, onResposta, onFim, corrigir }) {
+  corrigir = corrigir || (async (q, idx) => {
+    const ok = idx === q.correta, base = PARAMS.valorBase[q.nivel] || 20;
+    return { ok, correta: q.correta, explicacao: q.explicacao, zoeira: q.zoeira || "", pontos: ok ? base : Math.round(base * PARAMS.fatorErro) };
+  });
   let i = 0, etapa = "intro", armadoEm = 0;
   const modal = $("m-quiz"), sheet = $("mq-sheet");
   const armar = (ms) => { armadoEm = performance.now() + ms; };
@@ -1099,17 +1158,26 @@ function rodarQuiz({ nome, perguntas, onResposta, onFim }) {
     });
     armar(QUIZ_ESPERA.pergunta); focarPainel();
   };
-  const responder = (idx) => {
-    etapa = "feedback";
+  const responder = async (idx) => {
+    etapa = "corrigindo";
     const q = perguntas[i];
-    const ok = idx === q.correta;
-    const base = PARAMS.valorBase[q.nivel] || 20;
-    const pts = ok ? base : Math.round(base * PARAMS.fatorErro);
+    const botoes = [...$("mq-opts").children];
+    botoes.forEach((b) => { b.disabled = true; });
+    let r;
+    try { r = await corrigir(q, idx); }
+    catch (e) {
+      botoes.forEach((b) => { b.disabled = false; });
+      etapa = "pergunta"; armar(QUIZ_ESPERA.pergunta);
+      const v = $("mq-verdict"); v.className = "verdict no"; v.textContent = e.message || "Não deu para conferir a resposta. Tente de novo.";
+      $("mq-msg").textContent = ""; $("mq-exp").textContent = ""; $("mq-zoeira").hidden = true; $("mq-fb").hidden = false;
+      return;
+    }
+    etapa = "feedback";
+    const ok = r.ok, pts = r.pontos;
     streak = ok ? streak + 1 : 0;
-    [...$("mq-opts").children].forEach((b) => {
-      b.disabled = true;
+    botoes.forEach((b) => {
       const bi = Number(b.dataset.idx);
-      if (bi === q.correta) b.classList.add("right");
+      if (bi === r.correta) b.classList.add("right");
       else if (bi === idx) b.classList.add("wrong");
     });
     const v = $("mq-verdict");
@@ -1119,9 +1187,9 @@ function rodarQuiz({ nome, perguntas, onResposta, onFim }) {
     let msg = pick(ok ? MSG.acerto : MSG.erro);
     if (ok && MSG.sequencia && MSG.sequencia[String(streak)]) msg = MSG.sequencia[String(streak)];
     $("mq-msg").textContent = serio ? (ok ? "Resposta correta." : "Resposta incorreta. Veja a explicação.") : msg;
-    $("mq-exp").textContent = q.explicacao;
-    $("mq-zoeira").textContent = serio ? "" : (q.zoeira || "");
-    $("mq-zoeira").hidden = serio || !q.zoeira;
+    $("mq-exp").textContent = r.explicacao;
+    $("mq-zoeira").textContent = serio ? "" : (r.zoeira || "");
+    $("mq-zoeira").hidden = serio || !r.zoeira;
     $("mq-fb").hidden = false;
     onResposta(q, idx, ok, pts);
     const nb = $("mq-next");
@@ -1668,6 +1736,7 @@ class Missao extends Phaser.Scene {
     this.run.eventos.add(evento);
     this.run.pontos += pontos; this.run.xp += xp;
     this.run.linhas[linha] += pontos;
+    if (MODO_SERVIDOR && !evento.startsWith("quiz:") && evento !== "objetivo:principal") Api.evento(evento);
     this.atualizarHUD();
     if (pontos > 0) this.flutuar(`+${pontos}`);
     return true;
@@ -1699,6 +1768,7 @@ class Missao extends Phaser.Scene {
       if (hp <= 0) {
         this.boneco.destroy(); this.boneco = null;
         this.run.concluidos.add("boneco");
+        if (MODO_SERVIDOR) Api.evento("boneco");
         this.toast("Boneco no chão. Agora, o juramento.");
         this.atualizarHUD();
       }
@@ -1739,32 +1809,53 @@ class Missao extends Phaser.Scene {
 
   /* ---------- altares e quiz ---------- */
   ativarAltar(a) {
-    if (a.aceso || this.pausado || this.terminou) return;
+    if (a.aceso || this.pausado || this.terminou || this._buscandoQuiz) return;
     if (a.tipo === "pedra" && !this.run.concluidos.has("boneco")) {
       if (!this._avisoBoneco) { this.toast("Primeiro derrote o boneco de treino."); this._avisoBoneco = true; this.time.delayedCall(3000, () => this._avisoBoneco = false); }
       return;
     }
-    const perguntas = sortearPerguntas(a.temas, a.qtd, this.run.usadas);
-    perguntas.forEach((q) => this.run.usadas.add(q.id));
     this.pausado = true; this.physics.pause(); this.input.keyboard.enabled = false;
-    rodarQuiz({
-      nome: a.nome, perguntas,
+    const retomar = () => { this.input.keyboard.enabled = true; this.input.keyboard.resetKeys(); this.pausado = false; this.physics.resume(); INPUT.left = INPUT.right = false; };
+    const acenderAltar = () => {
+      a.aceso = true; this.run.concluidos.add(a.chave);
+      this.acender(a, false);
+      this.checkpoint = { x: a.x, y: 400 };
+      this.vida = this.vidaMax;
+      retomar();
+      this.atualizarHUD();
+      this.toast(a.tipo === "pedra" ? "Juramento feito. Vida restaurada e ponto de controle salvo." : `${a.nome} aceso. Vida restaurada e ponto de controle salvo.`);
+    };
+    const abrir = (perguntas, corrigir) => rodarQuiz({
+      nome: a.nome, perguntas, corrigir,
       onResposta: (q, idx, ok, pts) => {
         this.run.quizTotal++; if (ok) this.run.quizOk++;
         this.premiar(`quiz:${q.id}`, pts, ok ? PARAMS.xp.acerto : PARAMS.xp.erro, "quiz");
         this.run.tentativas.push({ q: q.id, v: q.versao || 1, r: idx, ok, pts, t: new Date().toISOString(), missao: this.id });
       },
-      onFim: () => {
-        a.aceso = true; this.run.concluidos.add(a.chave);
-        this.acender(a, false);
-        this.checkpoint = { x: a.x, y: 400 };
-        this.vida = this.vidaMax;
-        this.input.keyboard.enabled = true; this.input.keyboard.resetKeys(); this.pausado = false; this.physics.resume();
-        INPUT.left = INPUT.right = false;
-        this.atualizarHUD();
-        this.toast(a.tipo === "pedra" ? "Juramento feito. Vida restaurada e ponto de controle salvo." : `${a.nome} aceso. Vida restaurada e ponto de controle salvo.`);
-      }
+      onFim: acenderAltar
     });
+    if (!MODO_SERVIDOR) {
+      const perguntas = sortearPerguntas(a.temas, a.qtd, this.run.usadas);
+      perguntas.forEach((q) => this.run.usadas.add(q.id));
+      abrir(perguntas);
+      return;
+    }
+    // modo servidor: o servidor sorteia (sem gabarito) e corrige cada resposta
+    this._buscandoQuiz = true;
+    Api.fila.then(() => Api.req("POST", "/api/corrida/quiz", { corrida: CORRIDA, altar: a.chave }))
+      .then((r) => {
+        this._buscandoQuiz = false;
+        const pendentes = r.perguntas.filter((q) => !q.respondida);
+        if (!pendentes.length) { acenderAltar(); return; }
+        abrir(pendentes, (q, idx) => Api.req("POST", "/api/corrida/responder", { corrida: CORRIDA, pergunta: q.id, resposta: idx }));
+      })
+      .catch((e) => {
+        this._buscandoQuiz = false;
+        if (e.status === 401) return;
+        retomar();
+        this.player.setX(this.player.x + (this.player.x < a.x ? -90 : 90)); // sai de cima do marco para não reabrir em loop
+        this.toast(e.message, 4000);
+      });
   }
   acender(a, instant) {
     const y = a.brilhoY;
@@ -2183,7 +2274,14 @@ function abrirIntro(id) {
 }
 $("mi-back").addEventListener("click", () => closeModal("m-intro"));
 
-function iniciarMissao(id, retomada) {
+async function iniciarMissao(id, retomada) {
+  if (MODO_SERVIDOR && !retomada) {
+    try { const r = await Api.req("POST", "/api/corrida/iniciar", { missao: id }); CORRIDA = r.corrida; }
+    catch (e) { if (e.status !== 401) mostrarErro(e, e.status === 0 || e.status >= 500 ? () => iniciarMissao(id) : null); return; }
+  }
+  iniciarCena(id, retomada);
+}
+function iniciarCena(id, retomada) {
   missaoAtual = id;
   show("scr-game");
   $("toast").hidden = true;
@@ -2227,45 +2325,68 @@ $("md-resume").addEventListener("click", () => {
   const s = cena();
   game.scene.start("Missao", { id: s.id, retomada: { run: s.run, checkpoint: s.checkpoint } });
 });
-$("md-restart").addEventListener("click", () => { closeModal("m-defeat"); game.scene.start("Missao", { id: cena().id }); });
+$("md-restart").addEventListener("click", () => { closeModal("m-defeat"); iniciarMissao(cena().id); });
 
 async function concluirMissao(id, run) {
   game.scene.stop("Missao");
   const p = PERFIL;
-  const prev = p.missoes[id] || { concluida: false, melhor: null, tentativas: 0 };
-  const repeticao = prev.concluida;
-  const tempo = Math.round((Date.now() - run.inicio) / 1000);
-  const xpGanho = Math.round(run.xp * (repeticao ? PARAMS.xpRepeticao : 1));
-  const patAntes = patenteIndex(p);
-  const opcionais = [...run.eventos].filter((e) => e.startsWith("col:") || e.startsWith("mor:")).length;
-  const atual = { pontos: run.pontos, opcionais, tempo, quiz: `${run.quizOk}/${run.quizTotal}`, em: new Date().toISOString() };
-  const melhorou = !prev.melhor || atual.pontos > prev.melhor.pontos || (atual.pontos === prev.melhor.pontos && (atual.opcionais > prev.melhor.opcionais || atual.tempo < prev.melhor.tempo));
-  p.missoes[id] = { concluida: true, melhor: melhorou ? atual : prev.melhor, tentativas: (prev.tentativas || 0) + 1 };
-  p.xp += xpGanho;
-  p.tentativasQuiz = (p.tentativasQuiz || []).concat(run.tentativas).slice(-300);
-  const patDepois = patenteIndex(p);
+  let res;
+  if (MODO_SERVIDOR) {
+    $("r-saved").textContent = "";
+    try {
+      await Api.fila;
+      const eventos = [...run.eventos].filter((e) => !e.startsWith("quiz:") && e !== "objetivo:principal");
+      if (run.concluidos.has("boneco")) eventos.push("boneco");
+      const r = await Api.req("POST", "/api/corrida/concluir", { corrida: CORRIDA, eventos });
+      PERFIL = perfilDoServidor(r.perfil);
+      const R = r.resultado;
+      res = { pontos: R.pontos, xp: R.xp, linhas: R.linhas, quizOk: R.quizOk, quizTotal: R.quizTotal, tempo: R.tempo,
+        repeticao: R.repeticao, melhorou: R.melhorou, melhorAnterior: R.melhorAnterior, patAntes: r.patenteAntes, patDepois: r.patenteDepois,
+        salvo: "Resultado conferido e salvo no servidor do Farol. O ranking já está atualizado." };
+      CORRIDA = null;
+      carregarRankingServidor();
+    } catch (e) {
+      if (e.status === 401) return;
+      mostrarErro(e, e.status === 0 || e.status >= 500 ? () => concluirMissao(id, run) : null);
+      return;
+    }
+  } else {
+    const prev = p.missoes[id] || { concluida: false, melhor: null, tentativas: 0 };
+    const repeticao = prev.concluida;
+    const tempo = Math.round((Date.now() - run.inicio) / 1000);
+    const xpGanho = Math.round(run.xp * (repeticao ? PARAMS.xpRepeticao : 1));
+    const patAntes = patenteIndex(p);
+    const opcionais = [...run.eventos].filter((e) => e.startsWith("col:") || e.startsWith("mor:")).length;
+    const atual = { pontos: run.pontos, opcionais, tempo, quiz: `${run.quizOk}/${run.quizTotal}`, em: new Date().toISOString() };
+    const melhorou = !prev.melhor || atual.pontos > prev.melhor.pontos || (atual.pontos === prev.melhor.pontos && (atual.opcionais > prev.melhor.opcionais || atual.tempo < prev.melhor.tempo));
+    p.missoes[id] = { concluida: true, melhor: melhorou ? atual : prev.melhor, tentativas: (prev.tentativas || 0) + 1 };
+    p.xp += xpGanho;
+    p.tentativasQuiz = (p.tentativasQuiz || []).concat(run.tentativas).slice(-300);
+    res = { pontos: run.pontos, xp: xpGanho, linhas: run.linhas, quizOk: run.quizOk, quizTotal: run.quizTotal, tempo, repeticao, melhorou,
+      melhorAnterior: prev.melhor ? prev.melhor.pontos : null, patAntes, patDepois: patenteIndex(p), salvo: null };
+  }
 
   // tela de resultado
-  const F = FASES[id];
+  const F = FASES[id], L = res.linhas;
   $("r-kicker").textContent = `${F.kicker} concluída`;
   $("r-title").textContent = F.titulo;
-  $("r-pts").textContent = run.pontos;
-  $("r-best").textContent = melhorou ? (prev.melhor ? `Novo recorde (antes: ${prev.melhor.pontos}).` : "Primeiro resultado registrado.") : `Seu recorde continua ${prev.melhor.pontos}.`;
-  $("r-xp").textContent = `+${xpGanho}`;
-  $("r-xpnote").textContent = repeticao ? `Repetição: ${PARAMS.xpRepeticao * 100}% do XP.` : `Total: ${p.xp} XP.`;
-  $("r-quiz").textContent = `${run.quizOk}/${run.quizTotal}`;
-  $("r-time").textContent = fmtTime(tempo);
+  $("r-pts").textContent = res.pontos;
+  $("r-best").textContent = res.melhorou ? (res.melhorAnterior !== null ? `Novo recorde (antes: ${res.melhorAnterior}).` : "Primeiro resultado registrado.") : `Seu recorde continua ${res.melhorAnterior}.`;
+  $("r-xp").textContent = `+${res.xp}`;
+  $("r-xpnote").textContent = res.repeticao ? `Repetição: ${PARAMS.xpRepeticao * 100}% do XP.` : `Total: ${PERFIL.xp} XP.`;
+  $("r-quiz").textContent = `${res.quizOk}/${res.quizTotal}`;
+  $("r-time").textContent = fmtTime(res.tempo);
   const bd = $("r-breakdown"); bd.innerHTML = "";
-  [["Quiz", run.linhas.quiz], ...(FASES[id].chefe ? [["Mestre derrotado", run.linhas.chefe || 0]] : []), ["Objetivo principal", run.linhas.objetivos], ["Objetivos opcionais", run.linhas.opcionais], [`Inimigos (teto ${PARAMS.tetoInimigos})`, run.linhas.inimigos], ["Total", run.pontos]].forEach(([a, b]) => {
+  [["Quiz", L.quiz], ...(F.chefe ? [["Mestre derrotado", L.chefe || 0]] : []), ["Objetivo principal", L.objetivos], ["Objetivos opcionais", L.opcionais], [`Inimigos (teto ${PARAMS.tetoInimigos})`, L.inimigos], ["Total", res.pontos]].forEach(([a, b]) => {
     const tr = document.createElement("tr"); tr.innerHTML = "<td></td><td class='num'></td>"; tr.children[0].textContent = a; tr.children[1].textContent = b;
     if (a === "Total") tr.style.fontWeight = "600";
     bd.appendChild(tr);
   });
   const promo = $("r-promo"); promo.innerHTML = "";
-  if (patDepois > patAntes) {
+  if (res.patDepois > res.patAntes) {
     const d = document.createElement("div"); d.className = "promo";
     d.innerHTML = `<span class="label">Nova patente</span><b></b><span class="hint"></span>`;
-    d.querySelector("b").textContent = PATENTES[patDepois].nome;
+    d.querySelector("b").textContent = PATENTES[res.patDepois].nome;
     d.querySelector(".hint").textContent = "A luz ficou um pouco mais forte.";
     promo.appendChild(d);
   }
@@ -2275,9 +2396,10 @@ async function concluirMissao(id, run) {
   if (next && next.prova) { nb.hidden = false; nb.textContent = "Ir para a prova final"; nb.onclick = abrirProva; }
   else if (next && next.jogavel) { nb.hidden = false; nb.textContent = `Próxima: ${next.nome}`; nb.onclick = () => abrirIntro(next.id); }
   else { nb.hidden = true; }
-  $("r-saved").textContent = "Salvando…";
   show("scr-result");
+  if (res.salvo) { $("r-saved").textContent = res.salvo; return; }
 
+  $("r-saved").textContent = "Salvando…";
   const onde = await Store.salvarPerfil(p);
   const entrou = await Store.publicarRanking(entradaRanking(p));
   $("r-saved").textContent = onde === "online"
@@ -2331,9 +2453,24 @@ function abrirProva() {
   $("pv-espera").textContent = espera ? `Nova tentativa liberada em ${espera.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}.` : "";
   b.textContent = pv.aprovada ? "Refazer a prova (treino)" : "Começar a prova";
 }
-function iniciarProva() {
-  if (provaEspera(PERFIL)) return;
-  PROVA = { qs: montarProva(), i: 0, resp: [], sel: null, armadoEm: 0, treino: !!provaDe(PERFIL).aprovada };
+async function iniciarProva() {
+  if (MODO_SERVIDOR) {
+    $("pv-start").disabled = true;
+    try {
+      const r = await Api.req("POST", "/api/prova/iniciar");
+      PROVA = { id: r.prova, qs: r.perguntas, i: 0, resp: [], sel: null, armadoEm: 0, treino: !!provaDe(PERFIL).aprovada };
+    } catch (e) {
+      $("pv-start").disabled = false;
+      $("pv-espera").textContent = e.dados && e.dados.liberaEm
+        ? `Nova tentativa liberada em ${new Date(e.dados.liberaEm).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}.`
+        : e.message;
+      return;
+    }
+    $("pv-start").disabled = false;
+  } else {
+    if (provaEspera(PERFIL)) return;
+    PROVA = { qs: montarProva(), i: 0, resp: [], sel: null, armadoEm: 0, treino: !!provaDe(PERFIL).aprovada };
+  }
   $("pv-intro").hidden = true; $("pv-exec").hidden = false;
   renderProva();
 }
@@ -2386,60 +2523,78 @@ $("pv-res-back").addEventListener("click", renderCentral);
 $("pv-sair").addEventListener("click", () => { PROVA = null; renderCentral(); });
 
 async function finalizarProva() {
-  const S = PROVA, p = PERFIL, pv = provaDe(p), P = PARAMS.prova;
-  const acertos = S.resp.filter((r) => r.ok).length, total = S.resp.length, nota = acertos / total;
-  const aprovado = nota >= P.notaMinima;
-  const patAntes = patenteIndex(p);
-  pv.tentativas.push({ em: new Date().toISOString(), acertos, total, nota, aprovado, treino: S.treino, respostas: S.resp.map((r) => ({ q: r.q.id, v: r.q.versao || 1, r: r.idx, ok: r.ok })) });
-  pv.tentativas = pv.tentativas.slice(-20);
-  if (aprovado && !pv.aprovada) {
-    pv.aprovada = true; p.provaAprovada = true;
-    p.missoes.final = { concluida: true, melhor: null, tentativas: pv.tentativas.length };
+  const S = PROVA, P = PARAMS.prova;
+  let G; // resultado corrigido: { acertos, total, nota, aprovado, revisao[], patAntes, patDepois, salvo }
+  if (MODO_SERVIDOR) {
+    $("pv-ok").disabled = true;
+    try {
+      const r = await Api.req("POST", "/api/prova/enviar", { prova: S.id, respostas: S.resp.map((x) => ({ pergunta: x.q.id, resposta: x.idx })) });
+      PERFIL = perfilDoServidor(r.perfil);
+      G = { acertos: r.acertos, total: r.total, nota: r.nota, aprovado: r.aprovado, revisao: r.revisao, patAntes: r.patenteAntes, patDepois: r.patenteDepois, salvo: "Resultado corrigido e salvo no servidor do Farol." };
+      carregarRankingServidor();
+    } catch (e) {
+      $("pv-ok").disabled = false;
+      if (e.status !== 401) mostrarErro(e, () => finalizarProva());
+      return;
+    }
+  } else {
+    const p = PERFIL, pv = provaDe(p);
+    const acertos = S.resp.filter((r) => r.ok).length, total = S.resp.length, nota = acertos / total;
+    const aprovado = nota >= P.notaMinima;
+    const patAntes = patenteIndex(p);
+    pv.tentativas.push({ em: new Date().toISOString(), acertos, total, nota, aprovado, treino: S.treino, respostas: S.resp.map((r) => ({ q: r.q.id, v: r.q.versao || 1, r: r.idx, ok: r.ok })) });
+    pv.tentativas = pv.tentativas.slice(-20);
+    if (aprovado && !pv.aprovada) {
+      pv.aprovada = true; p.provaAprovada = true;
+      p.missoes.final = { concluida: true, melhor: null, tentativas: pv.tentativas.length };
+    }
+    G = { acertos, total, nota, aprovado, patAntes, patDepois: patenteIndex(p), salvo: null,
+      revisao: S.resp.map((r) => ({ pergunta: r.q.pergunta, alternativas: r.q.alternativas, resposta: r.idx, correta: r.q.correta, ok: r.ok, explicacao: r.q.explicacao })) };
   }
-  const patDepois = patenteIndex(p);
   PROVA = null;
 
   $("pv-exec").hidden = true; $("pv-res").hidden = false;
-  $("pv-nota").textContent = `${Math.round(nota * 100)}%`;
-  $("pv-acertos").textContent = `${acertos} de ${total} acertos`;
+  $("pv-nota").textContent = `${Math.round(G.nota * 100)}%`;
+  $("pv-acertos").textContent = `${G.acertos} de ${G.total} acertos`;
   const v = $("pv-veredito");
-  v.className = "verdict " + (aprovado ? "ok" : "no");
-  v.textContent = aprovado ? "Aprovado." : `Ainda não. A nota mínima é ${Math.round(P.notaMinima * 100)}%.`;
+  v.className = "verdict " + (G.aprovado ? "ok" : "no");
+  v.textContent = G.aprovado ? "Aprovado." : `Ainda não. A nota mínima é ${Math.round(P.notaMinima * 100)}%.`;
   const promo = $("pv-promo"); promo.innerHTML = "";
-  if (patDepois > patAntes) {
+  if (G.patDepois > G.patAntes) {
     const d = document.createElement("div"); d.className = "promo";
     d.innerHTML = `<span class="label">Patente máxima</span><b></b><span class="hint"></span>`;
-    d.querySelector("b").textContent = PATENTES[patDepois].nome;
+    d.querySelector("b").textContent = PATENTES[G.patDepois].nome;
     d.querySelector(".hint").textContent = "Luz firme, madeira de lei e olho aberto. Agora vá abrir os olhos de uma pessoa por mês.";
     promo.appendChild(d);
-  } else if (!aprovado) {
+  } else if (!G.aprovado) {
     const libera = new Date(Date.now() + P.intervaloHoras * 3600e3);
     const d = document.createElement("p"); d.className = "hint";
     d.textContent = `Seu progresso na campanha continua guardado. Revise as explicações abaixo e tente de novo a partir de ${libera.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}.`;
     promo.appendChild(d);
   }
   const lista = $("pv-revisao"); lista.innerHTML = "";
-  S.resp.forEach((r, k) => {
+  G.revisao.forEach((r, k) => {
     const det = document.createElement("details");
     det.className = "rev " + (r.ok ? "ok" : "no");
     if (!r.ok) det.open = true;
     det.innerHTML = `<summary><span class="rv-n"></span><span class="rv-q"></span></summary><p class="rv-a"></p><p class="rv-c"></p><p class="rv-e"></p>`;
     det.querySelector(".rv-n").textContent = `${k + 1}. ${r.ok ? "✓" : "✗"}`;
-    det.querySelector(".rv-q").textContent = r.q.pergunta;
-    det.querySelector(".rv-a").textContent = `Sua resposta: ${r.q.alternativas[r.idx]}`;
-    det.querySelector(".rv-c").textContent = r.ok ? "" : `Correta: ${r.q.alternativas[r.q.correta]}`;
-    det.querySelector(".rv-e").textContent = r.q.explicacao;
+    det.querySelector(".rv-q").textContent = r.pergunta;
+    det.querySelector(".rv-a").textContent = `Sua resposta: ${r.resposta >= 0 ? r.alternativas[r.resposta] : "(sem resposta)"}`;
+    det.querySelector(".rv-c").textContent = r.ok ? "" : `Correta: ${r.alternativas[r.correta]}`;
+    det.querySelector(".rv-e").textContent = r.explicacao;
     lista.appendChild(det);
   });
+  if (G.salvo) { $("pv-salvo").textContent = G.salvo; return; }
   $("pv-salvo").textContent = "Salvando…";
-  const onde = await Store.salvarPerfil(p);
-  if (patDepois !== patAntes) await Store.publicarRanking(entradaRanking(p));
+  const onde = await Store.salvarPerfil(PERFIL);
+  if (G.patDepois !== G.patAntes) await Store.publicarRanking(entradaRanking(PERFIL));
   $("pv-salvo").textContent = onde === "online" ? "Resultado salvo na sua conta." : "Resultado salvo neste navegador (modo local).";
 }
 
 $("r-central").addEventListener("click", renderCentral);
-$("r-ranking").addEventListener("click", () => { renderRanking(); show("scr-ranking"); });
-$("btn-ranking").addEventListener("click", () => { renderRanking(); show("scr-ranking"); });
+$("r-ranking").addEventListener("click", () => abrirRanking());
+$("btn-ranking").addEventListener("click", () => abrirRanking());
 $("k-back").addEventListener("click", renderCentral);
 $("btn-settings").addEventListener("click", () => { $("ms-serio").checked = !!PERFIL.modoSerio; $("ms-touch").checked = document.body.classList.contains("touchmode"); openModal("m-settings"); });
 $("ms-serio").addEventListener("change", (e) => { PERFIL.modoSerio = e.target.checked; Store.salvarPerfil(PERFIL); });
@@ -2454,10 +2609,151 @@ document.addEventListener("keydown", (e) => {
 });
 
 /* =====================================================================
+   MODO SERVIDOR (VPS): contas, partidas validadas, quiz corrigido no servidor,
+   ranking real e prova final. No artefato/arquivo local, MODO_SERVIDOR = false.
+   ===================================================================== */
+let CORRIDA = null;               // partida atual no servidor
+const Api = {
+  fila: Promise.resolve(),        // eventos de jogo vão em ordem; quiz e conclusão esperam a fila
+  async req(metodo, url, corpo) {
+    let r;
+    try {
+      r = await fetch(url, {
+        method: metodo, credentials: "same-origin",
+        headers: { "Content-Type": "application/json", "X-Requested-With": "farol" },
+        body: corpo ? JSON.stringify(corpo) : undefined
+      });
+    } catch (e) { const err = new Error("Sem conexão com o servidor. Verifique a internet e tente de novo."); err.status = 0; throw err; }
+    let dados = {};
+    try { dados = await r.json(); } catch (e) { /* resposta sem JSON */ }
+    if (!r.ok) {
+      const err = new Error(dados.erro || `Erro ${r.status}`); err.status = r.status; err.dados = dados;
+      if (r.status === 401 && !/\/api\/(login|cadastro|redefinir|eu\/excluir)$/.test(url) && PERFIL) sessaoExpirada();
+      throw err;
+    }
+    return dados;
+  },
+  evento(evento) {
+    if (!CORRIDA) return;
+    const corrida = CORRIDA;
+    this.fila = this.fila.then(() => this.req("POST", "/api/corrida/evento", { corrida, evento })).catch(() => { /* reenviado na conclusão */ });
+  }
+};
+function perfilDoServidor(p) { return Object.assign(novoPerfil(p.apelido), p, { missoes: p.missoes || {}, tentativasQuiz: [] }); }
+function sessaoExpirada() {
+  PERFIL = null; CORRIDA = null;
+  try { if (game) game.scene.stop("Missao"); } catch (e) { /* cena já parada */ }
+  document.querySelectorAll(".modal").forEach((m) => { m.hidden = true; });
+  mostrarConta("entrar", "Sua sessão terminou. Entre de novo.");
+}
+let _tentarDeNovo = null;
+function mostrarErro(e, tentar) {
+  $("me-txt").textContent = e && e.message ? e.message : "Tente de novo em instantes.";
+  _tentarDeNovo = tentar || null;
+  $("me-tentar").hidden = !tentar;
+  openModal("m-erro");
+}
+$("me-tentar").addEventListener("click", () => { closeModal("m-erro"); const f = _tentarDeNovo; _tentarDeNovo = null; if (f) f(); });
+$("me-voltar").addEventListener("click", () => { closeModal("m-erro"); _tentarDeNovo = null; try { if (game) game.scene.stop("Missao"); } catch (e) { /* ok */ } renderCentral(); });
+async function carregarRankingServidor() {
+  try { const r = await Api.req("GET", "/api/ranking"); RANKING = r.linhas; Store.uid = r.eu; }
+  catch (e) { if (e.status !== 401) RANKING = RANKING || null; }
+  if (!$("scr-ranking").hidden) renderRanking();
+  if (!$("scr-central").hidden) $("c-pos").textContent = posicaoNoRanking() || "—";
+}
+function abrirRanking() { renderRanking(); show("scr-ranking"); if (MODO_SERVIDOR) carregarRankingServidor(); }
+
+/* ---------- tela de conta ---------- */
+let abaConta = "entrar";
+function mostrarConta(aba, aviso) {
+  abaConta = aba;
+  document.querySelectorAll("#form-conta .tab").forEach((t) => { const on = t.dataset.aba === aba; t.classList.toggle("ativo", on); t.setAttribute("aria-selected", String(on)); });
+  document.querySelectorAll("#form-conta [data-so]").forEach((el) => { el.hidden = el.dataset.so !== aba; });
+  $("ct-senha-rot").textContent = aba === "esqueci" ? "Nova senha" : "Senha";
+  $("ct-senha").autocomplete = aba === "entrar" ? "current-password" : "new-password";
+  $("ct-ok").textContent = aba === "entrar" ? "Entrar" : aba === "criar" ? "Criar conta e jogar" : "Redefinir a senha";
+  $("ct-err").textContent = aviso || "";
+  $("ct-hint").textContent = aba === "criar" ? "Senha com pelo menos 8 caracteres. O apelido aparece no ranking."
+    : aba === "esqueci" ? "Peça um código a um administrador do Farol (ele gera pelo servidor). O código vale 24 horas."
+    : "Seu progresso fica salvo no servidor do Farol e vale para o ranking.";
+  show("scr-home");
+}
+document.querySelectorAll("#form-conta .tab").forEach((t) => t.addEventListener("click", () => mostrarConta(t.dataset.aba)));
+$("ct-priv").addEventListener("click", (e) => { e.preventDefault(); openModal("m-priv"); });
+$("mpv-ok").addEventListener("click", () => closeModal("m-priv"));
+$("form-conta").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const apelido = $("ct-apelido").value.trim(), senha = $("ct-senha").value;
+  const erroAp = abaConta === "criar" ? validarApelido(apelido) : (apelido ? "" : "Informe seu apelido.");
+  if (erroAp) { $("ct-err").textContent = erroAp; $("ct-apelido").focus(); return; }
+  if (senha.length < (abaConta === "entrar" ? 1 : 8)) { $("ct-err").textContent = abaConta === "entrar" ? "Informe sua senha." : "A senha precisa de pelo menos 8 caracteres."; $("ct-senha").focus(); return; }
+  if (abaConta === "criar" && !$("ct-aceite").checked) { $("ct-err").textContent = "Para criar a conta, aceite a política de privacidade."; return; }
+  $("ct-ok").disabled = true; $("ct-err").textContent = "";
+  try {
+    if (abaConta === "esqueci") {
+      await Api.req("POST", "/api/redefinir", { apelido, codigo: $("ct-codigo").value.trim(), novaSenha: senha });
+      $("ct-senha").value = ""; mostrarConta("entrar", "");
+      $("ct-hint").textContent = "Senha redefinida. Entre com a nova senha.";
+      return;
+    }
+    const r = abaConta === "criar"
+      ? await Api.req("POST", "/api/cadastro", { apelido, senha, email: $("ct-email").value.trim() || null, aceite: true })
+      : await Api.req("POST", "/api/login", { apelido, senha });
+    $("ct-senha").value = "";
+    entrarComPerfil(r.perfil);
+  } catch (err) {
+    $("ct-err").textContent = err.message;
+  } finally { $("ct-ok").disabled = false; }
+});
+function entrarComPerfil(p) {
+  PERFIL = perfilDoServidor(p);
+  Store.online = true; Store.podeRanking = true; Store.uid = PERFIL.id;
+  $("btn-sair").hidden = false; $("ms-conta").hidden = false;
+  renderCentral();
+  carregarRankingServidor();
+}
+$("btn-sair").addEventListener("click", async () => {
+  try { await Api.req("POST", "/api/sair"); } catch (e) { /* sai mesmo assim */ }
+  PERFIL = null; RANKING = null; CORRIDA = null;
+  mostrarConta("entrar", "");
+});
+$("ms-excluir").addEventListener("click", async () => {
+  const senha = $("ms-senha").value;
+  if (!senha) { $("ms-err").textContent = "Digite sua senha para confirmar."; return; }
+  if (!$("ms-excluir").dataset.confirmar) { $("ms-excluir").dataset.confirmar = "1"; $("ms-excluir").textContent = "Confirmar: excluir para sempre"; $("ms-err").textContent = "Isso apaga sua conta, seu progresso e sua posição no ranking. Não dá para desfazer."; return; }
+  try {
+    await Api.req("POST", "/api/eu/excluir", { senha });
+    closeModal("m-settings");
+    PERFIL = null; RANKING = null;
+    mostrarConta("criar", "Conta excluída. Seus dados foram apagados.");
+  } catch (err) { $("ms-err").textContent = err.message; }
+  finally { delete $("ms-excluir").dataset.confirmar; $("ms-excluir").textContent = "Excluir minha conta"; $("ms-senha").value = ""; }
+});
+
+if (MODO_SERVIDOR) {
+  Object.assign(Store, {
+    async init() { return this; },
+    async carregarPerfil() { return null; },
+    async salvarPerfil(p) {
+      try { const r = await Api.req("POST", "/api/eu/prefs", { modoSerio: !!p.modoSerio }); return "online"; }
+      catch (e) { return "erro"; }
+    },
+    async publicarRanking() { return true; },
+    ouvirRanking() { carregarRankingServidor(); return () => {}; }
+  });
+}
+
+/* =====================================================================
    INÍCIO
    ===================================================================== */
 async function boot() {
   aplicarToque(lsGet("farol.toque", isTouch));
+  if (MODO_SERVIDOR) {
+    $("form-signin").hidden = true; $("form-conta").hidden = false;
+    try { const r = await Api.req("GET", "/api/eu"); entrarComPerfil(r.perfil); }
+    catch (e) { mostrarConta("entrar", e.status === 0 ? e.message : ""); }
+    return;
+  }
   $("btn-start").disabled = true;
   await Store.init();
   PERFIL = await Store.carregarPerfil();
