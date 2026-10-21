@@ -1182,8 +1182,9 @@ class Missao extends Phaser.Scene {
     this.physics.add.collider(this.projeteis, this.solidos, (pr) => pr.destroy());
     this.physics.add.overlap(this.player, this.projeteis, (p, pr) => {
       if (this.invuln > 0 || this.pausado || this.terminou) return;
+      const dir = pr.body && pr.body.velocity.x > 0 ? 1 : -1; // ler antes de destruir: depois disso pr.body é null
       pr.destroy();
-      this.dano(pr.body.velocity.x > 0 ? 1 : -1);
+      this.dano(dir);
     });
 
     // boneco de treino (Prólogo)

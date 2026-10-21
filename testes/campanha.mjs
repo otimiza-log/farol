@@ -122,14 +122,30 @@ await shot("c05-promessa");
 // rebater promessa com ataque
 const rebateu = await ev(`const s=cena(); const pr=s.projeteis.getChildren().find(p=>p.active); if(!pr) return 'sem projetil'; s.player.setPosition(pr.x-30, pr.y); s.player.body.setVelocity(0,0); s.facing=1; s.atkCd=0; s.atacar(); return !pr.active;`);
 ok(rebateu === true, "ataque rebate a promessa");
+// promessa ACERTA o jogador: perde vida e o jogo continua rodando (regressão do travamento)
+await sleep(1200);
+const acerto = await ev(`const s=cena(); s.invuln=0; s.vida=5; s.atualizarHUD();
+  const e=s.inimigos.getChildren().find(e=>e.getData('tipo')==='aliciador');
+  const pr=s.projeteis.create(s.player.x+40, s.player.y, 'promessa'); pr.body.setAllowGravity(false); pr.body.setVelocity(-200, 0);
+  const f0=game.loop.frame; await new Promise(r=>setTimeout(r,700));
+  return {vida:s.vida, framesDepois: game.loop.frame - f0, ativo: s.sys.isActive()}`);
+ok(acerto.vida === 4 && acerto.framesDepois > 10, `promessa que acerta tira 1 de vida e o jogo segue (vida ${acerto.vida}, ${acerto.framesDepois} quadros depois)`);
+// várias promessas em sequência, sem rebater, por 6 s
+const estresse = await ev(`const s=cena(); s.invuln=0; s.vida=5; s.atualizarHUD();
+  const e=s.inimigos.getChildren().filter(e=>e.getData('tipo')==='aliciador')[1]; // longe dos moradores
+  s.player.setPosition(e.x+200, 440); s.player.body.setVelocity(0,0);
+  const f0=game.loop.frame; await new Promise(r=>setTimeout(r,6000));
+  return {vida:s.vida, frames: game.loop.frame - f0, derrota: !document.getElementById('m-defeat').hidden}`);
+ok(estresse.frames > 200, `6 s parado na mira do Aliciador sem travar (${estresse.frames} quadros, vida ${estresse.vida})`);
+await ev(`document.getElementById('m-defeat').hidden || document.getElementById('md-resume').click(); const s=cena(); if (s) { s.vida=5; s.atualizarHUD(); }`); await sleep(1500);
 // morador: +1 de vida
 await ev(`const s=cena(); s.vida=3; s.atualizarHUD();`);
-await ir(620, 440); await sleep(400);
-const mor = await ev(`const s=cena(); return {vida:s.vida, ajudado: s.moradores.getChildren()[0].getData('ajudado'), toast: document.getElementById('toast').textContent}`);
+await ir(3700, 440); await sleep(400); // morador longe dos testes anteriores
+const mor = await ev(`const s=cena(); return {vida:s.vida, ajudado: s.moradores.getChildren()[3].getData('ajudado'), toast: document.getElementById('toast').textContent}`);
 ok(mor.vida === 4 && mor.ajudado, "morador reerguido devolve 1 de vida: " + mor.toast);
 await shot("c06-morador");
 log("  lugares:", await acenderTodos());
-for (const x of [1380, 2280, 3700]) { await ir(x, 440); await sleep(350); }
+for (const x of [620, 1380, 2280]) { await ir(x, 440); await sleep(350); }
 log("  objetivo HUD:", await ev(`return document.getElementById('h-obj').textContent`));
 const r3 = await concluir(4670);
 log("  resultado:", JSON.stringify(r3));
