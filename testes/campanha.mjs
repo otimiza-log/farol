@@ -96,6 +96,11 @@ await sleep(300);
 log("  resultado:", JSON.stringify(await concluir(2370)));
 log("\n[Missão 1]");
 await ev(`document.getElementById('r-next').click()`); await sleep(300); await ev(`document.getElementById('mi-go').click()`); await sleep(2200);
+// queda no buraco (regressão do travamento): perde 1 de vida, volta ao ponto de controle e o jogo segue
+const queda = await ev(`const s=cena(); s.vida=5; s.invuln=0; s.atualizarHUD(); s.player.setPosition(955, 520); s.player.body.setVelocity(0, 300);
+  const f0=game.loop.frame; await new Promise(r=>setTimeout(r,1200));
+  return {vida:s.vida, frames: game.loop.frame-f0, x: Math.round(s.player.x), aviso: document.getElementById('toast').textContent}`);
+ok(queda.vida === 4 && queda.frames > 30 && queda.aviso.includes("buracos"), "cair no buraco tira 1 de vida e o jogo continua " + JSON.stringify(queda));
 log("  pilares:", await acenderTodos());
 await ir(1444, 220); await sleep(400);
 log("  objetivo HUD:", await ev(`return document.getElementById('h-obj').textContent`));
@@ -200,6 +205,12 @@ for (const M of MESTRES) {
   if (!(await ev(`return !document.getElementById('m-intro').hidden`))) { await ev(`abrirIntro('${M.id}')`); await sleep(300); }
   log("  intro:", await ev(`return document.getElementById('mi-title').textContent`));
   await ev(`document.getElementById('mi-go').click()`); await sleep(2200);
+  if (M.id === "m7") {
+    const agua = await ev(`const s=cena(); s.vida=5; s.invuln=0; s.atualizarHUD(); s.player.setPosition(1150, 520); s.player.body.setVelocity(0, 300);
+      const f0=game.loop.frame; await new Promise(r=>setTimeout(r,1200));
+      return {vida:s.vida, frames: game.loop.frame-f0, aviso: document.getElementById('toast').textContent}`);
+    ok(agua.vida === 4 && agua.frames > 30 && agua.aviso.includes("água"), "cair na água tira 1 de vida e o jogo continua " + JSON.stringify(agua));
+  }
   log("  altares:", await acenderTodos());
   // tentar terminar sem derrotar o mestre
   await ir(M.fim); await sleep(500);

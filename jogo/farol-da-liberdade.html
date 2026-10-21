@@ -2122,7 +2122,15 @@ class Missao extends Phaser.Scene {
   }
 
   /* ---------- laço ---------- */
+  // rede de segurança: um erro no quadro não pode congelar o jogo inteiro (o Phaser para o laço quando o update lança erro)
   update(time, delta) {
+    try { this.passo(time, delta); }
+    catch (e) {
+      console.error("Erro no quadro do jogo:", e);
+      if (!this._erroAvisado) { this._erroAvisado = true; this.toast("Algo deu errado aqui. Se o jogo não responder, pause e abandone a missão para recomeçar.", 6000); }
+    }
+  }
+  passo(time, delta) {
     if (!this.sys.isActive() || !this.cameras || !this.cameras.main) return;
     // fundo em paralaxe e facho do farol
     const cam = this.cameras.main;
@@ -2160,7 +2168,7 @@ class Missao extends Phaser.Scene {
       this.vida -= 1; this.atualizarHUD();
       if (this.vida <= 0) { this.derrota(); return; }
       p.setPosition(this.checkpoint.x, this.checkpoint.y); p.setVelocity(0, 0); this.invuln = 1000;
-      this.toast(F.agua ? "Você caiu na água. Use os barcos." : "Cuidado com os buracos.");
+      this.toast(this.fase.agua ? "Você caiu na água. Use os barcos." : "Cuidado com os buracos.");
     }
 
     // plataformas móveis: vão e voltam entre x0 e x1
