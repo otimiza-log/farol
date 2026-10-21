@@ -409,7 +409,7 @@ details.rules ul { margin: 10px 0 0; padding-left: 18px; color: #d9cdb9; font-si
 /* =====================================================================
    DADOS (injetados por build_jogo.py a partir dos JSONs do quiz)
    ===================================================================== */
-const BANCO = [{"id": 1, "tema": "Identidade", "nivel": "facil", "pergunta": "Qual é a razão social da entidade cujo nome fantasia é Farol da Liberdade?", "alternativas": ["Instituto Conservador-Liberal", "Centro de Estudos da Liberdade (CEL)", "Movimento Brasil Livre", "Instituto Força Brasil"], "correta": 1, "explicacao": "O Farol da Liberdade é o nome fantasia do Centro de Estudos da Liberdade (CEL), fundado pelos irmãos Abraham e Arthur Weintraub.", "zoeira": "Nome fantasia bonito, razão social de cartório. Igual político: um nome pra campanha, outro pro processo.", "versao": 1}, {"id": 2, "tema": "Identidade", "nivel": "facil", "pergunta": "Qual destes NÃO é um dos quatro valores do Farol da Liberdade?", "alternativas": ["Igualdade de resultados", "Liberdade", "Racionalidade", "Valores tradicionais"], "correta": 0, "explicacao": "Os quatro valores são: Liberdade, Valores tradicionais, Racionalidade e Defesa das minorias. 'Igualdade de resultados' não faz parte deles.", "zoeira": "Igualdade de resultados só existe em dois lugares: no cemitério e na fila do INSS.", "versao": 1}, {"id": 3, "tema": "Identidade", "nivel": "facil", "pergunta": "Segundo o manifesto, qual é a menor de todas as minorias?", "alternativas": ["A família", "O nascituro", "A comunidade local", "O indivíduo"], "correta": 3, "explicacao": "O valor 'Defesa das minorias' especifica que a menor delas é o indivíduo. Defender minorias é, antes de tudo, defender cada pessoa.", "zoeira": "A menor minoria é o indivíduo. A segunda menor é a de quem leu o manifesto até o fim. Parabéns, você está nas duas.", "versao": 1}, {"id": 4, "tema": "Identidade", "nivel": "facil", "pergunta": "A partir do material-base de quem o Manifesto Conservador foi discutido e reestruturado?", "alternativas": ["Olavo de Carvalho", "Edmund Burke", "Abraham Weintraub", "Arthur Weintraub"], "correta": 2, "explicacao": "O manifesto foi reestruturado por conservadores a partir de material-base do economista e professor Abraham Bragança de Vasconcellos Weintraub.", "zoeira": "Edmund Burke morreu em 1797. Tem álibi.", "versao": 1}, {"id": 5, "tema": "Introdução", "nivel": "facil", "pergunta": "Por que, segundo a Introdução, todo ser humano tem igual dignidade?", "alternativas": ["Porque todos nascem na mesma condição social", "Porque é reflexo do Criador", "Porque todos pagam impostos", "Porque a Constituição assim determina"], "correta": 1, "explicacao": "A Introdução afirma que todo ser humano tem igual dignidade por ser reflexo do Criador, devendo ser livre para escolher e arcar com as consequências.", "zoeira": "A Constituição tem mais emenda que colcha de vó. A dignidade veio antes, e sem jabuti.", "versao": 1}, {"id": 6, "tema": "Introdução", "nivel": "facil", "pergunta": "Qual é a instituição mais importante, segundo a Introdução do manifesto?", "alternativas": ["A família", "O Estado", "O grupo de WhatsApp da família", "A Igreja"], "correta": 0, "explicacao": "A Introdução diz que o governo existe para permitir a busca da felicidade por indivíduos e famílias, sendo estas as instituições mais importantes.", "zoeira": "O Estado como instituição mais importante? Só na opinião do próprio Estado.", "versao": 1}, {"id": 7, "tema": "Introdução", "nivel": "medio", "pergunta": "Na Introdução, drogas e promiscuidade são apontadas como condutas que ferem qual direito básico?", "alternativas": ["Paz", "Propriedade", "Vida", "Família"], "correta": 3, "explicacao": "Os pares são: Vida (homicídio, aborto); Propriedade (roubo, furto, corrupção); Paz (distúrbios); Família (drogas, promiscuidade).", "zoeira": "Drogas e promiscuidade: a dupla sertaneja que mais desfez família no Brasil. E sem precisar de turnê.", "versao": 1}, {"id": 8, "tema": "Introdução", "nivel": "medio", "pergunta": "Segundo a Introdução, a corrupção fere diretamente qual direito básico?", "alternativas": ["Família", "Paz", "Propriedade", "Liberdade de crença"], "correta": 2, "explicacao": "Na Introdução, corrupção aparece junto com roubo e furto como violação da Propriedade. (No 13º Princípio, ela também é chamada de assassinato indireto.)", "zoeira": "Aqui a corrupção é roubo. Spoiler: no 13º Princípio ela é promovida a assassinato. Plano de carreira invejável.", "versao": 1}, {"id": 9, "tema": "Introdução", "nivel": "medio", "pergunta": "Para o manifesto, qual é a finalidade do governo?", "alternativas": ["Conduzir a moral religiosa da nação", "Permitir a busca da felicidade, mantendo ordem e justiça", "Administrar a economia em nome do povo", "Garantir igualdade material entre todos"], "correta": 1, "explicacao": "O governo existe para permitir que indivíduos, famílias e outros grupos busquem a felicidade, com normas que garantam ordem e justiça.", "zoeira": "Se o papel do governo fosse administrar a economia com sucesso, o Brasil seria a Suíça. Olhe pela janela.", "versao": 1}, {"id": 10, "tema": "1º Princípio", "nivel": "facil", "pergunta": "Segundo o 1º Princípio, qual é a base do conservadorismo?", "alternativas": ["O indivíduo forte, livre e capaz de decidir o próprio destino", "A tradição religiosa", "O Estado forte", "O influenciador com mais seguidores"], "correta": 0, "explicacao": "O 1º Princípio coloca como alicerce o indivíduo forte, livre e capaz de decidir o próprio destino.", "zoeira": "Estado forte é aquele que você sustenta com força. Uns 40% do seu salário de força.", "versao": 1}, {"id": 11, "tema": "1º Princípio", "nivel": "medio", "pergunta": "No 1º Princípio, o que deve fazer quem se libertou da 'prisão mental' imposta por movimentos totalitários?", "alternativas": ["Denunciar os totalitários às autoridades", "Fundar um partido político", "Afastar-se de quem ainda está preso", "Libertar, um a um, os que estão ao seu redor, como 'pescador de homens'"], "correta": 3, "explicacao": "O manifesto pede que a pessoa liberta ajude a libertar os demais, um a um, como um 'pescador de homens' — a essência da missão do Faroleiro.", "zoeira": "Pescador de homens. Não confundir com pescador de emenda parlamentar, espécie muito mais comum no Planalto.", "versao": 1}, {"id": 12, "tema": "1º Princípio", "nivel": "medio", "pergunta": "Complete segundo o 1º Princípio: 'Não existe nação livre sem...'", "alternativas": ["...forças armadas", "...economia de mercado", "...indivíduos livres", "...um governo forte"], "correta": 2, "explicacao": "O manifesto afirma que, sem a família transmitindo valores e patrimônio, a nação perece — e que não há nação livre sem indivíduos livres.", "zoeira": "Sem indivíduos livres não há nação livre, só plateia batendo palma em live oficial.", "versao": 1}, {"id": 13, "tema": "1º Princípio", "nivel": "dificil", "pergunta": "Segundo o 1º Princípio, o que a família transmite entre gerações?", "alternativas": ["Somente a fé religiosa", "Valores, tradições e patrimônio cultural e material", "Filiação partidária", "Apenas bens materiais (herança)"], "correta": 1, "explicacao": "A família é o núcleo natural pelo qual se transmitem valores, tradições e patrimônio cultural E material.", "zoeira": "Herança material passa. A receita de bolo da avó atravessa gerações e nunca é tributada.", "versao": 1}, {"id": 14, "tema": "1º Princípio", "nivel": "dificil", "pergunta": "A expressão 'pescador de homens', usada no 1º Princípio, tem origem em qual fonte?", "alternativas": ["Nos Evangelhos (chamado de Jesus aos apóstolos)", "Em 'A República', de Platão", "Na Declaração de Independência dos EUA", "Na Ética a Nicômaco, de Aristóteles"], "correta": 0, "explicacao": "É uma referência bíblica (Mt 4,19; Mc 1,17). No manifesto é metáfora para quem forma e liberta os outros, um a um. (Pergunta de contexto.)", "zoeira": "Aristóteles não pescava. Que se saiba.", "versao": 1}, {"id": 15, "tema": "2º Princípio", "nivel": "facil", "pergunta": "Quais são os três pilares da busca da felicidade?", "alternativas": ["Deus, Pátria e Família", "Fortaleza, Prudência e Temperança", "Vida, Propriedade e Paz", "Liberdade, Justiça e Verdade"], "correta": 3, "explicacao": "O 2º Princípio define os três pilares: Liberdade, Justiça e Verdade.", "zoeira": "'Deus, Pátria e Família' cabe num adesivo. 'Liberdade, Justiça e Verdade' dá trabalho todo dia.", "versao": 1}, {"id": 16, "tema": "2º Princípio", "nivel": "medio", "pergunta": "Qual destas NÃO é uma das dimensões da liberdade citadas no 2º Princípio?", "alternativas": ["Intelectual", "Física", "Econômica-coletiva", "De crença"], "correta": 2, "explicacao": "As quatro dimensões são: física, material, intelectual e de crença.", "zoeira": "Liberdade 'econômica-coletiva' é tipo vegano de churrascaria: não existe.", "versao": 1}, {"id": 17, "tema": "2º Princípio", "nivel": "medio", "pergunta": "Segundo o 2º Princípio, a mentira é uma forma de quê?", "alternativas": ["Covardia", "Escravidão", "Fanatismo", "Horário eleitoral gratuito"], "correta": 1, "explicacao": "No pilar Verdade, o manifesto afirma que a mentira é uma forma de escravidão.", "zoeira": "Se mentir desse cadeia, Brasília seria presídio de segurança máxima com ar-condicionado central.", "versao": 1}, {"id": 18, "tema": "2º Princípio", "nivel": "medio", "pergunta": "Como o pilar Verdade é garantido, segundo o 2º Princípio?", "alternativas": ["Pelo acesso a informação descentralizada e distribuída", "Por uma agência estatal de checagem", "Pela censura de conteúdos falsos", "Pela autoridade da imprensa tradicional"], "correta": 0, "explicacao": "A Verdade depende do acesso a informação descentralizada e distribuída — e não de um órgão central que decida o que é verdadeiro.", "zoeira": "Agência estatal de checagem é a raposa fazendo auditoria no galinheiro, com crachá e verba.", "versao": 1}, {"id": 19, "tema": "2º Princípio", "nivel": "dificil", "pergunta": "No 2º Princípio, a Justiça é a ordem que impede que a busca da felicidade seja prejudicada por quem?", "alternativas": ["Pelo mercado", "Apenas por estrangeiros", "Apenas por criminosos", "Por outros indivíduos ou pelo governo"], "correta": 3, "explicacao": "A Justiça protege contra danos causados por outros indivíduos OU pelo próprio governo, e se baseia na lei natural.", "zoeira": "Sim, o governo também atrapalha sua felicidade. Surpresa zero para quem já pagou IPVA.", "versao": 1}, {"id": 20, "tema": "2º Princípio", "nivel": "dificil", "pergunta": "Em que se baseia o pilar Justiça do 2º Princípio?", "alternativas": ["Nos costumes de cada época", "Na jurisprudência do STF", "Na lei natural", "Na vontade da maioria"], "correta": 2, "explicacao": "O pilar Justiça se fundamenta na lei natural — uma ordem moral anterior às leis escritas e reconhecível pela razão.", "zoeira": "A vontade da maioria já elegeu muita gente que você conhece. A lei natural não tem segundo turno.", "versao": 1}];
+const BANCO = [{"id": 1, "tema": "Identidade", "nivel": "facil", "pergunta": "Qual é a razão social da entidade cujo nome fantasia é Farol da Liberdade?", "alternativas": ["Instituto Conservador-Liberal", "Centro de Estudos da Liberdade (CEL)", "Movimento Brasil Livre", "Instituto Força Brasil"], "correta": 1, "explicacao": "O Farol da Liberdade é o nome fantasia do Centro de Estudos da Liberdade (CEL), fundado pelos irmãos Abraham e Arthur Weintraub.", "zoeira": "Nome fantasia bonito, razão social de cartório. Igual político: um nome pra campanha, outro pro processo.", "versao": 1}, {"id": 2, "tema": "Identidade", "nivel": "facil", "pergunta": "Qual destes NÃO é um dos quatro valores do Farol da Liberdade?", "alternativas": ["Igualdade de resultados", "Liberdade", "Racionalidade", "Valores tradicionais"], "correta": 0, "explicacao": "Os quatro valores são: Liberdade, Valores tradicionais, Racionalidade e Defesa das minorias. 'Igualdade de resultados' não faz parte deles.", "zoeira": "Igualdade de resultados só existe em dois lugares: no cemitério e na fila do INSS.", "versao": 1}, {"id": 3, "tema": "Identidade", "nivel": "facil", "pergunta": "Segundo o manifesto, qual é a menor de todas as minorias?", "alternativas": ["A família", "O nascituro", "A comunidade local", "O indivíduo"], "correta": 3, "explicacao": "O valor 'Defesa das minorias' especifica que a menor delas é o indivíduo. Defender minorias é, antes de tudo, defender cada pessoa.", "zoeira": "A menor minoria é o indivíduo. A segunda menor é a de quem leu o manifesto até o fim. Parabéns, você está nas duas.", "versao": 1}, {"id": 4, "tema": "Identidade", "nivel": "facil", "pergunta": "A partir do material-base de quem o Manifesto Conservador foi discutido e reestruturado?", "alternativas": ["Olavo de Carvalho", "Edmund Burke", "Abraham Weintraub", "Arthur Weintraub"], "correta": 2, "explicacao": "O manifesto foi reestruturado por conservadores a partir de material-base do economista e professor Abraham Bragança de Vasconcellos Weintraub.", "zoeira": "Edmund Burke morreu em 1797. Tem álibi.", "versao": 1}, {"id": 5, "tema": "Introdução", "nivel": "facil", "pergunta": "Por que, segundo a Introdução, todo ser humano tem igual dignidade?", "alternativas": ["Porque todos nascem na mesma condição social", "Porque é reflexo do Criador", "Porque todos pagam impostos", "Porque a Constituição assim determina"], "correta": 1, "explicacao": "A Introdução afirma que todo ser humano tem igual dignidade por ser reflexo do Criador, devendo ser livre para escolher e arcar com as consequências.", "zoeira": "A Constituição tem mais emenda que colcha de vó. A dignidade veio antes, e sem jabuti.", "versao": 1}, {"id": 6, "tema": "Introdução", "nivel": "facil", "pergunta": "Qual é a instituição mais importante, segundo a Introdução do manifesto?", "alternativas": ["A família", "O Estado", "O grupo de WhatsApp da família", "A Igreja"], "correta": 0, "explicacao": "A Introdução diz que o governo existe para permitir a busca da felicidade por indivíduos e famílias, sendo estas as instituições mais importantes.", "zoeira": "O Estado como instituição mais importante? Só na opinião do próprio Estado.", "versao": 1}, {"id": 7, "tema": "Introdução", "nivel": "medio", "pergunta": "Na Introdução, drogas e promiscuidade são apontadas como condutas que ferem qual direito básico?", "alternativas": ["Paz", "Propriedade", "Vida", "Família"], "correta": 3, "explicacao": "Os pares são: Vida (homicídio, aborto); Propriedade (roubo, furto, corrupção); Paz (distúrbios); Família (drogas, promiscuidade).", "zoeira": "Drogas e promiscuidade: a dupla sertaneja que mais desfez família no Brasil. E sem precisar de turnê.", "versao": 1}, {"id": 8, "tema": "Introdução", "nivel": "medio", "pergunta": "Segundo a Introdução, a corrupção fere diretamente qual direito básico?", "alternativas": ["Família", "Paz", "Propriedade", "Liberdade de crença"], "correta": 2, "explicacao": "Na Introdução, corrupção aparece junto com roubo e furto como violação da Propriedade. (No 13º Princípio, ela também é chamada de assassinato indireto.)", "zoeira": "Aqui a corrupção é roubo. Spoiler: no 13º Princípio ela é promovida a assassinato. Plano de carreira invejável.", "versao": 1}, {"id": 9, "tema": "Introdução", "nivel": "medio", "pergunta": "Para o manifesto, qual é a finalidade do governo?", "alternativas": ["Conduzir a moral religiosa da nação", "Permitir a busca da felicidade, mantendo ordem e justiça", "Administrar a economia em nome do povo", "Garantir igualdade material entre todos"], "correta": 1, "explicacao": "O governo existe para permitir que indivíduos, famílias e outros grupos busquem a felicidade, com normas que garantam ordem e justiça.", "zoeira": "Se o papel do governo fosse administrar a economia com sucesso, o Brasil seria a Suíça. Olhe pela janela.", "versao": 1}, {"id": 10, "tema": "1º Princípio", "nivel": "facil", "pergunta": "Segundo o 1º Princípio, qual é a base do conservadorismo?", "alternativas": ["O indivíduo forte, livre e capaz de decidir o próprio destino", "A tradição religiosa", "O Estado forte", "O influenciador com mais seguidores"], "correta": 0, "explicacao": "O 1º Princípio coloca como alicerce o indivíduo forte, livre e capaz de decidir o próprio destino.", "zoeira": "Estado forte é aquele que você sustenta com força. Uns 40% do seu salário de força.", "versao": 1}, {"id": 11, "tema": "1º Princípio", "nivel": "medio", "pergunta": "No 1º Princípio, o que deve fazer quem se libertou da 'prisão mental' imposta por movimentos totalitários?", "alternativas": ["Denunciar os totalitários às autoridades", "Fundar um partido político", "Afastar-se de quem ainda está preso", "Libertar, um a um, os que estão ao seu redor, como 'pescador de homens'"], "correta": 3, "explicacao": "O manifesto pede que a pessoa liberta ajude a libertar os demais, um a um, como um 'pescador de homens' — a essência da missão do Faroleiro.", "zoeira": "Pescador de homens. Não confundir com pescador de emenda parlamentar, espécie muito mais comum no Planalto.", "versao": 1}, {"id": 12, "tema": "1º Princípio", "nivel": "medio", "pergunta": "Complete segundo o 1º Princípio: 'Não existe nação livre sem...'", "alternativas": ["...forças armadas", "...economia de mercado", "...indivíduos livres", "...um governo forte"], "correta": 2, "explicacao": "O manifesto afirma que, sem a família transmitindo valores e patrimônio, a nação perece — e que não há nação livre sem indivíduos livres.", "zoeira": "Sem indivíduos livres não há nação livre, só plateia batendo palma em live oficial.", "versao": 1}, {"id": 13, "tema": "1º Princípio", "nivel": "dificil", "pergunta": "Segundo o 1º Princípio, o que a família transmite entre gerações?", "alternativas": ["Somente a fé religiosa", "Valores, tradições e patrimônio cultural e material", "Filiação partidária", "Apenas bens materiais (herança)"], "correta": 1, "explicacao": "A família é o núcleo natural pelo qual se transmitem valores, tradições e patrimônio cultural E material.", "zoeira": "Herança material passa. A receita de bolo da avó atravessa gerações e nunca é tributada.", "versao": 1}, {"id": 14, "tema": "1º Princípio", "nivel": "dificil", "pergunta": "A expressão 'pescador de homens', usada no 1º Princípio, tem origem em qual fonte?", "alternativas": ["Nos Evangelhos (chamado de Jesus aos apóstolos)", "Em 'A República', de Platão", "Na Declaração de Independência dos EUA", "Na Ética a Nicômaco, de Aristóteles"], "correta": 0, "explicacao": "É uma referência bíblica (Mt 4,19; Mc 1,17). No manifesto é metáfora para quem forma e liberta os outros, um a um. (Pergunta de contexto.)", "zoeira": "Aristóteles não pescava. Que se saiba.", "versao": 1}, {"id": 15, "tema": "2º Princípio", "nivel": "facil", "pergunta": "Quais são os três pilares da busca da felicidade?", "alternativas": ["Deus, Pátria e Família", "Fortaleza, Prudência e Temperança", "Vida, Propriedade e Paz", "Liberdade, Justiça e Verdade"], "correta": 3, "explicacao": "O 2º Princípio define os três pilares: Liberdade, Justiça e Verdade.", "zoeira": "'Deus, Pátria e Família' cabe num adesivo. 'Liberdade, Justiça e Verdade' dá trabalho todo dia.", "versao": 1}, {"id": 16, "tema": "2º Princípio", "nivel": "medio", "pergunta": "Qual destas NÃO é uma das dimensões da liberdade citadas no 2º Princípio?", "alternativas": ["Intelectual", "Física", "Econômica-coletiva", "De crença"], "correta": 2, "explicacao": "As quatro dimensões são: física, material, intelectual e de crença.", "zoeira": "Liberdade 'econômica-coletiva' é tipo vegano de churrascaria: não existe.", "versao": 1}, {"id": 17, "tema": "2º Princípio", "nivel": "medio", "pergunta": "Segundo o 2º Princípio, a mentira é uma forma de quê?", "alternativas": ["Covardia", "Escravidão", "Fanatismo", "Horário eleitoral gratuito"], "correta": 1, "explicacao": "No pilar Verdade, o manifesto afirma que a mentira é uma forma de escravidão.", "zoeira": "Se mentir desse cadeia, Brasília seria presídio de segurança máxima com ar-condicionado central.", "versao": 1}, {"id": 18, "tema": "2º Princípio", "nivel": "medio", "pergunta": "Como o pilar Verdade é garantido, segundo o 2º Princípio?", "alternativas": ["Pelo acesso a informação descentralizada e distribuída", "Por uma agência estatal de checagem", "Pela censura de conteúdos falsos", "Pela autoridade da imprensa tradicional"], "correta": 0, "explicacao": "A Verdade depende do acesso a informação descentralizada e distribuída — e não de um órgão central que decida o que é verdadeiro.", "zoeira": "Agência estatal de checagem é a raposa fazendo auditoria no galinheiro, com crachá e verba.", "versao": 1}, {"id": 19, "tema": "2º Princípio", "nivel": "dificil", "pergunta": "No 2º Princípio, a Justiça é a ordem que impede que a busca da felicidade seja prejudicada por quem?", "alternativas": ["Pelo mercado", "Apenas por estrangeiros", "Apenas por criminosos", "Por outros indivíduos ou pelo governo"], "correta": 3, "explicacao": "A Justiça protege contra danos causados por outros indivíduos OU pelo próprio governo, e se baseia na lei natural.", "zoeira": "Sim, o governo também atrapalha sua felicidade. Surpresa zero para quem já pagou IPVA.", "versao": 1}, {"id": 20, "tema": "2º Princípio", "nivel": "dificil", "pergunta": "Em que se baseia o pilar Justiça do 2º Princípio?", "alternativas": ["Nos costumes de cada época", "Na jurisprudência do STF", "Na lei natural", "Na vontade da maioria"], "correta": 2, "explicacao": "O pilar Justiça se fundamenta na lei natural — uma ordem moral anterior às leis escritas e reconhecível pela razão.", "zoeira": "A vontade da maioria já elegeu muita gente que você conhece. A lei natural não tem segundo turno.", "versao": 1}, {"id": 21, "tema": "3º Princípio", "nivel": "facil", "pergunta": "Quais são as quatro virtudes cardeais?", "alternativas": ["Fé, Esperança, Caridade e Justiça", "Fortaleza, Justiça, Prudência e Temperança", "Coragem, Honra, Lealdade e Verdade", "Liberdade, Justiça, Verdade e Família"], "correta": 1, "explicacao": "O 3º Princípio pede o cultivo das virtudes cardeais: Fortaleza, Justiça, Prudência e Temperança.", "zoeira": "Confundir com as teologais é perdoável. Confundir com 'Cargo, Emenda, Verba e Centrão' já é deformação profissional.", "versao": 1}, {"id": 22, "tema": "3º Princípio", "nivel": "medio", "pergunta": "No manifesto, 'equilíbrio e autocontrole' definem qual virtude?", "alternativas": ["Temperança", "Justiça", "Fortaleza", "Prudência"], "correta": 0, "explicacao": "Temperança = equilíbrio e autocontrole. Fortaleza = constância e firmeza; Justiça = imparcialidade e veracidade; Prudência = agir com sabedoria.", "zoeira": "Temperança é aquilo que some dos comentários de rede social depois das duas da manhã.", "versao": 1}, {"id": 23, "tema": "3º Princípio", "nivel": "medio", "pergunta": "No manifesto, 'constância e firmeza' definem qual virtude?", "alternativas": ["Prudência", "Coragem", "Temperança", "Fortaleza"], "correta": 3, "explicacao": "Fortaleza é definida como constância e firmeza. (Coragem é tema do 5º Princípio, mas não é uma das quatro virtudes cardeais listadas.)", "zoeira": "Fortaleza é constância e firmeza. O oposto da opinião de político em ano eleitoral.", "versao": 1}, {"id": 24, "tema": "3º Princípio", "nivel": "dificil", "pergunta": "A palavra 'justiça' aparece no 2º e no 3º Princípio. Qual a diferença?", "alternativas": ["No 2º refere-se à justiça divina; no 3º, à justiça social", "São idênticas", "No 2º é pilar (ordem social baseada na lei natural); no 3º é virtude pessoal (imparcialidade e veracidade)", "No 2º é virtude pessoal; no 3º é o Poder Judiciário"], "correta": 2, "explicacao": "Justiça-pilar é a ordem que protege a busca da felicidade; justiça-virtude é a disposição pessoal de ser imparcial e verdadeiro.", "zoeira": "Uma justiça é a ordem social, a outra é a virtude pessoal. O Brasil conseguiu ficar sem as duas ao mesmo tempo.", "versao": 1}, {"id": 25, "tema": "3º Princípio", "nivel": "dificil", "pergunta": "Por que as virtudes são chamadas 'cardeais'?", "alternativas": ["Porque apontam os quatro pontos cardeais", "Do latim 'cardo' (dobradiça): são as virtudes sobre as quais as demais giram", "Porque foram definidas pelos cardeais da Igreja", "Porque eram exigidas dos governantes romanos"], "correta": 1, "explicacao": "'Cardo' significa dobradiça; as virtudes cardeais são o eixo das demais. Vêm de Platão e Aristóteles e foram incorporadas pela tradição cristã. (Pergunta de contexto.)", "zoeira": "Cardo é dobradiça. Sem ela a porta da moral sai do trilho, e o jeitinho entra sem bater.", "versao": 1}, {"id": 26, "tema": "4º Princípio", "nivel": "facil", "pergunta": "Segundo o 4º Princípio, quem deve receber ajuda permanente?", "alternativas": ["Crianças e incapazes", "Ninguém", "Idosos e mulheres", "Todos os desempregados"], "correta": 0, "explicacao": "A ajuda permanente cabe apenas a crianças e incapazes. Para os demais adultos, o amparo deve ajudá-los a se reerguer.", "zoeira": "Ajuda permanente para todo desempregado tem outro nome técnico: curral eleitoral.", "versao": 1}, {"id": 27, "tema": "4º Princípio", "nivel": "medio", "pergunta": "Como o governo deve amparar os necessitados, segundo o 4º Princípio?", "alternativas": ["Não deve amparar; isso cabe só à caridade privada", "De forma paternalista e permanente", "Apenas por meio de igrejas", "De forma fraterna, para que se reergam"], "correta": 3, "explicacao": "O amparo deve ser fraterno, não patriarcal/paternalista: o objetivo é que a pessoa se reerga e conquiste independência.", "zoeira": "O fraterno te ajuda a levantar. O paternalista te carrega no colo até a próxima eleição, e cobra o frete.", "versao": 1}, {"id": 28, "tema": "4º Princípio", "nivel": "medio", "pergunta": "João, adulto e capaz, perdeu o emprego. Segundo o 4º Princípio, qual a atitude correta?", "alternativas": ["Deve receber auxílio permanente do Estado", "Só a família pode ajudá-lo", "Pode ser amparado de forma fraterna, buscando recuperar a maior independência possível", "Ele não deve receber nenhuma ajuda"], "correta": 2, "explicacao": "O manifesto quer uma sociedade de ajuda mútua e admite amparo do governo, mas fraterno e voltado para a independência — não permanente para adultos capazes.", "zoeira": "João precisa de uma mão, não de uma coleira com logotipo do governo.", "versao": 1}, {"id": 29, "tema": "4º Princípio", "nivel": "dificil", "pergunta": "Qual é a razão, dada no 4º Princípio, para que todo adulto busque a maior independência possível?", "alternativas": ["Para não depender de Deus", "Para não ser um peso para os outros", "Para pagar mais impostos", "Para acumular riqueza"], "correta": 1, "explicacao": "O adulto deve buscar independência para não ser um peso para os outros — expressão de responsabilidade individual.", "zoeira": "'Para não depender de Deus' foi a alternativa mais ousada da história deste quiz. Respeitamos a coragem, não a resposta.", "versao": 1}, {"id": 30, "tema": "5º Princípio", "nivel": "facil", "pergunta": "Qual virtude o 5º Princípio chama de fundamental?", "alternativas": ["Coragem", "Paciência para aguentar o Congresso", "Prudência", "Humildade"], "correta": 0, "explicacao": "O 5º Princípio trata da coragem como virtude fundamental: a pessoa honesta deve expressar sua opinião política sem receio.", "zoeira": "Humildade é linda, mas não segura opinião política no almoço de domingo com o tio do zap.", "versao": 1}, {"id": 31, "tema": "5º Princípio", "nivel": "medio", "pergunta": "Maria defende uma ideia entre amigos conservadores e a ideia oposta no trabalho, para agradar os colegas. Qual princípio ela fere mais diretamente?", "alternativas": ["14º – Abuso de poder", "8º – Propriedade privada", "7º – Reabilitação social", "5º – Coragem"], "correta": 3, "explicacao": "O 5º Princípio diz que é errado mudar de opinião conforme o ambiente para agradar grupos. (Também se relaciona ao 9º, que condena agir diferente do que se defende.)", "zoeira": "Maria não é camaleão, mas está fazendo um esforço admirável para virar um.", "versao": 1}, {"id": 35, "tema": "6º e 11º Princípios", "nivel": "dificil", "pergunta": "O manifesto diz que valores fundamentais são inegociáveis. Isso é fanatismo?", "alternativas": ["O manifesto não trata disso", "Sim, mas é um fanatismo positivo", "Sim, qualquer valor inegociável é fanatismo", "Não: fanatismo é impor valores pela força, sem diálogo, e rejeitar o contraditório"], "correta": 3, "explicacao": "Firmeza nos valores (6º) é virtude. O fanático (11º) é irracional, avesso ao contraditório e impõe crenças pela força. A diferença está na imposição e na recusa ao diálogo.", "zoeira": "Valor inegociável é coluna vertebral. Fanatismo é coluna vertebral com porrete.", "versao": 1}, {"id": 36, "tema": "7º Princípio", "nivel": "facil", "pergunta": "Segundo o 7º Princípio, a reincidência no crime deve:", "alternativas": ["Ser ignorada se houver arrependimento", "Levar à pena de morte", "Agravar a penalidade", "Ser perdoada"], "correta": 2, "explicacao": "O manifesto deseja investir na reabilitação, mas a reincidência agrava a penalidade.", "zoeira": "Reincidência perdoada é assinatura mensal do crime, com fidelidade e cashback.", "versao": 1}, {"id": 37, "tema": "7º Princípio", "nivel": "medio", "pergunta": "Quais são as etapas da reabilitação segundo o 7º Princípio?", "alternativas": ["Indulto, anistia e perdão", "Arrependimento, confissão e redenção, com o cumprimento da pena", "Educação, trabalho e liberdade", "Terapia, multa e soltura"], "correta": 1, "explicacao": "A reabilitação passa por arrependimento, confissão e redenção — e inclui o cumprimento da pena.", "zoeira": "Indulto, anistia e perdão: o Combo Brasília Feliz. O manifesto não comprou.", "versao": 1}, {"id": 38, "tema": "7º Princípio", "nivel": "dificil", "pergunta": "Um condenado mostra arrependimento sincero. Pelo 7º Princípio, ele deve ser dispensado da pena?", "alternativas": ["Não: a reabilitação inclui o cumprimento da pena", "Sim, se confessar publicamente", "Sim, o arrependimento basta", "Depende da vontade da vítima"], "correta": 0, "explicacao": "Reabilitar não substitui a pena: arrependimento, confissão e redenção caminham junto com o cumprimento da pena.", "zoeira": "Arrependimento sem cumprir pena é dieta sem fechar a boca.", "versao": 1}, {"id": 50, "tema": "11º Princípio", "nivel": "facil", "pergunta": "O 11º Princípio pede que o Faroleiro seja avesso a quê?", "alternativas": ["Ao fanatismo", "À religião", "Ao debate", "À política"], "correta": 0, "explicacao": "O 11º Princípio é a aversão ao fanatismo.", "zoeira": "Avesso ao debate? Isso é perfil de comentarista de portal, não de Faroleiro.", "versao": 1}, {"id": 51, "tema": "11º Princípio", "nivel": "medio", "pergunta": "Qual destas características NÃO descreve o fanático, segundo o 11º Princípio?", "alternativas": ["Impõe crenças pela força", "Intemperante", "Avesso ao contraditório", "Firme e prudente"], "correta": 3, "explicacao": "O fanático é irracional, déspota, avesso ao contraditório, intemperante, intransigente, intolerante e impõe crenças pela força. Firmeza e prudência são virtudes (3º).", "zoeira": "Firme e prudente é elogio. Se você marcou isso como fanatismo, andou lendo manchete demais.", "versao": 1}, {"id": 52, "tema": "11º Princípio", "nivel": "dificil", "pergunta": "O fanatismo é o oposto direto de qual virtude cardeal, considerando a descrição do 11º Princípio?", "alternativas": ["Nenhuma", "Justiça", "Temperança", "Fortaleza"], "correta": 2, "explicacao": "O fanático é 'intemperante' e 'exacerbado' — o oposto da Temperança (equilíbrio e autocontrole). Também contraria o valor da racionalidade.", "zoeira": "O fanático e a temperança se cruzam na rua e fingem que não se conhecem.", "versao": 1}, {"id": 53, "tema": "12º Princípio", "nivel": "facil", "pergunta": "Segundo o 12º Princípio, qual é a melhor forma de praticar a caridade?", "alternativas": ["Doar para ONGs", "A política justa", "Postar story com #gratidão", "Pagar impostos"], "correta": 1, "explicacao": "O 12º Princípio afirma que a política justa é a melhor forma de praticar a caridade.", "zoeira": "Doar para ONG é bonito. Saber para onde a ONG mandou o dinheiro é mais bonito ainda.", "versao": 1}, {"id": 54, "tema": "12º Princípio", "nivel": "medio", "pergunta": "Diante de causas sociais, o 12º Princípio pede que o cidadão priorize:", "alternativas": ["A família", "O partido", "A carreira", "A igreja"], "correta": 0, "explicacao": "Um dos deveres de cidadania é priorizar a família diante de causas sociais.", "zoeira": "Priorizar o partido diante da família? Nem político faz isso. Ah, espera, faz sim.", "versao": 1}, {"id": 55, "tema": "12º Princípio", "nivel": "medio", "pergunta": "Qual destes NÃO é um dos cinco deveres de cidadania do 12º Princípio?", "alternativas": ["Exercer um ofício útil", "Zelar pela próxima geração", "Acompanhar a política e exigir representatividade", "Filiar-se a um partido"], "correta": 3, "explicacao": "Os cinco deveres: ofício útil; acompanhar a política e exigir representatividade; incentivar a caridade; priorizar a família; zelar pela próxima geração. Filiação partidária não está na lista.", "zoeira": "Filiar-se a partido não é dever cívico. É escolha. Às vezes, um erro com carteirinha.", "versao": 1}];
 const MSG = {"acerto": ["Acertou! Já pode cobrar consultoria do Centrão. Mas não aceite.", "Na mosca. Se fosse concurso público, você já estaria nomeado. Por mérito, olha que raridade.", "Correto! A lanterna acendeu. A conta de luz vem depois.", "Mandou bem. Aristóteles levantou da cadeira e bateu palma.", "Certo! Mais preciso que promessa de campanha. Tá, isso não é difícil.", "Acertou, e sem precisar de emenda parlamentar.", "Correto! O Farol agradece. Brasília lamenta.", "Isso aí! Se continuar assim, vira ministro. Calma, foi só uma ameaça.", "Na lata. Até o STF concordaria, depois de três pedidos de vista.", "Acertou! Sua avó ficaria orgulhosa e faria bolo de cenoura."], "erro": ["Errou. Mas relaxa: tem gente com foro privilegiado que erra mais e ganha mais.", "Não foi dessa vez. Respira, lê a explicação e não culpe o algoritmo.", "Errado! Até o horóscopo do jornal acertou mais hoje.", "Quase. 'Quase' também é o que dizem do Brasil há 500 anos.", "Errou feio, errou rude. Mas um Faroleiro levanta e tenta de novo.", "Resposta incorreta. O político de plantão adorou. Não dê esse gosto a ele.", "Ops. Errar é humano. Persistir no erro é coisa de partido.", "Não. Mas pelo menos você não mudou de opinião para agradar a plateia. Ou mudou?", "Errou. A boa notícia: esse erro não custou nenhum imposto.", "Negativo. Volte uma casa e leia o manifesto sem pular as partes chatas."], "sequencia": {"3": "Três seguidas! Já dá para abrir uma CPI de tanto acerto.", "5": "Cinco seguidas! Isso não é sorte, é formação. Ou cola. Esperamos que formação.", "10": "Dez seguidas! Você está oficialmente iluminando mais que a iluminação pública da sua cidade."}};
 
 /* Parâmetros de pontuação, XP e patentes (avaliação v1.1, §4.3). Configuráveis. */
@@ -436,8 +436,8 @@ const PATENTES = [
 const CAMPANHA = [
   { id: "m0", n: "0", nome: "Prólogo: A Névoa", desc: "Aprenda a se mover, lutar e faça o juramento.", jogavel: true },
   { id: "m1", n: "1", nome: "Os Três Pilares", desc: "Acenda Liberdade, Justiça e Verdade na estrada para o litoral.", jogavel: true, pre: "m0" },
-  { id: "m2", n: "2", nome: "A Forja das Virtudes", desc: "Virtudes cardeais, coragem e aversão ao fanatismo." },
-  { id: "m3", n: "3", nome: "Vila da Fraternidade", desc: "Compaixão, reabilitação e cidadania." },
+  { id: "m2", n: "2", nome: "A Forja das Virtudes", desc: "Virtudes cardeais, coragem e aversão ao fanatismo.", jogavel: true, pre: "m1" },
+  { id: "m3", n: "3", nome: "Vila da Fraternidade", desc: "Compaixão, reabilitação e cidadania.", jogavel: true, pre: "m2" },
   { id: "m4", n: "4", nome: "Terras Confiscadas", desc: "Propriedade, autonomia local e abuso de poder." },
   { id: "m5", n: "5", nome: "O Mercado das Mentiras", desc: "Valores, honra e não induzir ao erro." },
   { id: "m6", n: "6", nome: "A Cidade sem Lei", desc: "Não assassinar e a corrupção." },
@@ -472,18 +472,68 @@ const FASES = {
     chao: [[0, 900], [1010, 1700], [1830, 2600], [2730, 3500], [3630, 4800]],
     plataformas: [[580, 370, 3], [1120, 360, 2], [1380, 270, 2], [2040, 370, 3], [2300, 285, 2], [2880, 360, 2], [3110, 265, 2], [3790, 360, 3], [4060, 255, 2]],
     placas: [[140, "Saqueadores à frente. J para atacar", "Saqueadores à frente. Use ATAQUE"]],
-    pilares: [
+    altares: [
       { x: 1560, nome: "Pilar da Liberdade", temas: ["Introdução"], qtd: 2 },
       { x: 2460, nome: "Pilar da Justiça", temas: ["1º Princípio"], qtd: 2 },
       { x: 3360, nome: "Pilar da Verdade", temas: ["2º Princípio"], qtd: 2 }
     ],
+    texturaAltar: "pillar", rotuloAltares: "Pilares acesos", msgFalta: "Acenda os três pilares antes de seguir.",
     inimigos: [720, 1260, 2120, 2290, 3000, 3900, 4230],
-    pergaminhos: [[1444, 230], [3174, 225], [4124, 215]],
+    coletaveis: { textura: "scroll", rotulo: "Pergaminhos", toast: "Pergaminho encontrado (objetivo opcional).", pos: [[1444, 230], [3174, 225], [4124, 215]] },
     estandarte: 4660,
     objetivos: [
       { id: "pilares", txt: "Acender os 3 pilares (2 perguntas cada)" },
       { id: "fim", txt: "Chegar ao estandarte" },
       { id: "perg", txt: "Opcional: encontrar 3 pergaminhos", opc: true }
+    ]
+  },
+  m2: {
+    titulo: "A Forja das Virtudes", kicker: "Missão 2",
+    texto: "No alto da serra, um mosteiro-fortaleza guarda as quatro forjas das virtudes cardeais. Fanáticos tomaram o lugar: gritam muito, atacam sem pensar e se cansam rápido. Acenda as forjas da Fortaleza, da Prudência, da Temperança e da Justiça. Contra quem perde o equilíbrio, a melhor arma é a paciência: depois da investida, o Fanático fica atordoado. É a hora de atacar.",
+    largura: 5200,
+    ceu: [0x241b1f, 0x6e3424, 0x1a1214],
+    chao: [[0, 820], [980, 1800], [2000, 2700], [2900, 3800], [4000, 5200]],
+    plataformas: [[480, 370, 3], [1120, 350, 2], [2140, 360, 2], [3060, 350, 3], [4220, 360, 2]],
+    moveis: [{ x: 1810, y: 410, n: 2, ate: 1880, vel: 70 }, { x: 2710, y: 390, n: 2, ate: 2780, vel: 80 }, { x: 3810, y: 400, n: 2, ate: 3880, vel: 90 }],
+    brasas: [[1300, 96], [2330, 128], [3280, 96], [4480, 128]],
+    placas: [[340, "Fanáticos investem e depois ficam atordoados. Ataque nessa hora", "Fanático atordoado = hora do ATAQUE"], [1230, "Brasas queimam. Pule por cima"]],
+    altares: [
+      { x: 1560, nome: "Forja da Fortaleza", temas: ["5º Princípio", "3º Princípio"], qtd: 2 },
+      { x: 2500, nome: "Forja da Prudência", temas: ["3º Princípio"], qtd: 2 },
+      { x: 3520, nome: "Forja da Temperança", temas: ["11º Princípio"], qtd: 2 },
+      { x: 4700, nome: "Forja da Justiça", temas: ["6º e 11º Princípios", "3º Princípio", "5º Princípio"], qtd: 2 }
+    ],
+    texturaAltar: "forge", rotuloAltares: "Forjas acesas", msgFalta: "Acenda as quatro forjas antes de seguir.",
+    inimigos: [[700, "fanatico"], 1200, [1700, "fanatico"], 2250, [3150, "fanatico"], 3650, [4300, "fanatico"], [4850, "fanatico"]],
+    coletaveis: { textura: "hammer", rotulo: "Martelos", toast: "Martelo de ferreiro encontrado (objetivo opcional).", pos: [[1184, 310], [3124, 310], [4284, 320]] },
+    estandarte: 5080,
+    objetivos: [
+      { id: "forjas", txt: "Acender as 4 forjas (2 perguntas cada)" },
+      { id: "fim", txt: "Chegar ao estandarte" },
+      { id: "col", txt: "Opcional: encontrar 3 martelos de ferreiro", opc: true }
+    ]
+  },
+  m3: {
+    titulo: "Vila da Fraternidade", kicker: "Missão 3",
+    texto: "Uma vila de refugiados tenta se reerguer. Aliciadores rondam as ruas atirando promessas fáceis, e elas machucam. Ajude os moradores caídos a se levantar, acenda a Casa da Fraternidade, o Tribunal da Redenção e a Praça da Cidadania, e siga viagem. A ajuda fraterna é a que põe a pessoa de pé.",
+    largura: 4800,
+    ceu: [0x2a2b38, 0xa86e45, 0x261c15],
+    chao: [[0, 1500], [1650, 2900], [3050, 4800]],
+    plataformas: [[400, 370, 3], [1100, 360, 2], [1900, 350, 3], [2600, 360, 2], [3400, 350, 3], [4100, 360, 2]],
+    placas: [[270, "Aliciadores atiram promessas. Desvie ou rebata com o ataque", "Promessas voando: desvie ou use ATAQUE"], [760, "Toque um morador caído para ajudá-lo a levantar"]],
+    altares: [
+      { x: 1000, nome: "Casa da Fraternidade", temas: ["4º Princípio"], qtd: 2 },
+      { x: 2450, nome: "Tribunal da Redenção", temas: ["7º Princípio"], qtd: 2 },
+      { x: 3900, nome: "Praça da Cidadania", temas: ["12º Princípio"], qtd: 2 }
+    ],
+    texturaAltar: "house", rotuloAltares: "Lugares acesos", msgFalta: "Acenda os três lugares da vila antes de seguir.",
+    inimigos: [[820, "aliciador"], 1260, [1800, "aliciador"], 2700, [3250, "aliciador"], 3600, [4420, "aliciador"]],
+    moradores: [620, 1380, 2280, 3700],
+    estandarte: 4680,
+    objetivos: [
+      { id: "lugares", txt: "Acender os 3 lugares da vila (2 perguntas cada)" },
+      { id: "fim", txt: "Chegar ao estandarte" },
+      { id: "mor", txt: "Opcional: reerguer 4 moradores (cada um devolve 1 de vida)", opc: true }
     ]
   }
 };
@@ -952,6 +1002,71 @@ function gerarTexturas(s) {
     g.fillStyle(0xffd38a); g.fillRect(50, 36, 20, 16);                         // lanterna
     g.fillStyle(0x2a211b); g.fillTriangle(46, 36, 74, 36, 60, 24);
   });
+
+  // ---- Missão 2: Forja das Virtudes ----
+  tex("fanatic", 36, 52, (g) => {
+    g.fillStyle(0x5a1e14); g.fillTriangle(18, 0, 6, 18, 30, 18);           // capuz pontudo
+    g.fillStyle(0x6e2618); g.fillRect(7, 14, 22, 30);                        // túnica
+    g.fillStyle(0x1a0f0c); g.fillRect(12, 9, 12, 6);                         // rosto na sombra
+    g.fillStyle(0xffb347); g.fillRect(13, 11, 3, 2); g.fillRect(20, 11, 3, 2); // olhos
+    g.fillStyle(0x3a1a12); g.fillRect(10, 44, 6, 8); g.fillRect(20, 44, 6, 8);
+    g.fillStyle(0x6b4a2e); g.fillRect(30, 10, 3, 26);                        // tocha
+    g.fillStyle(0xf28c28); g.fillTriangle(27, 11, 36, 11, 31.5, 0);
+  });
+  tex("forge", 96, 112, (g) => {
+    g.fillStyle(0x4d453c); g.fillRect(4, 64, 88, 48);                         // base de pedra
+    g.fillStyle(0x625a4e); g.fillRect(4, 64, 88, 8);
+    g.fillStyle(0x3a332b); [80, 96].forEach((y) => g.fillRect(4, y, 88, 2));
+    g.fillStyle(0x2b2724); g.fillRect(30, 44, 36, 10); g.fillRect(40, 54, 16, 10); g.fillTriangle(66, 44, 80, 44, 66, 52); // bigorna
+    g.fillStyle(0x2a2420); g.fillRect(14, 20, 20, 44); g.fillRect(10, 14, 28, 8); // chaminé/fornalha
+    g.fillStyle(0xb3261e); g.fillRect(70, 74, 5, 22); g.fillRect(63, 81, 19, 5);  // cruz
+  });
+  tex("hammer", 24, 28, (g) => {
+    g.fillStyle(0x6b4a2e); g.fillRect(10, 8, 4, 20);
+    g.fillStyle(0x9aa0a6); g.fillRect(3, 2, 18, 8);
+    g.fillStyle(0xc9ced3); g.fillRect(3, 2, 18, 2);
+  });
+  tex("brasas", 64, 16, (g) => {
+    g.fillStyle(0x2a1610); g.fillRect(0, 4, 64, 12);
+    g.fillStyle(0xd2461e); [[4, 6, 10, 4], [20, 8, 8, 4], [34, 5, 12, 5], [52, 7, 8, 4]].forEach((r) => g.fillRect(...r));
+    g.fillStyle(0xffb347); [[7, 7, 3, 2], [37, 6, 4, 2], [54, 8, 3, 2]].forEach((r) => g.fillRect(...r));
+  });
+
+  // ---- Missão 3: Vila da Fraternidade ----
+  tex("recruiter", 36, 52, (g) => {
+    g.fillStyle(0x1f2126); g.fillRect(9, 0, 18, 4); g.fillRect(5, 4, 26, 3);   // chapéu
+    g.fillStyle(0xc49f80); g.fillRect(12, 7, 12, 9);                          // rosto
+    g.fillStyle(0x111111); g.fillRect(12, 9, 12, 3);                          // óculos escuros
+    g.fillStyle(0x3a3d44); g.fillRect(8, 16, 20, 26);                         // terno
+    g.fillStyle(0xe8c45a); g.fillRect(16, 16, 4, 12);                         // gravata dourada
+    g.fillStyle(0x23252a); g.fillRect(10, 42, 6, 10); g.fillRect(20, 42, 6, 10);
+    g.fillStyle(0x6b4a2e); g.fillRect(28, 30, 8, 10);                         // maleta
+  });
+  tex("promessa", 16, 16, (g) => {
+    g.fillStyle(0xb8892a); g.fillCircle(8, 8, 7);
+    g.fillStyle(0xf2cf63); g.fillCircle(8, 8, 5);
+    g.fillStyle(0xb8892a); g.fillRect(7, 4, 2, 8);
+  });
+  tex("house", 120, 132, (g) => {
+    g.fillStyle(0x5c4330); g.fillRect(10, 52, 100, 80);                        // paredes
+    g.fillStyle(0x6e5240); [64, 80, 96, 112].forEach((y) => g.fillRect(10, y, 100, 2));
+    g.fillStyle(0x3a2516); g.fillTriangle(0, 56, 120, 56, 60, 6);              // telhado
+    g.fillStyle(0x24170f); g.fillRect(48, 88, 24, 44);                         // porta
+    g.fillStyle(0x24170f); g.fillRect(20, 70, 18, 16); g.fillRect(82, 70, 18, 16); // janelas
+    g.fillStyle(0xe9e1d0); g.fillRect(52, 30, 16, 20);                          // brasão
+    g.fillStyle(0xb3261e); g.fillRect(58, 32, 4, 16); g.fillRect(54, 37, 12, 4);
+  });
+  tex("morador_caido", 46, 20, (g) => {
+    g.fillStyle(0x7d6a52); g.fillRect(8, 8, 30, 10);
+    g.fillStyle(0xc49f80); g.fillCircle(40, 12, 6);
+    g.fillStyle(0x4a3b2c); g.fillRect(0, 10, 10, 6);
+  });
+  tex("morador", 30, 48, (g) => {
+    g.fillStyle(0xc49f80); g.fillCircle(15, 8, 7);
+    g.fillStyle(0x7d6a52); g.fillRect(7, 15, 16, 22);
+    g.fillStyle(0x4a3b2c); g.fillRect(8, 37, 5, 11); g.fillRect(17, 37, 5, 11);
+    g.fillStyle(0x7d6a52); g.fillRect(2, 8, 4, 12); g.fillRect(24, 8, 4, 12);  // braços erguidos
+  });
   g.destroy();
 }
 
@@ -986,8 +1101,9 @@ class Missao extends Phaser.Scene {
     this.physics.world.setBoundsCollision(true, true, true, false);
     this.cameras.main.setBounds(0, 0, W, 540);
     const sky = this.add.graphics().setScrollFactor(0).setDepth(-10);
-    sky.fillGradientStyle(0x2c1c14, 0x2c1c14, 0x8a4e24, 0x8a4e24, 1); sky.fillRect(0, 0, 960, 330);
-    sky.fillGradientStyle(0x8a4e24, 0x8a4e24, 0x24170f, 0x24170f, 1); sky.fillRect(0, 330, 960, 210);
+    const [ceuTopo, ceuMeio, ceuBase] = F.ceu || [0x2c1c14, 0x8a4e24, 0x24170f];
+    sky.fillGradientStyle(ceuTopo, ceuTopo, ceuMeio, ceuMeio, 1); sky.fillRect(0, 0, 960, 330);
+    sky.fillGradientStyle(ceuMeio, ceuMeio, ceuBase, ceuBase, 1); sky.fillRect(0, 330, 960, 210);
     sky.fillStyle(0xf2b35c, .18); sky.fillCircle(300, 250, 110);
     sky.fillStyle(0xf6c77a, .32); sky.fillCircle(300, 250, 46);
     this.farol = this.add.image(880, 420, "lighthouse").setScrollFactor(0).setDepth(-8).setOrigin(.5, 1).setAlpha(.95);
@@ -1009,6 +1125,23 @@ class Missao extends Phaser.Scene {
       t.body.checkCollision.down = false; t.body.checkCollision.left = false; t.body.checkCollision.right = false;
       this.plats.add(t);
     });
+    // plataformas móveis (vão e voltam na horizontal; carregam o jogador)
+    this.moveis = this.physics.add.group({ allowGravity: false, immovable: true });
+    (F.moveis || []).forEach((m) => {
+      const t = this.add.tileSprite(m.x, m.y, m.n * 64, 18, "plat").setOrigin(0, 0).setTint(0xc9b79c);
+      this.moveis.add(t);
+      t.body.setAllowGravity(false); t.body.setImmovable(true);
+      t.body.checkCollision.down = false; t.body.checkCollision.left = false; t.body.checkCollision.right = false;
+      t.setData({ x0: m.x, x1: m.ate, vel: m.vel });
+      t.body.setVelocityX(m.vel);
+    });
+    // brasas: queimam ao tocar
+    this.brasas = this.physics.add.staticGroup();
+    (F.brasas || []).forEach(([x, w]) => {
+      const t = this.add.tileSprite(x, 466, w, 16, "brasas").setOrigin(0, 0).setDepth(1);
+      this.physics.add.existing(t, true); this.brasas.add(t);
+      if (!this.reduce) this.add.particles(x + w / 2, 466, "spark", { x: { min: -w / 2, max: w / 2 }, speedY: { min: -50, max: -15 }, lifespan: 700, frequency: 160, alpha: { start: .9, end: 0 }, scale: { start: .8, end: .2 } }).setDepth(1);
+    });
 
     // placas
     const toque = document.body.classList.contains("touchmode");
@@ -1025,21 +1158,44 @@ class Missao extends Phaser.Scene {
     this.player.setCollideWorldBounds(true).setDepth(5);
     this.physics.add.collider(this.player, this.solidos);
     this.physics.add.collider(this.player, this.plats);
+    this.physics.add.collider(this.player, this.moveis);
+    this.physics.add.overlap(this.player, this.brasas, () => {
+      if (this.invuln > 0 || this.pausado || this.terminou) return;
+      this.dano(-this.facing || -1);
+      this.player.setVelocityY(-520);
+      this.toast("As brasas queimam. Pule por cima.");
+    });
     this.cameras.main.startFollow(this.player, true, .12, .12, 0, 60);
     this.slash = this.add.image(0, 0, "slash").setVisible(false).setDepth(6);
 
     // inimigos
+    // tipos: saqueador (padrão), fanatico (investe forte e fica atordoado), aliciador (atira promessas de longe)
+    const TIPOS = {
+      saqueador: { tex: "enemy", hp: 2 },
+      fanatico: { tex: "fanatic", hp: 3 },
+      aliciador: { tex: "recruiter", hp: 1 }
+    };
     this.inimigos = this.physics.add.group();
-    F.inimigos.forEach((x, i) => {
+    F.inimigos.forEach((def, i) => {
       if (this.run.eventos.has(`inimigo:${i}`)) return;
-      const e = this.inimigos.create(x, 420, "enemy");
-      e.body.setSize(20, 44).setOffset(7, 4);
-      e.setData({ idx: i, hp: 2, x0: x - 120, x1: x + 120, dir: -1, windup: 0, lunge: 0, hitAt: 0 });
+      const [x, tipo] = Array.isArray(def) ? def : [def, "saqueador"];
+      const T = TIPOS[tipo];
+      const e = this.inimigos.create(x, 420, T.tex);
+      e.body.setSize(20, 44).setOffset(8, 6);
+      e.setData({ idx: i, tipo, hp: T.hp, x0: x - 120, x1: x + 120, dir: -1, windup: 0, lunge: 0, atordoado: 0, recarga: 1200 + i * 150, hitAt: 0 });
       e.setDepth(4);
     });
     this.physics.add.collider(this.inimigos, this.solidos);
     this.physics.add.collider(this.inimigos, this.plats);
     this.physics.add.overlap(this.player, this.inimigos, (p, e) => this.tocarInimigo(e));
+    // promessas atiradas pelos aliciadores
+    this.projeteis = this.physics.add.group();
+    this.physics.add.collider(this.projeteis, this.solidos, (pr) => pr.destroy());
+    this.physics.add.overlap(this.player, this.projeteis, (p, pr) => {
+      if (this.invuln > 0 || this.pausado || this.terminou) return;
+      pr.destroy();
+      this.dano(pr.body.velocity.x > 0 ? 1 : -1);
+    });
 
     // boneco de treino (Prólogo)
     if (F.boneco && !this.run.concluidos.has("boneco")) {
@@ -1047,28 +1203,37 @@ class Missao extends Phaser.Scene {
       this.boneco.setData("hp", 3);
     }
 
-    // pedra do juramento / pilares
+    // altares do quiz: pedra do juramento, pilares, forjas, casas...
     this.altares = [];
-    const altares = F.pedra ? [Object.assign({ tipo: "pedra", chave: "pedra" }, F.pedra)] : (F.pilares || []).map((p, i) => Object.assign({ tipo: "pilar", chave: `pilar${i}` }, p));
+    const altares = F.pedra ? [Object.assign({ tipo: "pedra", chave: "pedra" }, F.pedra)] : (F.altares || []).map((p, i) => Object.assign({ tipo: "altar", chave: `altar${i}` }, p));
     altares.forEach((a) => {
-      const img = a.tipo === "pedra" ? this.add.image(a.x, 480, "stone").setOrigin(.5, 1) : this.add.image(a.x, 480, "pillar").setOrigin(.5, 1);
-      img.setDepth(2);
+      const img = this.add.image(a.x, 480, a.tipo === "pedra" ? "stone" : (F.texturaAltar || "pillar")).setOrigin(.5, 1).setDepth(2);
+      const topo = 480 - img.height;
       const zone = this.add.zone(a.x, 430, 70, 100); this.physics.add.existing(zone, true);
-      const label = this.add.text(a.x, a.tipo === "pedra" ? 410 : 276, a.nome.toUpperCase(), { fontFamily: "Cinzel, Georgia, serif", fontSize: "13px", color: "#efe6d6", stroke: "#110e0b", strokeThickness: 4 }).setOrigin(.5, 1).setDepth(3);
-      const obj = { ...a, img, zone, label, aceso: this.run.concluidos.has(a.chave) };
+      const label = this.add.text(a.x, topo - 6, a.nome.toUpperCase(), { fontFamily: "Cinzel, Georgia, serif", fontSize: "13px", color: "#efe6d6", stroke: "#110e0b", strokeThickness: 4 }).setOrigin(.5, 1).setDepth(3);
+      const obj = { ...a, img, zone, label, brilhoY: a.tipo === "pedra" ? 440 : topo + 26, aceso: this.run.concluidos.has(a.chave) };
       if (obj.aceso) this.acender(obj, true);
       this.physics.add.overlap(this.player, zone, () => this.ativarAltar(obj));
       this.altares.push(obj);
     });
 
-    // pergaminhos (opcionais)
-    this.perg = this.physics.add.staticGroup();
-    (F.pergaminhos || []).forEach(([x, y], i) => {
-      if (this.run.eventos.has(`perg:${i}`)) return;
-      const s = this.perg.create(x, y, "scroll"); s.setData("idx", i).setDepth(3);
+    // coletáveis opcionais (pergaminhos, martelos...)
+    this.coletaveis = this.physics.add.staticGroup();
+    if (F.coletaveis) F.coletaveis.pos.forEach(([x, y], i) => {
+      if (this.run.eventos.has(`col:${i}`)) return;
+      const s = this.coletaveis.create(x, y, F.coletaveis.textura); s.setData("idx", i).setDepth(3);
       if (!this.reduce) this.tweens.add({ targets: s, y: y - 6, duration: 900, yoyo: true, repeat: -1, ease: "Sine.inOut" });
     });
-    this.physics.add.overlap(this.player, this.perg, (p, s) => this.pegarPergaminho(s));
+    this.physics.add.overlap(this.player, this.coletaveis, (p, s) => this.pegarColetavel(s));
+
+    // moradores caídos (Missão 3): tocar = ajudar a levantar (+1 de vida)
+    this.moradores = this.physics.add.staticGroup();
+    (F.moradores || []).forEach((x, i) => {
+      const ajudado = this.run.eventos.has(`mor:${i}`);
+      const m = this.moradores.create(x, ajudado ? 456 : 470, ajudado ? "morador" : "morador_caido");
+      m.setData({ idx: i, ajudado }).setDepth(3);
+    });
+    this.physics.add.overlap(this.player, this.moradores, (p, m) => this.reerguer(m));
 
     // estandarte (fim)
     this.banner = this.add.image(F.estandarte, 480, "banner").setOrigin(.2, 1).setDepth(2);
@@ -1099,10 +1264,14 @@ class Missao extends Phaser.Scene {
       if (!c.has("pedra")) return "Faça o juramento na Pedra";
       return "Siga até o estandarte";
     }
-    const acesos = this.altares.filter((a) => a.aceso).length;
-    const pg = this.run.eventos ? [...this.run.eventos].filter((e) => e.startsWith("perg:")).length : 0;
-    if (acesos < 3) return `Pilares acesos: ${acesos}/3 · Pergaminhos: ${pg}/3`;
-    return `Siga até o estandarte · Pergaminhos: ${pg}/3`;
+    const F = this.fase;
+    const conta = (pref) => [...this.run.eventos].filter((e) => e.startsWith(pref)).length;
+    const total = this.altares.length, acesos = this.altares.filter((a) => a.aceso).length;
+    const extras = [];
+    if (F.coletaveis) extras.push(`${F.coletaveis.rotulo}: ${conta("col:")}/${F.coletaveis.pos.length}`);
+    if (F.moradores) extras.push(`Moradores: ${conta("mor:")}/${F.moradores.length}`);
+    const principal = acesos < total ? `${F.rotuloAltares || "Altares"}: ${acesos}/${total}` : "Siga até o estandarte";
+    return [principal, ...extras].join(" · ");
   }
   toast(t) {
     const el = $("toast"); el.textContent = t; el.hidden = false;
@@ -1136,6 +1305,9 @@ class Missao extends Phaser.Scene {
       if (!e.active) return;
       if (Phaser.Geom.Rectangle.Overlaps(area, e.getBounds())) this.ferirInimigo(e, dir);
     });
+    this.projeteis.getChildren().forEach((pr) => {
+      if (pr.active && Phaser.Geom.Rectangle.Overlaps(area, pr.getBounds())) { pr.destroy(); this.flutuar("rebatida!"); }
+    });
     if (this.boneco && this.boneco.active && Phaser.Geom.Rectangle.Overlaps(area, this.boneco.getBounds())) {
       const hp = this.boneco.getData("hp") - 1; this.boneco.setData("hp", hp);
       this.tweens.add({ targets: this.boneco, angle: dir * 12, duration: 70, yoyo: true });
@@ -1165,6 +1337,7 @@ class Missao extends Phaser.Scene {
   }
   tocarInimigo(e) {
     if (this.invuln > 0 || this.terminou || this.pausado) return;
+    if (e.getData("atordoado") > 0) return; // Fanático atordoado não fere
     this.dano(e.x < this.player.x ? 1 : -1);
   }
   dano(dirEmpurrao) {
@@ -1209,7 +1382,7 @@ class Missao extends Phaser.Scene {
     });
   }
   acender(a, instant) {
-    const y = a.tipo === "pedra" ? 440 : 300;
+    const y = a.brilhoY;
     const glow = this.add.circle(a.x, y, 46, 0xe8a33d, .22).setDepth(1);
     if (!this.reduce && !instant) this.tweens.add({ targets: glow, scale: { from: .4, to: 1 }, alpha: { from: .6, to: .22 }, duration: 600 });
     if (!this.reduce) {
@@ -1218,18 +1391,29 @@ class Missao extends Phaser.Scene {
     }
     a.label.setColor("#e8a33d");
   }
-  pegarPergaminho(s) {
+  pegarColetavel(s) {
     const i = s.getData("idx");
     s.destroy();
-    this.premiar(`perg:${i}`, PARAMS.objetivoOpcional, PARAMS.xp.objetivoOpcional, "opcionais");
-    this.toast("Pergaminho encontrado (objetivo opcional).");
+    this.premiar(`col:${i}`, PARAMS.objetivoOpcional, PARAMS.xp.objetivoOpcional, "opcionais");
+    this.toast(this.fase.coletaveis.toast);
+  }
+  reerguer(m) {
+    if (m.getData("ajudado") || this.pausado || this.terminou) return;
+    m.setData("ajudado", true);
+    m.setTexture("morador"); m.y = 456; m.refreshBody();
+    if (!this.reduce) this.tweens.add({ targets: m, y: 446, duration: 160, yoyo: true });
+    this.premiar(`mor:${m.getData("idx")}`, PARAMS.objetivoOpcional, PARAMS.xp.objetivoOpcional, "opcionais");
+    const ganhou = this.vida < this.vidaMax;
+    this.vida = Math.min(this.vidaMax, this.vida + 1);
+    this.atualizarHUD();
+    this.toast(ganhou ? "Morador de pé. Quem ajuda também se fortalece: +1 de vida." : "Morador de pé. Ajuda fraterna é a que põe a pessoa de pé.");
   }
   tentarConcluir() {
     if (this.terminou || this.pausado) return;
     const c = this.run.concluidos;
     const falta = this.id === "m0"
       ? (!c.has("boneco") ? "Derrote o boneco de treino antes de seguir." : !c.has("pedra") ? "Faça o juramento na Pedra antes de seguir." : "")
-      : (this.altares.some((a) => !a.aceso) ? "Acenda os três pilares antes de seguir." : "");
+      : (this.altares.some((a) => !a.aceso) ? (this.fase.msgFalta || "Complete os objetivos antes de seguir.") : "");
     if (falta) { if (!this._avisoFim) { this.toast(falta); this._avisoFim = true; this.time.delayedCall(3000, () => this._avisoFim = false); } return; }
     this.terminou = true;
     this.premiar("objetivo:principal", PARAMS.objetivoPrincipal, PARAMS.xp.objetivoPrincipal, "objetivos");
@@ -1280,21 +1464,58 @@ class Missao extends Phaser.Scene {
       this.toast("Cuidado com os buracos.");
     }
 
-    // inimigos: patrulha, aproximação e investida simples
+    // plataformas móveis: vão e voltam entre x0 e x1
+    this.moveis.getChildren().forEach((m) => {
+      const d = m.data.values;
+      if (m.x <= d.x0) m.body.setVelocityX(Math.abs(d.vel));
+      else if (m.x >= d.x1) m.body.setVelocityX(-Math.abs(d.vel));
+    });
+    // promessas que saíram da tela
+    this.projeteis.getChildren().forEach((pr) => { if (pr.active && (pr.y > 640 || Math.abs(pr.x - p.x) > 1100)) pr.destroy(); });
+
+    // inimigos: cada tipo tem seu comportamento
     this.inimigos.getChildren().forEach((e) => {
       if (!e.active || !e.body) return;
       if (e.y > 640) { e.destroy(); return; }
       const d = e.data.values;
       const dx = p.x - e.x, dy = Math.abs(p.y - e.y);
-      const perto = Math.abs(dx) < 260 && dy < 90;
-      if (d.lunge > 0) { d.lunge -= delta; return; }
-      if (d.windup > 0) {
-        d.windup -= delta; e.setVelocityX(0);
-        if (d.windup <= 0) { e.clearTint(); e.setVelocityX(Math.sign(dx || 1) * 330); d.lunge = 260; }
+      const noChaoE = e.body.blocked.down || e.body.touching.down;
+
+      if (d.tipo === "aliciador") {
+        // fica no lugar, vira para o jogador e atira promessas em arco
+        e.setVelocityX(0); e.setFlipX(dx < 0);
+        d.recarga -= delta;
+        if (d.recarga <= 0 && Math.abs(dx) < 520 && dy < 160) {
+          d.recarga = 1900;
+          const pr = this.projeteis.create(e.x + Math.sign(dx || 1) * 14, e.y - 10, "promessa");
+          pr.setDepth(6).body.setCircle(7);
+          const tempo = .9, vx = Phaser.Math.Clamp(dx / tempo, -330, 330);
+          pr.body.setVelocity(vx, -360);
+          if (!this.reduce) this.tweens.add({ targets: pr, angle: 360, duration: 600, repeat: -1 });
+        }
         return;
       }
-      if (perto && Math.abs(dx) < 70 && (e.body.blocked.down || e.body.touching.down)) { d.windup = 380; e.setTint(0xff7a4d); return; }
-      if (perto) { e.setVelocityX(Math.sign(dx) * 120); e.setFlipX(dx > 0); }
+
+      const fan = d.tipo === "fanatico";
+      if (d.atordoado > 0) {
+        d.atordoado -= delta; e.setVelocityX(0);
+        if (d.atordoado <= 0) e.clearTint();
+        return;
+      }
+      if (d.lunge > 0) {
+        d.lunge -= delta;
+        if (d.lunge <= 0 && fan) { d.atordoado = 1000; e.setTint(0x8c8c8c); } // perdeu o equilíbrio: atordoado
+        return;
+      }
+      if (d.windup > 0) {
+        d.windup -= delta; e.setVelocityX(0);
+        if (d.windup <= 0) { e.clearTint(); e.setVelocityX(Math.sign(dx || 1) * (fan ? 430 : 330)); d.lunge = fan ? 340 : 260; }
+        return;
+      }
+      const alcance = fan ? 320 : 260;
+      const perto = Math.abs(dx) < alcance && dy < 90;
+      if (perto && Math.abs(dx) < (fan ? 150 : 70) && noChaoE) { d.windup = fan ? 320 : 380; e.setTint(0xff7a4d); return; }
+      if (perto) { e.setVelocityX(Math.sign(dx) * (fan ? 150 : 120)); e.setFlipX(dx > 0); }
       else {
         if (e.x < d.x0) d.dir = 1; else if (e.x > d.x1) d.dir = -1;
         e.setVelocityX(d.dir * 60); e.setFlipX(d.dir > 0);
@@ -1383,7 +1604,7 @@ async function concluirMissao(id, run) {
   const tempo = Math.round((Date.now() - run.inicio) / 1000);
   const xpGanho = Math.round(run.xp * (repeticao ? PARAMS.xpRepeticao : 1));
   const patAntes = patenteIndex(p);
-  const opcionais = [...run.eventos].filter((e) => e.startsWith("perg:")).length;
+  const opcionais = [...run.eventos].filter((e) => e.startsWith("col:") || e.startsWith("mor:")).length;
   const atual = { pontos: run.pontos, opcionais, tempo, quiz: `${run.quizOk}/${run.quizTotal}`, em: new Date().toISOString() };
   const melhorou = !prev.melhor || atual.pontos > prev.melhor.pontos || (atual.pontos === prev.melhor.pontos && (atual.opcionais > prev.melhor.opcionais || atual.tempo < prev.melhor.tempo));
   p.missoes[id] = { concluida: true, melhor: melhorou ? atual : prev.melhor, tentativas: (prev.tentativas || 0) + 1 };

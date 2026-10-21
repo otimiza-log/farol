@@ -8,8 +8,10 @@ import json, os
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AQUI = os.path.join(RAIZ, 'jogo')
 
-# temas usados nesta fatia vertical (Prólogo + Missão 1)
-TEMAS = {'Identidade', 'Introdução', '1º Princípio', '2º Princípio'}
+# temas usados pelas missões jogáveis
+TEMAS = {'Identidade', 'Introdução', '1º Princípio', '2º Princípio',          # Prólogo e Missão 1
+         '3º Princípio', '5º Princípio', '11º Princípio', '6º e 11º Princípios',  # Missão 2
+         '4º Princípio', '7º Princípio', '12º Princípio'}                      # Missão 3
 CAMPOS = ('id', 'tema', 'nivel', 'pergunta', 'alternativas', 'correta', 'explicacao', 'zoeira')
 
 def ler(nome):

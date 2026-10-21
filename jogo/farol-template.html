@@ -425,8 +425,8 @@ const PATENTES = [
 const CAMPANHA = [
   { id: "m0", n: "0", nome: "Prólogo: A Névoa", desc: "Aprenda a se mover, lutar e faça o juramento.", jogavel: true },
   { id: "m1", n: "1", nome: "Os Três Pilares", desc: "Acenda Liberdade, Justiça e Verdade na estrada para o litoral.", jogavel: true, pre: "m0" },
-  { id: "m2", n: "2", nome: "A Forja das Virtudes", desc: "Virtudes cardeais, coragem e aversão ao fanatismo." },
-  { id: "m3", n: "3", nome: "Vila da Fraternidade", desc: "Compaixão, reabilitação e cidadania." },
+  { id: "m2", n: "2", nome: "A Forja das Virtudes", desc: "Virtudes cardeais, coragem e aversão ao fanatismo.", jogavel: true, pre: "m1" },
+  { id: "m3", n: "3", nome: "Vila da Fraternidade", desc: "Compaixão, reabilitação e cidadania.", jogavel: true, pre: "m2" },
   { id: "m4", n: "4", nome: "Terras Confiscadas", desc: "Propriedade, autonomia local e abuso de poder." },
   { id: "m5", n: "5", nome: "O Mercado das Mentiras", desc: "Valores, honra e não induzir ao erro." },
   { id: "m6", n: "6", nome: "A Cidade sem Lei", desc: "Não assassinar e a corrupção." },
@@ -461,18 +461,68 @@ const FASES = {
     chao: [[0, 900], [1010, 1700], [1830, 2600], [2730, 3500], [3630, 4800]],
     plataformas: [[580, 370, 3], [1120, 360, 2], [1380, 270, 2], [2040, 370, 3], [2300, 285, 2], [2880, 360, 2], [3110, 265, 2], [3790, 360, 3], [4060, 255, 2]],
     placas: [[140, "Saqueadores à frente. J para atacar", "Saqueadores à frente. Use ATAQUE"]],
-    pilares: [
+    altares: [
       { x: 1560, nome: "Pilar da Liberdade", temas: ["Introdução"], qtd: 2 },
       { x: 2460, nome: "Pilar da Justiça", temas: ["1º Princípio"], qtd: 2 },
       { x: 3360, nome: "Pilar da Verdade", temas: ["2º Princípio"], qtd: 2 }
     ],
+    texturaAltar: "pillar", rotuloAltares: "Pilares acesos", msgFalta: "Acenda os três pilares antes de seguir.",
     inimigos: [720, 1260, 2120, 2290, 3000, 3900, 4230],
-    pergaminhos: [[1444, 230], [3174, 225], [4124, 215]],
+    coletaveis: { textura: "scroll", rotulo: "Pergaminhos", toast: "Pergaminho encontrado (objetivo opcional).", pos: [[1444, 230], [3174, 225], [4124, 215]] },
     estandarte: 4660,
     objetivos: [
       { id: "pilares", txt: "Acender os 3 pilares (2 perguntas cada)" },
       { id: "fim", txt: "Chegar ao estandarte" },
       { id: "perg", txt: "Opcional: encontrar 3 pergaminhos", opc: true }
+    ]
+  },
+  m2: {
+    titulo: "A Forja das Virtudes", kicker: "Missão 2",
+    texto: "No alto da serra, um mosteiro-fortaleza guarda as quatro forjas das virtudes cardeais. Fanáticos tomaram o lugar: gritam muito, atacam sem pensar e se cansam rápido. Acenda as forjas da Fortaleza, da Prudência, da Temperança e da Justiça. Contra quem perde o equilíbrio, a melhor arma é a paciência: depois da investida, o Fanático fica atordoado. É a hora de atacar.",
+    largura: 5200,
+    ceu: [0x241b1f, 0x6e3424, 0x1a1214],
+    chao: [[0, 820], [980, 1800], [2000, 2700], [2900, 3800], [4000, 5200]],
+    plataformas: [[480, 370, 3], [1120, 350, 2], [2140, 360, 2], [3060, 350, 3], [4220, 360, 2]],
+    moveis: [{ x: 1810, y: 410, n: 2, ate: 1880, vel: 70 }, { x: 2710, y: 390, n: 2, ate: 2780, vel: 80 }, { x: 3810, y: 400, n: 2, ate: 3880, vel: 90 }],
+    brasas: [[1300, 96], [2330, 128], [3280, 96], [4480, 128]],
+    placas: [[340, "Fanáticos investem e depois ficam atordoados. Ataque nessa hora", "Fanático atordoado = hora do ATAQUE"], [1230, "Brasas queimam. Pule por cima"]],
+    altares: [
+      { x: 1560, nome: "Forja da Fortaleza", temas: ["5º Princípio", "3º Princípio"], qtd: 2 },
+      { x: 2500, nome: "Forja da Prudência", temas: ["3º Princípio"], qtd: 2 },
+      { x: 3520, nome: "Forja da Temperança", temas: ["11º Princípio"], qtd: 2 },
+      { x: 4700, nome: "Forja da Justiça", temas: ["6º e 11º Princípios", "3º Princípio", "5º Princípio"], qtd: 2 }
+    ],
+    texturaAltar: "forge", rotuloAltares: "Forjas acesas", msgFalta: "Acenda as quatro forjas antes de seguir.",
+    inimigos: [[700, "fanatico"], 1200, [1700, "fanatico"], 2250, [3150, "fanatico"], 3650, [4300, "fanatico"], [4850, "fanatico"]],
+    coletaveis: { textura: "hammer", rotulo: "Martelos", toast: "Martelo de ferreiro encontrado (objetivo opcional).", pos: [[1184, 310], [3124, 310], [4284, 320]] },
+    estandarte: 5080,
+    objetivos: [
+      { id: "forjas", txt: "Acender as 4 forjas (2 perguntas cada)" },
+      { id: "fim", txt: "Chegar ao estandarte" },
+      { id: "col", txt: "Opcional: encontrar 3 martelos de ferreiro", opc: true }
+    ]
+  },
+  m3: {
+    titulo: "Vila da Fraternidade", kicker: "Missão 3",
+    texto: "Uma vila de refugiados tenta se reerguer. Aliciadores rondam as ruas atirando promessas fáceis, e elas machucam. Ajude os moradores caídos a se levantar, acenda a Casa da Fraternidade, o Tribunal da Redenção e a Praça da Cidadania, e siga viagem. A ajuda fraterna é a que põe a pessoa de pé.",
+    largura: 4800,
+    ceu: [0x2a2b38, 0xa86e45, 0x261c15],
+    chao: [[0, 1500], [1650, 2900], [3050, 4800]],
+    plataformas: [[400, 370, 3], [1100, 360, 2], [1900, 350, 3], [2600, 360, 2], [3400, 350, 3], [4100, 360, 2]],
+    placas: [[270, "Aliciadores atiram promessas. Desvie ou rebata com o ataque", "Promessas voando: desvie ou use ATAQUE"], [760, "Toque um morador caído para ajudá-lo a levantar"]],
+    altares: [
+      { x: 1000, nome: "Casa da Fraternidade", temas: ["4º Princípio"], qtd: 2 },
+      { x: 2450, nome: "Tribunal da Redenção", temas: ["7º Princípio"], qtd: 2 },
+      { x: 3900, nome: "Praça da Cidadania", temas: ["12º Princípio"], qtd: 2 }
+    ],
+    texturaAltar: "house", rotuloAltares: "Lugares acesos", msgFalta: "Acenda os três lugares da vila antes de seguir.",
+    inimigos: [[820, "aliciador"], 1260, [1800, "aliciador"], 2700, [3250, "aliciador"], 3600, [4420, "aliciador"]],
+    moradores: [620, 1380, 2280, 3700],
+    estandarte: 4680,
+    objetivos: [
+      { id: "lugares", txt: "Acender os 3 lugares da vila (2 perguntas cada)" },
+      { id: "fim", txt: "Chegar ao estandarte" },
+      { id: "mor", txt: "Opcional: reerguer 4 moradores (cada um devolve 1 de vida)", opc: true }
     ]
   }
 };
@@ -941,6 +991,71 @@ function gerarTexturas(s) {
     g.fillStyle(0xffd38a); g.fillRect(50, 36, 20, 16);                         // lanterna
     g.fillStyle(0x2a211b); g.fillTriangle(46, 36, 74, 36, 60, 24);
   });
+
+  // ---- Missão 2: Forja das Virtudes ----
+  tex("fanatic", 36, 52, (g) => {
+    g.fillStyle(0x5a1e14); g.fillTriangle(18, 0, 6, 18, 30, 18);           // capuz pontudo
+    g.fillStyle(0x6e2618); g.fillRect(7, 14, 22, 30);                        // túnica
+    g.fillStyle(0x1a0f0c); g.fillRect(12, 9, 12, 6);                         // rosto na sombra
+    g.fillStyle(0xffb347); g.fillRect(13, 11, 3, 2); g.fillRect(20, 11, 3, 2); // olhos
+    g.fillStyle(0x3a1a12); g.fillRect(10, 44, 6, 8); g.fillRect(20, 44, 6, 8);
+    g.fillStyle(0x6b4a2e); g.fillRect(30, 10, 3, 26);                        // tocha
+    g.fillStyle(0xf28c28); g.fillTriangle(27, 11, 36, 11, 31.5, 0);
+  });
+  tex("forge", 96, 112, (g) => {
+    g.fillStyle(0x4d453c); g.fillRect(4, 64, 88, 48);                         // base de pedra
+    g.fillStyle(0x625a4e); g.fillRect(4, 64, 88, 8);
+    g.fillStyle(0x3a332b); [80, 96].forEach((y) => g.fillRect(4, y, 88, 2));
+    g.fillStyle(0x2b2724); g.fillRect(30, 44, 36, 10); g.fillRect(40, 54, 16, 10); g.fillTriangle(66, 44, 80, 44, 66, 52); // bigorna
+    g.fillStyle(0x2a2420); g.fillRect(14, 20, 20, 44); g.fillRect(10, 14, 28, 8); // chaminé/fornalha
+    g.fillStyle(0xb3261e); g.fillRect(70, 74, 5, 22); g.fillRect(63, 81, 19, 5);  // cruz
+  });
+  tex("hammer", 24, 28, (g) => {
+    g.fillStyle(0x6b4a2e); g.fillRect(10, 8, 4, 20);
+    g.fillStyle(0x9aa0a6); g.fillRect(3, 2, 18, 8);
+    g.fillStyle(0xc9ced3); g.fillRect(3, 2, 18, 2);
+  });
+  tex("brasas", 64, 16, (g) => {
+    g.fillStyle(0x2a1610); g.fillRect(0, 4, 64, 12);
+    g.fillStyle(0xd2461e); [[4, 6, 10, 4], [20, 8, 8, 4], [34, 5, 12, 5], [52, 7, 8, 4]].forEach((r) => g.fillRect(...r));
+    g.fillStyle(0xffb347); [[7, 7, 3, 2], [37, 6, 4, 2], [54, 8, 3, 2]].forEach((r) => g.fillRect(...r));
+  });
+
+  // ---- Missão 3: Vila da Fraternidade ----
+  tex("recruiter", 36, 52, (g) => {
+    g.fillStyle(0x1f2126); g.fillRect(9, 0, 18, 4); g.fillRect(5, 4, 26, 3);   // chapéu
+    g.fillStyle(0xc49f80); g.fillRect(12, 7, 12, 9);                          // rosto
+    g.fillStyle(0x111111); g.fillRect(12, 9, 12, 3);                          // óculos escuros
+    g.fillStyle(0x3a3d44); g.fillRect(8, 16, 20, 26);                         // terno
+    g.fillStyle(0xe8c45a); g.fillRect(16, 16, 4, 12);                         // gravata dourada
+    g.fillStyle(0x23252a); g.fillRect(10, 42, 6, 10); g.fillRect(20, 42, 6, 10);
+    g.fillStyle(0x6b4a2e); g.fillRect(28, 30, 8, 10);                         // maleta
+  });
+  tex("promessa", 16, 16, (g) => {
+    g.fillStyle(0xb8892a); g.fillCircle(8, 8, 7);
+    g.fillStyle(0xf2cf63); g.fillCircle(8, 8, 5);
+    g.fillStyle(0xb8892a); g.fillRect(7, 4, 2, 8);
+  });
+  tex("house", 120, 132, (g) => {
+    g.fillStyle(0x5c4330); g.fillRect(10, 52, 100, 80);                        // paredes
+    g.fillStyle(0x6e5240); [64, 80, 96, 112].forEach((y) => g.fillRect(10, y, 100, 2));
+    g.fillStyle(0x3a2516); g.fillTriangle(0, 56, 120, 56, 60, 6);              // telhado
+    g.fillStyle(0x24170f); g.fillRect(48, 88, 24, 44);                         // porta
+    g.fillStyle(0x24170f); g.fillRect(20, 70, 18, 16); g.fillRect(82, 70, 18, 16); // janelas
+    g.fillStyle(0xe9e1d0); g.fillRect(52, 30, 16, 20);                          // brasão
+    g.fillStyle(0xb3261e); g.fillRect(58, 32, 4, 16); g.fillRect(54, 37, 12, 4);
+  });
+  tex("morador_caido", 46, 20, (g) => {
+    g.fillStyle(0x7d6a52); g.fillRect(8, 8, 30, 10);
+    g.fillStyle(0xc49f80); g.fillCircle(40, 12, 6);
+    g.fillStyle(0x4a3b2c); g.fillRect(0, 10, 10, 6);
+  });
+  tex("morador", 30, 48, (g) => {
+    g.fillStyle(0xc49f80); g.fillCircle(15, 8, 7);
+    g.fillStyle(0x7d6a52); g.fillRect(7, 15, 16, 22);
+    g.fillStyle(0x4a3b2c); g.fillRect(8, 37, 5, 11); g.fillRect(17, 37, 5, 11);
+    g.fillStyle(0x7d6a52); g.fillRect(2, 8, 4, 12); g.fillRect(24, 8, 4, 12);  // braços erguidos
+  });
   g.destroy();
 }
 
@@ -975,8 +1090,9 @@ class Missao extends Phaser.Scene {
     this.physics.world.setBoundsCollision(true, true, true, false);
     this.cameras.main.setBounds(0, 0, W, 540);
     const sky = this.add.graphics().setScrollFactor(0).setDepth(-10);
-    sky.fillGradientStyle(0x2c1c14, 0x2c1c14, 0x8a4e24, 0x8a4e24, 1); sky.fillRect(0, 0, 960, 330);
-    sky.fillGradientStyle(0x8a4e24, 0x8a4e24, 0x24170f, 0x24170f, 1); sky.fillRect(0, 330, 960, 210);
+    const [ceuTopo, ceuMeio, ceuBase] = F.ceu || [0x2c1c14, 0x8a4e24, 0x24170f];
+    sky.fillGradientStyle(ceuTopo, ceuTopo, ceuMeio, ceuMeio, 1); sky.fillRect(0, 0, 960, 330);
+    sky.fillGradientStyle(ceuMeio, ceuMeio, ceuBase, ceuBase, 1); sky.fillRect(0, 330, 960, 210);
     sky.fillStyle(0xf2b35c, .18); sky.fillCircle(300, 250, 110);
     sky.fillStyle(0xf6c77a, .32); sky.fillCircle(300, 250, 46);
     this.farol = this.add.image(880, 420, "lighthouse").setScrollFactor(0).setDepth(-8).setOrigin(.5, 1).setAlpha(.95);
@@ -998,6 +1114,23 @@ class Missao extends Phaser.Scene {
       t.body.checkCollision.down = false; t.body.checkCollision.left = false; t.body.checkCollision.right = false;
       this.plats.add(t);
     });
+    // plataformas móveis (vão e voltam na horizontal; carregam o jogador)
+    this.moveis = this.physics.add.group({ allowGravity: false, immovable: true });
+    (F.moveis || []).forEach((m) => {
+      const t = this.add.tileSprite(m.x, m.y, m.n * 64, 18, "plat").setOrigin(0, 0).setTint(0xc9b79c);
+      this.moveis.add(t);
+      t.body.setAllowGravity(false); t.body.setImmovable(true);
+      t.body.checkCollision.down = false; t.body.checkCollision.left = false; t.body.checkCollision.right = false;
+      t.setData({ x0: m.x, x1: m.ate, vel: m.vel });
+      t.body.setVelocityX(m.vel);
+    });
+    // brasas: queimam ao tocar
+    this.brasas = this.physics.add.staticGroup();
+    (F.brasas || []).forEach(([x, w]) => {
+      const t = this.add.tileSprite(x, 466, w, 16, "brasas").setOrigin(0, 0).setDepth(1);
+      this.physics.add.existing(t, true); this.brasas.add(t);
+      if (!this.reduce) this.add.particles(x + w / 2, 466, "spark", { x: { min: -w / 2, max: w / 2 }, speedY: { min: -50, max: -15 }, lifespan: 700, frequency: 160, alpha: { start: .9, end: 0 }, scale: { start: .8, end: .2 } }).setDepth(1);
+    });
 
     // placas
     const toque = document.body.classList.contains("touchmode");
@@ -1014,21 +1147,44 @@ class Missao extends Phaser.Scene {
     this.player.setCollideWorldBounds(true).setDepth(5);
     this.physics.add.collider(this.player, this.solidos);
     this.physics.add.collider(this.player, this.plats);
+    this.physics.add.collider(this.player, this.moveis);
+    this.physics.add.overlap(this.player, this.brasas, () => {
+      if (this.invuln > 0 || this.pausado || this.terminou) return;
+      this.dano(-this.facing || -1);
+      this.player.setVelocityY(-520);
+      this.toast("As brasas queimam. Pule por cima.");
+    });
     this.cameras.main.startFollow(this.player, true, .12, .12, 0, 60);
     this.slash = this.add.image(0, 0, "slash").setVisible(false).setDepth(6);
 
     // inimigos
+    // tipos: saqueador (padrão), fanatico (investe forte e fica atordoado), aliciador (atira promessas de longe)
+    const TIPOS = {
+      saqueador: { tex: "enemy", hp: 2 },
+      fanatico: { tex: "fanatic", hp: 3 },
+      aliciador: { tex: "recruiter", hp: 1 }
+    };
     this.inimigos = this.physics.add.group();
-    F.inimigos.forEach((x, i) => {
+    F.inimigos.forEach((def, i) => {
       if (this.run.eventos.has(`inimigo:${i}`)) return;
-      const e = this.inimigos.create(x, 420, "enemy");
-      e.body.setSize(20, 44).setOffset(7, 4);
-      e.setData({ idx: i, hp: 2, x0: x - 120, x1: x + 120, dir: -1, windup: 0, lunge: 0, hitAt: 0 });
+      const [x, tipo] = Array.isArray(def) ? def : [def, "saqueador"];
+      const T = TIPOS[tipo];
+      const e = this.inimigos.create(x, 420, T.tex);
+      e.body.setSize(20, 44).setOffset(8, 6);
+      e.setData({ idx: i, tipo, hp: T.hp, x0: x - 120, x1: x + 120, dir: -1, windup: 0, lunge: 0, atordoado: 0, recarga: 1200 + i * 150, hitAt: 0 });
       e.setDepth(4);
     });
     this.physics.add.collider(this.inimigos, this.solidos);
     this.physics.add.collider(this.inimigos, this.plats);
     this.physics.add.overlap(this.player, this.inimigos, (p, e) => this.tocarInimigo(e));
+    // promessas atiradas pelos aliciadores
+    this.projeteis = this.physics.add.group();
+    this.physics.add.collider(this.projeteis, this.solidos, (pr) => pr.destroy());
+    this.physics.add.overlap(this.player, this.projeteis, (p, pr) => {
+      if (this.invuln > 0 || this.pausado || this.terminou) return;
+      pr.destroy();
+      this.dano(pr.body.velocity.x > 0 ? 1 : -1);
+    });
 
     // boneco de treino (Prólogo)
     if (F.boneco && !this.run.concluidos.has("boneco")) {
@@ -1036,28 +1192,37 @@ class Missao extends Phaser.Scene {
       this.boneco.setData("hp", 3);
     }
 
-    // pedra do juramento / pilares
+    // altares do quiz: pedra do juramento, pilares, forjas, casas...
     this.altares = [];
-    const altares = F.pedra ? [Object.assign({ tipo: "pedra", chave: "pedra" }, F.pedra)] : (F.pilares || []).map((p, i) => Object.assign({ tipo: "pilar", chave: `pilar${i}` }, p));
+    const altares = F.pedra ? [Object.assign({ tipo: "pedra", chave: "pedra" }, F.pedra)] : (F.altares || []).map((p, i) => Object.assign({ tipo: "altar", chave: `altar${i}` }, p));
     altares.forEach((a) => {
-      const img = a.tipo === "pedra" ? this.add.image(a.x, 480, "stone").setOrigin(.5, 1) : this.add.image(a.x, 480, "pillar").setOrigin(.5, 1);
-      img.setDepth(2);
+      const img = this.add.image(a.x, 480, a.tipo === "pedra" ? "stone" : (F.texturaAltar || "pillar")).setOrigin(.5, 1).setDepth(2);
+      const topo = 480 - img.height;
       const zone = this.add.zone(a.x, 430, 70, 100); this.physics.add.existing(zone, true);
-      const label = this.add.text(a.x, a.tipo === "pedra" ? 410 : 276, a.nome.toUpperCase(), { fontFamily: "Cinzel, Georgia, serif", fontSize: "13px", color: "#efe6d6", stroke: "#110e0b", strokeThickness: 4 }).setOrigin(.5, 1).setDepth(3);
-      const obj = { ...a, img, zone, label, aceso: this.run.concluidos.has(a.chave) };
+      const label = this.add.text(a.x, topo - 6, a.nome.toUpperCase(), { fontFamily: "Cinzel, Georgia, serif", fontSize: "13px", color: "#efe6d6", stroke: "#110e0b", strokeThickness: 4 }).setOrigin(.5, 1).setDepth(3);
+      const obj = { ...a, img, zone, label, brilhoY: a.tipo === "pedra" ? 440 : topo + 26, aceso: this.run.concluidos.has(a.chave) };
       if (obj.aceso) this.acender(obj, true);
       this.physics.add.overlap(this.player, zone, () => this.ativarAltar(obj));
       this.altares.push(obj);
     });
 
-    // pergaminhos (opcionais)
-    this.perg = this.physics.add.staticGroup();
-    (F.pergaminhos || []).forEach(([x, y], i) => {
-      if (this.run.eventos.has(`perg:${i}`)) return;
-      const s = this.perg.create(x, y, "scroll"); s.setData("idx", i).setDepth(3);
+    // coletáveis opcionais (pergaminhos, martelos...)
+    this.coletaveis = this.physics.add.staticGroup();
+    if (F.coletaveis) F.coletaveis.pos.forEach(([x, y], i) => {
+      if (this.run.eventos.has(`col:${i}`)) return;
+      const s = this.coletaveis.create(x, y, F.coletaveis.textura); s.setData("idx", i).setDepth(3);
       if (!this.reduce) this.tweens.add({ targets: s, y: y - 6, duration: 900, yoyo: true, repeat: -1, ease: "Sine.inOut" });
     });
-    this.physics.add.overlap(this.player, this.perg, (p, s) => this.pegarPergaminho(s));
+    this.physics.add.overlap(this.player, this.coletaveis, (p, s) => this.pegarColetavel(s));
+
+    // moradores caídos (Missão 3): tocar = ajudar a levantar (+1 de vida)
+    this.moradores = this.physics.add.staticGroup();
+    (F.moradores || []).forEach((x, i) => {
+      const ajudado = this.run.eventos.has(`mor:${i}`);
+      const m = this.moradores.create(x, ajudado ? 456 : 470, ajudado ? "morador" : "morador_caido");
+      m.setData({ idx: i, ajudado }).setDepth(3);
+    });
+    this.physics.add.overlap(this.player, this.moradores, (p, m) => this.reerguer(m));
 
     // estandarte (fim)
     this.banner = this.add.image(F.estandarte, 480, "banner").setOrigin(.2, 1).setDepth(2);
@@ -1088,10 +1253,14 @@ class Missao extends Phaser.Scene {
       if (!c.has("pedra")) return "Faça o juramento na Pedra";
       return "Siga até o estandarte";
     }
-    const acesos = this.altares.filter((a) => a.aceso).length;
-    const pg = this.run.eventos ? [...this.run.eventos].filter((e) => e.startsWith("perg:")).length : 0;
-    if (acesos < 3) return `Pilares acesos: ${acesos}/3 · Pergaminhos: ${pg}/3`;
-    return `Siga até o estandarte · Pergaminhos: ${pg}/3`;
+    const F = this.fase;
+    const conta = (pref) => [...this.run.eventos].filter((e) => e.startsWith(pref)).length;
+    const total = this.altares.length, acesos = this.altares.filter((a) => a.aceso).length;
+    const extras = [];
+    if (F.coletaveis) extras.push(`${F.coletaveis.rotulo}: ${conta("col:")}/${F.coletaveis.pos.length}`);
+    if (F.moradores) extras.push(`Moradores: ${conta("mor:")}/${F.moradores.length}`);
+    const principal = acesos < total ? `${F.rotuloAltares || "Altares"}: ${acesos}/${total}` : "Siga até o estandarte";
+    return [principal, ...extras].join(" · ");
   }
   toast(t) {
     const el = $("toast"); el.textContent = t; el.hidden = false;
@@ -1125,6 +1294,9 @@ class Missao extends Phaser.Scene {
       if (!e.active) return;
       if (Phaser.Geom.Rectangle.Overlaps(area, e.getBounds())) this.ferirInimigo(e, dir);
     });
+    this.projeteis.getChildren().forEach((pr) => {
+      if (pr.active && Phaser.Geom.Rectangle.Overlaps(area, pr.getBounds())) { pr.destroy(); this.flutuar("rebatida!"); }
+    });
     if (this.boneco && this.boneco.active && Phaser.Geom.Rectangle.Overlaps(area, this.boneco.getBounds())) {
       const hp = this.boneco.getData("hp") - 1; this.boneco.setData("hp", hp);
       this.tweens.add({ targets: this.boneco, angle: dir * 12, duration: 70, yoyo: true });
@@ -1154,6 +1326,7 @@ class Missao extends Phaser.Scene {
   }
   tocarInimigo(e) {
     if (this.invuln > 0 || this.terminou || this.pausado) return;
+    if (e.getData("atordoado") > 0) return; // Fanático atordoado não fere
     this.dano(e.x < this.player.x ? 1 : -1);
   }
   dano(dirEmpurrao) {
@@ -1198,7 +1371,7 @@ class Missao extends Phaser.Scene {
     });
   }
   acender(a, instant) {
-    const y = a.tipo === "pedra" ? 440 : 300;
+    const y = a.brilhoY;
     const glow = this.add.circle(a.x, y, 46, 0xe8a33d, .22).setDepth(1);
     if (!this.reduce && !instant) this.tweens.add({ targets: glow, scale: { from: .4, to: 1 }, alpha: { from: .6, to: .22 }, duration: 600 });
     if (!this.reduce) {
@@ -1207,18 +1380,29 @@ class Missao extends Phaser.Scene {
     }
     a.label.setColor("#e8a33d");
   }
-  pegarPergaminho(s) {
+  pegarColetavel(s) {
     const i = s.getData("idx");
     s.destroy();
-    this.premiar(`perg:${i}`, PARAMS.objetivoOpcional, PARAMS.xp.objetivoOpcional, "opcionais");
-    this.toast("Pergaminho encontrado (objetivo opcional).");
+    this.premiar(`col:${i}`, PARAMS.objetivoOpcional, PARAMS.xp.objetivoOpcional, "opcionais");
+    this.toast(this.fase.coletaveis.toast);
+  }
+  reerguer(m) {
+    if (m.getData("ajudado") || this.pausado || this.terminou) return;
+    m.setData("ajudado", true);
+    m.setTexture("morador"); m.y = 456; m.refreshBody();
+    if (!this.reduce) this.tweens.add({ targets: m, y: 446, duration: 160, yoyo: true });
+    this.premiar(`mor:${m.getData("idx")}`, PARAMS.objetivoOpcional, PARAMS.xp.objetivoOpcional, "opcionais");
+    const ganhou = this.vida < this.vidaMax;
+    this.vida = Math.min(this.vidaMax, this.vida + 1);
+    this.atualizarHUD();
+    this.toast(ganhou ? "Morador de pé. Quem ajuda também se fortalece: +1 de vida." : "Morador de pé. Ajuda fraterna é a que põe a pessoa de pé.");
   }
   tentarConcluir() {
     if (this.terminou || this.pausado) return;
     const c = this.run.concluidos;
     const falta = this.id === "m0"
       ? (!c.has("boneco") ? "Derrote o boneco de treino antes de seguir." : !c.has("pedra") ? "Faça o juramento na Pedra antes de seguir." : "")
-      : (this.altares.some((a) => !a.aceso) ? "Acenda os três pilares antes de seguir." : "");
+      : (this.altares.some((a) => !a.aceso) ? (this.fase.msgFalta || "Complete os objetivos antes de seguir.") : "");
     if (falta) { if (!this._avisoFim) { this.toast(falta); this._avisoFim = true; this.time.delayedCall(3000, () => this._avisoFim = false); } return; }
     this.terminou = true;
     this.premiar("objetivo:principal", PARAMS.objetivoPrincipal, PARAMS.xp.objetivoPrincipal, "objetivos");
@@ -1269,21 +1453,58 @@ class Missao extends Phaser.Scene {
       this.toast("Cuidado com os buracos.");
     }
 
-    // inimigos: patrulha, aproximação e investida simples
+    // plataformas móveis: vão e voltam entre x0 e x1
+    this.moveis.getChildren().forEach((m) => {
+      const d = m.data.values;
+      if (m.x <= d.x0) m.body.setVelocityX(Math.abs(d.vel));
+      else if (m.x >= d.x1) m.body.setVelocityX(-Math.abs(d.vel));
+    });
+    // promessas que saíram da tela
+    this.projeteis.getChildren().forEach((pr) => { if (pr.active && (pr.y > 640 || Math.abs(pr.x - p.x) > 1100)) pr.destroy(); });
+
+    // inimigos: cada tipo tem seu comportamento
     this.inimigos.getChildren().forEach((e) => {
       if (!e.active || !e.body) return;
       if (e.y > 640) { e.destroy(); return; }
       const d = e.data.values;
       const dx = p.x - e.x, dy = Math.abs(p.y - e.y);
-      const perto = Math.abs(dx) < 260 && dy < 90;
-      if (d.lunge > 0) { d.lunge -= delta; return; }
-      if (d.windup > 0) {
-        d.windup -= delta; e.setVelocityX(0);
-        if (d.windup <= 0) { e.clearTint(); e.setVelocityX(Math.sign(dx || 1) * 330); d.lunge = 260; }
+      const noChaoE = e.body.blocked.down || e.body.touching.down;
+
+      if (d.tipo === "aliciador") {
+        // fica no lugar, vira para o jogador e atira promessas em arco
+        e.setVelocityX(0); e.setFlipX(dx < 0);
+        d.recarga -= delta;
+        if (d.recarga <= 0 && Math.abs(dx) < 520 && dy < 160) {
+          d.recarga = 1900;
+          const pr = this.projeteis.create(e.x + Math.sign(dx || 1) * 14, e.y - 10, "promessa");
+          pr.setDepth(6).body.setCircle(7);
+          const tempo = .9, vx = Phaser.Math.Clamp(dx / tempo, -330, 330);
+          pr.body.setVelocity(vx, -360);
+          if (!this.reduce) this.tweens.add({ targets: pr, angle: 360, duration: 600, repeat: -1 });
+        }
         return;
       }
-      if (perto && Math.abs(dx) < 70 && (e.body.blocked.down || e.body.touching.down)) { d.windup = 380; e.setTint(0xff7a4d); return; }
-      if (perto) { e.setVelocityX(Math.sign(dx) * 120); e.setFlipX(dx > 0); }
+
+      const fan = d.tipo === "fanatico";
+      if (d.atordoado > 0) {
+        d.atordoado -= delta; e.setVelocityX(0);
+        if (d.atordoado <= 0) e.clearTint();
+        return;
+      }
+      if (d.lunge > 0) {
+        d.lunge -= delta;
+        if (d.lunge <= 0 && fan) { d.atordoado = 1000; e.setTint(0x8c8c8c); } // perdeu o equilíbrio: atordoado
+        return;
+      }
+      if (d.windup > 0) {
+        d.windup -= delta; e.setVelocityX(0);
+        if (d.windup <= 0) { e.clearTint(); e.setVelocityX(Math.sign(dx || 1) * (fan ? 430 : 330)); d.lunge = fan ? 340 : 260; }
+        return;
+      }
+      const alcance = fan ? 320 : 260;
+      const perto = Math.abs(dx) < alcance && dy < 90;
+      if (perto && Math.abs(dx) < (fan ? 150 : 70) && noChaoE) { d.windup = fan ? 320 : 380; e.setTint(0xff7a4d); return; }
+      if (perto) { e.setVelocityX(Math.sign(dx) * (fan ? 150 : 120)); e.setFlipX(dx > 0); }
       else {
         if (e.x < d.x0) d.dir = 1; else if (e.x > d.x1) d.dir = -1;
         e.setVelocityX(d.dir * 60); e.setFlipX(d.dir > 0);
@@ -1372,7 +1593,7 @@ async function concluirMissao(id, run) {
   const tempo = Math.round((Date.now() - run.inicio) / 1000);
   const xpGanho = Math.round(run.xp * (repeticao ? PARAMS.xpRepeticao : 1));
   const patAntes = patenteIndex(p);
-  const opcionais = [...run.eventos].filter((e) => e.startsWith("perg:")).length;
+  const opcionais = [...run.eventos].filter((e) => e.startsWith("col:") || e.startsWith("mor:")).length;
   const atual = { pontos: run.pontos, opcionais, tempo, quiz: `${run.quizOk}/${run.quizTotal}`, em: new Date().toISOString() };
   const melhorou = !prev.melhor || atual.pontos > prev.melhor.pontos || (atual.pontos === prev.melhor.pontos && (atual.opcionais > prev.melhor.opcionais || atual.tempo < prev.melhor.tempo));
   p.missoes[id] = { concluida: true, melhor: melhorou ? atual : prev.melhor, tentativas: (prev.tentativas || 0) + 1 };

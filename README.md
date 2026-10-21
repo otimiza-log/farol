@@ -2,7 +2,14 @@
 
 Jogo 2D de plataforma para navegador com quiz, para formar **Faroleiros**: o jogador atravessa ruínas pós-apocalípticas, enfrenta saqueadores e acende pilares respondendo perguntas sobre o Manifesto Conservador do Farol da Liberdade, até chegar ao Farol.
 
-Esta versão é uma **fatia vertical** (Prólogo + Missão 1 + quiz + ranking), feita para validar o ciclo central descrito na *Especificação Funcional v1.1*.
+Versão atual: **Prólogo + Missões 1 a 3**, com quiz, XP, patentes e ranking. As Missões 4 a 7 e a prova final vêm depois.
+
+| Missão | Princípios no quiz | Novidade de jogabilidade |
+|---|---|---|
+| 0. Prólogo: A Névoa | Identidade e valores | Tutorial, boneco de treino, Pedra do Juramento |
+| 1. Os Três Pilares | Introdução, 1º e 2º | Saqueadores, buracos, pergaminhos opcionais |
+| 2. A Forja das Virtudes | 3º, 5º, 6º e 11º | **Fanáticos** (investem forte e ficam atordoados), **brasas** que queimam, **plataformas móveis**, martelos opcionais |
+| 3. Vila da Fraternidade | 4º, 7º e 12º | **Aliciadores** (atiram promessas que dá para rebater), **moradores caídos** que você ajuda a levantar e que devolvem vida |
 
 ## Estrutura
 
@@ -20,6 +27,9 @@ jogo/
   build_jogo.py                       Injeta as perguntas no template
   index.html                          Jogo pronto para servidores (VPS) e para abrir direto no navegador
   farol-da-liberdade.html             Jogo pronto para publicar como artefato do claude.ai
+testes/
+  campanha.mjs                        Joga do Prólogo à Missão 3 e confere as mecânicas
+  celular.mjs                         Testa toque, celular em pé/deitado e o quiz em tela baixa
 ```
 
 ## Como jogar
@@ -57,7 +67,7 @@ Para atualizar: `git -C /var/www/farol pull --ff-only` (sem reiniciar o servidor
 python jogo/build_jogo.py
 ```
 
-Nesta fatia, o jogo usa os temas *Identidade*, *Introdução*, *1º Princípio* e *2º Princípio*. Os parâmetros de pontuação, XP, patentes e fases ficam no início do script em `jogo/farol-template.html` (`PARAMS`, `PATENTES`, `CAMPANHA`, `FASES`).
+Os temas usados por cada missão ficam em `FASES` (no template) e a lista de temas incluídos no jogo, em `TEMAS` (no `build_jogo.py`). Os parâmetros de pontuação, XP, patentes e fases ficam no início do script em `jogo/farol-template.html` (`PARAMS`, `PATENTES`, `CAMPANHA`, `FASES`).
 
 ## Regras implementadas
 
@@ -68,14 +78,28 @@ Nesta fatia, o jogo usa os temas *Identidade*, *Introdução*, *1º Princípio* 
 - **Derrota:** dá para retomar do último ponto de controle sem ganhar a mesma recompensa duas vezes.
 - **Modo sério:** desliga os comentários cômicos do quiz.
 
+## Testes automatizados
+
+Os testes abrem o jogo num Chrome sem janela (headless) e jogam sozinhos. Precisam de Node 22 ou mais novo e de Google Chrome instalado.
+
+```bash
+node testes/campanha.mjs jogo/index.html saida-testes "C:/Program Files/Google/Chrome/Application/chrome.exe"
+```
+
+```bash
+node testes/celular.mjs jogo/index.html saida-testes "C:/Program Files/Google/Chrome/Application/chrome.exe"
+```
+
+Cada linha `OK`/`FALHA` é uma verificação, e as capturas de tela ficam em `saida-testes/`. No Linux, troque o caminho do Chrome (por exemplo, `/usr/bin/google-chrome`).
+
 ## Limitações conhecidas
 
 - **Pontuação calculada no navegador.** A especificação exige validação no servidor (RN-022), idempotência por evento e um painel administrativo. Isso depende de um backend, previsto na arquitetura técnica (TAD), com Supabase sugerido.
-- Missões 2 a 7 e a prova final ainda não existem e aparecem como "Em breve".
+- Missões 4 a 7 e a prova final ainda não existem e aparecem como "Em breve".
 - A especificação v1.1 (§2.3) ainda lista 7 patentes. A tabela vigente, com 8, está em `docs/avaliacao-especificacao-v1.1.md` (§4.3).
 
 ## Próximos passos
 
 1. Especificação de Arquitetura Técnica (TAD): backend, modelo de dados, API de eventos e antifraude.
 2. Painel administrativo de perguntas, com os campos `versao`, `status` e `revisado_por`.
-3. Missões 2 a 7 e a prova final.
+3. Missões 4 a 7 e a prova final.
