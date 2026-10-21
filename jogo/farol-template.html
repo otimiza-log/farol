@@ -177,6 +177,14 @@ table.rk td.pos { font-family: var(--display); color: var(--muted); width: 48px;
 details.rules summary { cursor: pointer; font-family: var(--hud); letter-spacing: .08em; text-transform: uppercase; font-size: 14px; }
 details.rules ul { margin: 10px 0 0; padding-left: 18px; color: #d9cdb9; font-size: 14px; display: grid; gap: 3px; }
 .empty { color: var(--muted); padding: 18px 10px; }
+.opt.sel { border-color: var(--ember); background: rgba(232,163,61,.12); }
+.rev { border: 1px solid var(--line); background: var(--panel); border-radius: 3px; padding: 8px 12px; }
+.rev.no { border-left: 3px solid var(--bad); }
+.rev.ok { border-left: 3px solid var(--ok); }
+.rev summary { cursor: pointer; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 8px; font-size: 14px; }
+.rev .rv-n { font-family: var(--hud); font-weight: 700; }
+.rev p { margin: 6px 0 0; font-size: 13.5px; color: #d9cdb9; }
+.rev .rv-c { color: var(--ok); }
 .switch { display: flex; gap: 10px; align-items: center; }
 
 @media (max-width: 720px) {
@@ -341,6 +349,43 @@ details.rules ul { margin: 10px 0 0; padding-left: 18px; color: #d9cdb9; font-si
   </div>
 </section>
 
+<!-- ============ TELA: PROVA FINAL ============ -->
+<section class="screen" id="scr-prova" hidden>
+  <div class="wrap" style="max-width:760px">
+    <div id="pv-intro" style="display:grid;gap:16px">
+      <div class="topbar">
+        <div><div class="label">O Farol</div><h2 style="font-size:30px">Prova final</h2></div>
+        <button class="btn" id="pv-back">Voltar</button>
+      </div>
+      <p class="lead" style="margin:0;color:#d9cdb9">No alto da torre, a última luz. Mostre que conhece o manifesto que guia o Faroleiro.</p>
+      <ul class="obj-list" id="pv-regras"></ul>
+      <p class="hint" id="pv-hist"></p>
+      <div class="row"><button class="btn primary" id="pv-start">Começar a prova</button></div>
+      <p class="err" id="pv-espera"></p>
+    </div>
+
+    <div id="pv-exec" tabindex="-1" style="display:grid;gap:14px;outline:none" hidden>
+      <div class="row" style="justify-content:space-between"><span class="label num" id="pv-count"></span><button class="btn" id="pv-sair" style="padding:6px 12px;font-size:13px">Sair sem salvar</button></div>
+      <div class="xpbar" aria-hidden="true"><i id="pv-bar"></i></div>
+      <span class="label" id="pv-tema"></span>
+      <h2 id="pv-q" style="font-family:var(--body);font-weight:600;font-size:20px;letter-spacing:0;line-height:1.35"></h2>
+      <div class="opts" id="pv-opts"></div>
+      <div class="row"><button class="btn primary" id="pv-ok" disabled>Confirmar e seguir</button></div>
+    </div>
+
+    <div id="pv-res" style="display:grid;gap:16px" hidden>
+      <div><div class="label">Resultado da prova final</div><h2 style="font-size:30px" id="pv-veredito" class="verdict"></h2></div>
+      <div class="result-grid">
+        <div class="kpi"><span class="label">Nota</span><b class="num" id="pv-nota">0%</b><span class="hint" id="pv-acertos"></span></div>
+      </div>
+      <div id="pv-promo"></div>
+      <div><div class="label" style="margin-bottom:8px">Revisão</div><div id="pv-revisao" style="display:grid;gap:6px"></div></div>
+      <p class="mode" id="pv-salvo"></p>
+      <div class="row"><button class="btn primary" id="pv-res-back">Central</button></div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ MODAIS ============ -->
 <div class="modal" id="m-intro" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mi-title">
@@ -428,7 +473,8 @@ const PARAMS = {
   tetoInimigos: 100,
   chefe: 300,
   xp: { objetivoPrincipal: 150, objetivoOpcional: 30, inimigo: 10, acerto: 30, erro: 10, chefe: 200 },
-  xpRepeticao: 0.2
+  xpRepeticao: 0.2,
+  prova: { questoes: 20, notaMinima: 0.7, dificeisMin: 8, intervaloHoras: 24 }
 };
 const PATENTES = [
   { nome: "Sujeito Desconfiado", tom: "Humor", xp: 0, req: null },
@@ -448,8 +494,8 @@ const CAMPANHA = [
   { id: "m4", n: "4", nome: "Terras Confiscadas", desc: "Propriedade, autonomia local e abuso de poder. Mestre: Cria de Deodoro.", jogavel: true, pre: "m3" },
   { id: "m5", n: "5", nome: "O Mercado das Mentiras", desc: "Valores, honra e não induzir ao erro. Mestre: Bolsolepra.", jogavel: true, pre: "m4" },
   { id: "m6", n: "6", nome: "A Cidade sem Lei", desc: "Não assassinar e a corrupção. Mestre: Luladrão.", jogavel: true, pre: "m5" },
-  { id: "m7", n: "7", nome: "A Travessia", desc: "Cultura Faroleira: dojô, fogueira e Templários." },
-  { id: "final", n: "★", nome: "O Farol", desc: "Prova final. A aprovação concede a patente Cavaleiro do Farol." }
+  { id: "m7", n: "7", nome: "A Travessia", desc: "Cultura Faroleira: dojô, fogueira e Templários. Mestre: Vagabundo do STF.", jogavel: true, pre: "m6" },
+  { id: "final", n: "★", nome: "O Farol", desc: "Prova final: 20 perguntas do manifesto, nota mínima 70%. A aprovação concede a patente Cavaleiro do Farol.", jogavel: true, pre: "m7", prova: true }
 ];
 
 /* Fases desta versão. Coordenadas em pixels; chão no y = 480. */
@@ -642,6 +688,40 @@ const FASES = {
       { id: "fim", txt: "Chegar ao estandarte" },
       { id: "col", txt: "Opcional: recolher 3 provas", opc: true }
     ]
+  },
+  m7: {
+    titulo: "A Travessia", kicker: "Missão 7",
+    texto: "O litoral, enfim. Do cais já se vê a ilha do Farol. Para atravessar, pule de barco em barco e acenda o Dojô, a Fogueira e a Capela Templária: o que eles guardam é a cultura do Faroleiro. No último cais, de toga preta e martelo na mão, espera o Vagabundo do STF, que julga sozinho e não deixa ninguém passar.",
+    largura: 6000,
+    ceu: [0x1d2a3a, 0x8a6a5a, 0x101820],
+    agua: true, tintMovel: 0x9a7650,
+    chao: [[0, 1000], [1300, 2100], [2400, 3200], [3500, 4300], [4600, 6000]],
+    plataformas: [[600, 360, 2], [1600, 350, 2], [1800, 270, 2], [2700, 350, 3], [3800, 350, 2], [4000, 270, 2]],
+    moveis: [{ x: 1010, y: 440, n: 3, ate: 1110, vel: 60 }, { x: 2110, y: 430, n: 3, ate: 2210, vel: 70 }, { x: 3210, y: 440, n: 3, ate: 3310, vel: 80 }, { x: 4310, y: 430, n: 3, ate: 4410, vel: 90 }],
+    placas: [[300, "Pule de barco em barco até a ilha"], [4880, "Daqui em diante: o Vagabundo do STF"]],
+    altares: [
+      { x: 1700, nome: "Dojô", textura: "house", tint: 0xd8c4a0, temas: ["Cultura · O Faroleiro", "Cultura · Conduta"], qtd: 2 },
+      { x: 2950, nome: "Fogueira", textura: "forge", tint: 0xffd9a0, temas: ["Cultura · Metáforas", "Cultura · Natureza do movimento"], qtd: 2 },
+      { x: 4150, nome: "Capela Templária", textura: "pillar", tint: 0xf0e6d6, temas: ["Cultura · Religião", "Cultura · Identidade"], qtd: 2 }
+    ],
+    rotuloAltares: "Marcos acesos", msgFalta: "Acenda o Dojô, a Fogueira e a Capela antes de seguir.",
+    inimigos: [700, [1450, "fanatico"], [1950, "aliciador"], 2550, [3100, "capanga"], [3650, "ilusionista"], [3900, "fanatico"], [4750, "burocrata"]],
+    coletaveis: { textura: "lanterna", rotulo: "Lanternas", toast: "Lanterna acesa (objetivo opcional).", pos: [[1864, 230], [2796, 310], [4064, 230]] },
+    chefe: {
+      tipo: "stf", nome: "VAGABUNDO DO STF", hp: 16, arena: [5000, 6000], x: 5700,
+      falas: {
+        inicio: "O Vagabundo do STF desceu da toga para julgar sozinho: é vítima, investigador e juiz ao mesmo tempo. Desvie das intimações, pule a tarja da censura e, depois da martelada, ataque enquanto ele fica tonto.",
+        fase2: "O Vagabundo do STF abriu um inquérito sem fim: agora as intimações não param.",
+        derrota: "O Vagabundo do STF foi derrotado. Processo arquivado por falta de provas, e de vergonha. A ilha do Farol está logo ali."
+      }
+    },
+    estandarte: 5880,
+    objetivos: [
+      { id: "marcos", txt: "Acender o Dojô, a Fogueira e a Capela (2 perguntas cada)" },
+      { id: "chefe", txt: "Derrotar o Vagabundo do STF" },
+      { id: "fim", txt: "Chegar ao estandarte" },
+      { id: "col", txt: "Opcional: acender 3 lanternas", opc: true }
+    ]
   }
 };
 
@@ -654,7 +734,7 @@ const shuffle = (arr) => { const a = arr.slice(); for (let i = a.length - 1; i >
 const fmtTime = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 const lsGet = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* armazenamento indisponível */ } };
-const SCREENS = ["scr-home", "scr-central", "scr-game", "scr-result", "scr-ranking"];
+const SCREENS = ["scr-home", "scr-central", "scr-game", "scr-result", "scr-ranking", "scr-prova"];
 function show(id) { SCREENS.forEach((s) => { $(s).hidden = s !== id; }); }
 function openModal(id) { $(id).hidden = false; const f = $(id).querySelector("button.primary, button, input"); if (f) setTimeout(() => f.focus(), 30); }
 function closeModal(id) { $(id).hidden = true; }
@@ -802,7 +882,19 @@ function renderCentral() {
     const melhor = p.missoes[c.id] && p.missoes[c.id].melhor;
     el.querySelector("p").textContent = c.desc + (melhor ? ` Melhor resultado: ${melhor.pontos} pts.` : "");
     const act = el.querySelector(".act");
-    if (liberada) {
+    if (c.prova && liberada) {
+      const pv = provaDe(p), espera = provaEspera(p);
+      const ult = pv.tentativas[pv.tentativas.length - 1];
+      if (ult) el.querySelector("p").textContent = c.desc + ` Última nota: ${Math.round(ult.nota * 100)}%.`;
+      const b = document.createElement("button");
+      b.className = "btn" + (!pv.aprovada && !espera ? " primary" : "");
+      b.textContent = pv.aprovada ? "Ver a prova" : espera ? "Aguarde" : "Fazer a prova";
+      b.addEventListener("click", abrirProva);
+      act.appendChild(b);
+      const ch = document.createElement("span"); ch.style.marginLeft = "8px";
+      if (pv.aprovada) { ch.className = "chip ok"; ch.textContent = "Aprovado"; act.appendChild(ch); }
+      else if (espera) { ch.className = "chip"; ch.textContent = `Nova tentativa ${espera.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}`; act.appendChild(ch); }
+    } else if (liberada) {
       const b = document.createElement("button");
       b.className = "btn" + (!feito ? " primary" : "");
       b.textContent = feito ? "Jogar de novo" : "Jogar";
@@ -1278,6 +1370,44 @@ function gerarTexturas(s) {
     g.fillStyle(0x5a4020); g.fillRect(7, 7, 10, 2);
     g.fillStyle(0xf2cf63); g.fillRect(11, 10, 2, 12); g.fillRect(8, 12, 8, 2); g.fillRect(8, 18, 8, 2);
   });
+  // ---- Missão 7: A Travessia ----
+  tex("agua", 64, 46, (g) => {
+    g.fillStyle(0x1b3a52); g.fillRect(0, 0, 64, 46);
+    g.fillStyle(0x2c5a78); g.fillRect(0, 0, 64, 5);
+    g.fillStyle(0x6f9fbf); [[4, 2, 12, 2], [30, 1, 10, 2], [50, 3, 8, 2], [18, 14, 10, 2], [42, 22, 12, 2]].forEach((r) => g.fillRect(...r));
+  });
+  tex("lanterna", 20, 28, (g) => {
+    g.fillStyle(0x3a2f26); g.fillRect(6, 0, 8, 3); g.fillRect(3, 3, 14, 3); g.fillRect(3, 23, 14, 4);
+    g.fillStyle(0xffd38a); g.fillRect(5, 6, 10, 17);
+    g.fillStyle(0xfff2c9); g.fillRect(8, 9, 4, 10);
+    g.fillStyle(0x3a2f26); g.fillRect(3, 6, 2, 17); g.fillRect(15, 6, 2, 17);
+  });
+  tex("stf", 68, 94, (g) => {
+    g.fillStyle(0x111114); g.fillTriangle(6, 92, 62, 92, 34, 26); g.fillRect(14, 30, 40, 62);  // toga preta
+    g.fillStyle(0x23232a); g.fillRect(18, 40, 4, 50); g.fillRect(46, 40, 4, 50);              // dobras
+    g.fillStyle(0xf2efe8); g.fillRect(28, 30, 12, 8); g.fillTriangle(28, 38, 40, 38, 34, 46);  // gola branca
+    g.fillStyle(0x2a2420); g.fillRect(22, 88, 10, 6); g.fillRect(36, 88, 10, 6);              // sapatos
+    g.fillStyle(0xd9b08c); g.fillCircle(34, 16, 13);                                           // cabeça careca
+    g.fillStyle(0xf6dcc0); g.fillEllipse(29, 8, 10, 5);                                       // brilho da careca
+    g.fillStyle(0x1a1a1a); g.fillRect(25, 12, 7, 2); g.fillRect(36, 12, 7, 2);               // sobrancelhas franzidas
+    g.fillStyle(0x1a1a1a); g.fillRect(27, 15, 3, 3); g.fillRect(38, 15, 3, 3);               // olhos
+    g.fillStyle(0x8a5a4a); g.fillRect(29, 23, 10, 2);                                          // boca fechada
+    g.fillStyle(0x111114); g.fillRect(52, 36, 8, 18);                                          // braço
+    g.fillStyle(0x6b4a2e); g.fillRect(56, 18, 4, 26);                                          // cabo do martelo
+    g.fillStyle(0x8a5a32); g.fillRect(48, 10, 20, 11);                                         // cabeça do martelo
+    g.fillStyle(0xc8a24a); g.fillRect(48, 13, 20, 2); g.fillRect(48, 17, 20, 2);
+  });
+  tex("intimacao", 20, 24, (g) => {
+    g.fillStyle(0xf4f1e8); g.fillRect(0, 0, 20, 24);
+    g.fillStyle(0x9a9a9a); [5, 9, 13].forEach((y) => g.fillRect(3, y, 14, 1));
+    g.fillStyle(0xb3261e); g.fillCircle(14, 19, 4);
+  });
+  tex("tarja", 110, 30, (g) => {
+    g.fillStyle(0x0a0a0a); g.fillRect(0, 0, 110, 30);
+    g.fillStyle(0xb3261e); g.fillRect(0, 0, 110, 3); g.fillRect(0, 27, 110, 3);
+    g.fillStyle(0xf4f1e8); [[10, 12, 14, 6], [30, 12, 14, 6], [50, 12, 14, 6], [70, 12, 14, 6], [90, 12, 10, 6]].forEach((r) => g.fillRect(...r));
+  });
+
   tex("onda", 44, 16, (g) => {
     g.fillStyle(0xc9a25a, .9); g.fillTriangle(0, 16, 22, 0, 44, 16);
     g.fillStyle(0xe8c78a, .9); g.fillTriangle(10, 16, 22, 6, 34, 16);
@@ -1330,6 +1460,11 @@ class Missao extends Phaser.Scene {
     this.bgMid = this.add.tileSprite(0, 330, 960, 220, "bg-mid").setOrigin(0, 0).setScrollFactor(0).setDepth(-6);
     if (!this.reduce) this.add.particles(0, 0, "dust", { x: { min: 0, max: 960 }, y: { min: 0, max: 540 }, lifespan: 6000, speedX: { min: -30, max: -10 }, speedY: { min: -4, max: 6 }, alpha: { start: .35, end: 0 }, frequency: 220, scale: { min: .5, max: 1 } }).setScrollFactor(0).setDepth(-5);
 
+    // água (Missão 7): visível nos vãos entre os trechos de chão
+    if (F.agua) {
+      const agua = this.add.tileSprite(0, 494, W, 46, "agua").setOrigin(0, 0).setDepth(0);
+      if (!this.reduce) this.tweens.add({ targets: agua, tilePositionX: 64, duration: 2600, repeat: -1 });
+    }
     // terreno
     this.solidos = this.physics.add.staticGroup();
     F.chao.forEach(([x0, x1]) => {
@@ -1346,7 +1481,7 @@ class Missao extends Phaser.Scene {
     // plataformas móveis (vão e voltam na horizontal; carregam o jogador)
     this.moveis = this.physics.add.group({ allowGravity: false, immovable: true });
     (F.moveis || []).forEach((m) => {
-      const t = this.add.tileSprite(m.x, m.y, m.n * 64, 18, "plat").setOrigin(0, 0).setTint(0xc9b79c);
+      const t = this.add.tileSprite(m.x, m.y, m.n * 64, 18, "plat").setOrigin(0, 0).setTint(F.tintMovel || 0xc9b79c);
       this.moveis.add(t);
       t.body.setAllowGravity(false); t.body.setImmovable(true);
       t.body.checkCollision.down = false; t.body.checkCollision.left = false; t.body.checkCollision.right = false;
@@ -1432,8 +1567,9 @@ class Missao extends Phaser.Scene {
     this.altares = [];
     const altares = F.pedra ? [Object.assign({ tipo: "pedra", chave: "pedra" }, F.pedra)] : (F.altares || []).map((p, i) => Object.assign({ tipo: "altar", chave: `altar${i}` }, p));
     altares.forEach((a) => {
-      const img = this.add.image(a.x, 480, a.tipo === "pedra" ? "stone" : (F.texturaAltar || "pillar")).setOrigin(.5, 1).setDepth(2);
-      if (F.tintAltar && a.tipo !== "pedra") img.setTint(F.tintAltar);
+      const img = this.add.image(a.x, 480, a.tipo === "pedra" ? "stone" : (a.textura || F.texturaAltar || "pillar")).setOrigin(.5, 1).setDepth(2);
+      const tinta = a.tint || F.tintAltar;
+      if (tinta && a.tipo !== "pedra") img.setTint(tinta);
       const topo = 480 - img.height;
       const zone = this.add.zone(a.x, 430, 70, 100); this.physics.add.existing(zone, true);
       const label = this.add.text(a.x, topo - 6, a.nome.toUpperCase(), { fontFamily: "Cinzel, Georgia, serif", fontSize: "13px", color: "#efe6d6", stroke: "#110e0b", strokeThickness: 4 }).setOrigin(.5, 1).setDepth(3);
@@ -1540,7 +1676,7 @@ class Missao extends Phaser.Scene {
       if (Phaser.Geom.Rectangle.Overlaps(area, e.getBounds())) this.ferirInimigo(e, dir);
     });
     this.projeteis.getChildren().forEach((pr) => {
-      if (pr.active && Phaser.Geom.Rectangle.Overlaps(area, pr.getBounds())) { pr.destroy(); this.flutuar("rebatida!"); }
+      if (pr.active && !pr.getData("tarja") && Phaser.Geom.Rectangle.Overlaps(area, pr.getBounds())) { pr.destroy(); this.flutuar("rebatida!"); }
     });
     if (this.chefe && this.chefe.active && this.chefeAtivo && Phaser.Geom.Rectangle.Overlaps(area, this.chefe.getBounds())) this.ferirChefe(dir);
     if (this.boneco && this.boneco.active && Phaser.Geom.Rectangle.Overlaps(area, this.boneco.getBounds())) {
@@ -1820,6 +1956,60 @@ class Missao extends Phaser.Scene {
           if (d.t <= 0) voltar(1100 / vel);
           break;
       }
+    } else if (C.tipo === "stf") {
+      // Vagabundo do STF: alterna intimações (perseguem o jogador), martelada (salto + ondas) e tarja da censura (varre o chão)
+      switch (d.estado) {
+        case "andar":
+          b.setVelocityX(lado * 50 * vel);
+          if (d.cd <= 0 && noChao) {
+            const golpe = ["intimacoes", "martelada", "censura"][d.ciclo % 3]; d.ciclo++;
+            d.golpe = golpe; d.estado = "preparar"; b.setVelocityX(0);
+            d.t = golpe === "martelada" ? 560 / vel : 450;
+            b.setTint(golpe === "intimacoes" ? 0xe8e0c8 : golpe === "martelada" ? 0xff9a5a : 0x707070);
+          }
+          break;
+        case "preparar":
+          b.setVelocityX(0);
+          if (d.t > 0) break;
+          b.clearTint();
+          if (d.golpe === "intimacoes") {
+            const n = d.fase2 ? 5 : 3, meio = (n - 1) / 2;
+            for (let k = 0; k < n; k++) {
+              const it = this.projeteis.create(b.x + (k - meio) * 24, b.y - 64, "intimacao").setDepth(6);
+              it.body.setAllowGravity(false);
+              it.setData({ homing: 2600, vida: 4200 });
+              it.body.setVelocity((k - meio) * 70, -110);
+            }
+            voltar(1500 / vel);
+          } else if (d.golpe === "martelada") {
+            d.estado = "salto"; d.noAr = false;
+            const sombra = this.add.ellipse(p.x, 478, 64, 10, 0x000000, .45).setDepth(2);
+            this.time.delayedCall(950, () => sombra.destroy());
+            b.setVelocity(Phaser.Math.Clamp((p.x - b.x) / 0.9, -520, 520), -720);
+          } else {
+            const [a0, a1] = C.arena;
+            const origem = lado > 0 ? a0 + 20 : a1 - 20; // nasce do lado do juiz e varre em direção ao jogador
+            const tj = this.projeteis.create(origem, 460, "tarja").setDepth(6);
+            tj.body.setAllowGravity(false); tj.body.setVelocityX(lado * (d.fase2 ? 380 : 300));
+            tj.setFlipX(lado < 0); tj.setData({ tarja: true, vida: 4500 });
+            voltar(1700 / vel);
+          }
+          break;
+        case "salto":
+          if (!noChao) d.noAr = true;
+          if (d.noAr && noChao) {
+            [-1, 1].forEach((sentido) => {
+              const o = this.projeteis.create(b.x + sentido * 36, 466, "onda").setDepth(6).setTint(0x2a2a2a);
+              o.body.setAllowGravity(false); o.body.setVelocityX(sentido * 300 * vel); o.setFlipX(sentido < 0);
+            });
+            if (!this.reduce) this.cameras.main.shake(200, .012);
+            tonto(1200);
+          }
+          break;
+        case "atordoado":
+          if (d.t <= 0) voltar(1200 / vel);
+          break;
+      }
     }
   }
   chuvaDePropina(n) {
@@ -1876,7 +2066,7 @@ class Missao extends Phaser.Scene {
       this.vida -= 1; this.atualizarHUD();
       if (this.vida <= 0) { this.derrota(); return; }
       p.setPosition(this.checkpoint.x, this.checkpoint.y); p.setVelocity(0, 0); this.invuln = 1000;
-      this.toast("Cuidado com os buracos.");
+      this.toast(F.agua ? "Você caiu na água. Use os barcos." : "Cuidado com os buracos.");
     }
 
     // plataformas móveis: vão e voltam entre x0 e x1
@@ -1887,6 +2077,19 @@ class Missao extends Phaser.Scene {
     });
     // promessas que saíram da tela
     this.projeteis.getChildren().forEach((pr) => { if (pr.active && (pr.y > 640 || Math.abs(pr.x - p.x) > 1100)) pr.destroy(); });
+    this.projeteis.getChildren().forEach((pr) => {
+      if (!pr.active || !pr.body) return;
+      const h = pr.getData("homing");
+      if (h > 0) {
+        pr.setData("homing", h - delta);
+        const ang = Phaser.Math.Angle.Between(pr.x, pr.y, p.x, p.y - 8);
+        const v = pr.body.velocity, alvo = 175;
+        pr.body.setVelocity(v.x + (Math.cos(ang) * alvo - v.x) * .06, v.y + (Math.sin(ang) * alvo - v.y) * .06);
+        pr.rotation = ang;
+      }
+      const vida = pr.getData("vida");
+      if (vida !== undefined) { if (vida <= 0) pr.destroy(); else pr.setData("vida", vida - delta); }
+    });
     this.atualizarChefe(time, delta);
 
     // inimigos: cada tipo tem seu comportamento
@@ -2055,7 +2258,8 @@ async function concluirMissao(id, run) {
   const nextIdx = CAMPANHA.findIndex((c) => c.id === id) + 1;
   const next = CAMPANHA[nextIdx];
   const nb = $("r-next");
-  if (next && next.jogavel) { nb.hidden = false; nb.textContent = `Próxima: ${next.nome}`; nb.onclick = () => abrirIntro(next.id); }
+  if (next && next.prova) { nb.hidden = false; nb.textContent = "Ir para a prova final"; nb.onclick = abrirProva; }
+  else if (next && next.jogavel) { nb.hidden = false; nb.textContent = `Próxima: ${next.nome}`; nb.onclick = () => abrirIntro(next.id); }
   else { nb.hidden = true; }
   $("r-saved").textContent = "Salvando…";
   show("scr-result");
@@ -2066,6 +2270,159 @@ async function concluirMissao(id, run) {
     ? (entrou ? "Progresso salvo na sua conta e ranking atualizado." : "Progresso salvo na sua conta. Seu acesso é só de leitura, então o ranking não foi atualizado.")
     : "Progresso salvo neste navegador (modo local).";
 }
+/* =====================================================================
+   PROVA FINAL (especificação v1.1 §10): 20 perguntas do manifesto, ao menos
+   1 por princípio, 40% difíceis, sem resposta na hora, nota mínima 70%,
+   nova tentativa após o intervalo, patente Cavaleiro do Farol na aprovação.
+   ===================================================================== */
+function provaDe(p) { p.prova = p.prova || { tentativas: [], aprovada: false }; return p.prova; }
+function provaEspera(p) {
+  const pv = provaDe(p);
+  if (pv.aprovada || !pv.tentativas.length) return null;
+  const ult = pv.tentativas[pv.tentativas.length - 1];
+  const libera = new Date(new Date(ult.em).getTime() + PARAMS.prova.intervaloHoras * 3600e3);
+  return libera > new Date() ? libera : null;
+}
+function montarProva() {
+  const P = PARAMS.prova;
+  const man = BANCO.filter((q) => q.modulo === "manifesto");
+  const sel = [], usados = new Set();
+  const add = (q) => { if (q && !usados.has(q.id)) { usados.add(q.id); sel.push(q); } };
+  for (let n = 1; n <= 15; n++) add(pick(man.filter((q) => q.tema === `${n}º Princípio`)));   // 1 por princípio
+  const dif = () => sel.filter((q) => q.nivel === "dificil").length;
+  for (const q of shuffle(man.filter((q) => q.nivel === "dificil"))) { if (dif() >= P.dificeisMin || sel.length >= P.questoes) break; add(q); }
+  for (const q of shuffle(man)) { if (sel.length >= P.questoes) break; add(q); }
+  // se passou do total (15 princípios + difíceis), troca fáceis excedentes mantendo a cobertura
+  return shuffle(sel).slice(0, P.questoes);
+}
+let PROVA = null;
+function abrirProva() {
+  const p = PERFIL, pv = provaDe(p), P = PARAMS.prova;
+  show("scr-prova");
+  $("pv-exec").hidden = true; $("pv-res").hidden = true; $("pv-intro").hidden = false;
+  const espera = provaEspera(p);
+  const ult = pv.tentativas[pv.tentativas.length - 1];
+  $("pv-hist").textContent = pv.tentativas.length
+    ? `Tentativas: ${pv.tentativas.length}. Última nota: ${Math.round(ult.nota * 100)}%.${pv.aprovada ? " Você já foi aprovado." : ""}`
+    : "Primeira tentativa.";
+  $("pv-regras").innerHTML = "";
+  [`${P.questoes} perguntas do manifesto, com pelo menos uma de cada um dos 15 princípios.`,
+   `Nota mínima para aprovação: ${Math.round(P.notaMinima * 100)}% (${Math.ceil(P.notaMinima * P.questoes)} acertos).`,
+   "Sem resposta na hora e sem comentários cômicos: o resultado e as explicações aparecem no fim.",
+   "Escolha a alternativa e confirme. Teclado: 1 a 4 escolhem e Enter confirma.",
+   `Reprovou? O progresso da campanha fica guardado e você pode tentar de novo após ${P.intervaloHoras} h.`,
+   "A aprovação concede a patente máxima: Cavaleiro do Farol."].forEach((t) => { const li = document.createElement("li"); li.textContent = t; $("pv-regras").appendChild(li); });
+  const b = $("pv-start");
+  b.disabled = !!espera;
+  $("pv-espera").textContent = espera ? `Nova tentativa liberada em ${espera.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}.` : "";
+  b.textContent = pv.aprovada ? "Refazer a prova (treino)" : "Começar a prova";
+}
+function iniciarProva() {
+  if (provaEspera(PERFIL)) return;
+  PROVA = { qs: montarProva(), i: 0, resp: [], sel: null, armadoEm: 0, treino: !!provaDe(PERFIL).aprovada };
+  $("pv-intro").hidden = true; $("pv-exec").hidden = false;
+  renderProva();
+}
+function renderProva() {
+  const S = PROVA, q = S.qs[S.i], n = S.qs.length;
+  $("pv-count").textContent = `Pergunta ${S.i + 1} de ${n}`;
+  $("pv-bar").style.width = `${(S.i / n) * 100}%`;
+  $("pv-q").textContent = q.pergunta;
+  $("pv-tema").textContent = q.tema;
+  S.sel = null;
+  const opts = $("pv-opts"); opts.innerHTML = "";
+  S.ordem = shuffle(q.alternativas.map((t, idx) => ({ t, idx })));
+  S.ordem.forEach((o, pos) => {
+    const b = document.createElement("button");
+    b.className = "opt"; b.type = "button"; b.setAttribute("aria-pressed", "false");
+    b.innerHTML = `<span class="k">${pos + 1}</span><span></span>`;
+    b.lastChild.textContent = o.t;
+    b.addEventListener("click", () => escolherProva(pos));
+    opts.appendChild(b);
+  });
+  $("pv-ok").disabled = true;
+  $("pv-ok").textContent = S.i + 1 < n ? "Confirmar e seguir" : "Confirmar e ver o resultado";
+  S.armadoEm = performance.now() + QUIZ_ESPERA.pergunta;
+  try { $("pv-exec").focus({ preventScroll: true }); } catch (e) { /* sem foco */ }
+}
+function escolherProva(pos) {
+  if (performance.now() < PROVA.armadoEm) return;
+  PROVA.sel = pos;
+  [...$("pv-opts").children].forEach((b, k) => { b.classList.toggle("sel", k === pos); b.setAttribute("aria-pressed", String(k === pos)); });
+  $("pv-ok").disabled = false;
+}
+function confirmarProva() {
+  const S = PROVA;
+  if (!S || S.sel === null || performance.now() < S.armadoEm) return;
+  const q = S.qs[S.i], idx = S.ordem[S.sel].idx;
+  S.resp.push({ q, idx, ok: idx === q.correta });
+  S.i++;
+  if (S.i < S.qs.length) renderProva(); else finalizarProva();
+}
+$("pv-exec").addEventListener("keydown", (e) => {
+  if (!PROVA || e.repeat) return;
+  const m = /^(?:Digit|Numpad)([1-4])$/.exec(e.code);
+  if (m) { e.preventDefault(); escolherProva(Number(m[1]) - 1); }
+  else if (e.code === "Enter" || e.code === "NumpadEnter") { e.preventDefault(); confirmarProva(); }
+});
+$("pv-start").addEventListener("click", iniciarProva);
+$("pv-ok").addEventListener("click", confirmarProva);
+$("pv-back").addEventListener("click", renderCentral);
+$("pv-res-back").addEventListener("click", renderCentral);
+$("pv-sair").addEventListener("click", () => { PROVA = null; renderCentral(); });
+
+async function finalizarProva() {
+  const S = PROVA, p = PERFIL, pv = provaDe(p), P = PARAMS.prova;
+  const acertos = S.resp.filter((r) => r.ok).length, total = S.resp.length, nota = acertos / total;
+  const aprovado = nota >= P.notaMinima;
+  const patAntes = patenteIndex(p);
+  pv.tentativas.push({ em: new Date().toISOString(), acertos, total, nota, aprovado, treino: S.treino, respostas: S.resp.map((r) => ({ q: r.q.id, v: r.q.versao || 1, r: r.idx, ok: r.ok })) });
+  pv.tentativas = pv.tentativas.slice(-20);
+  if (aprovado && !pv.aprovada) {
+    pv.aprovada = true; p.provaAprovada = true;
+    p.missoes.final = { concluida: true, melhor: null, tentativas: pv.tentativas.length };
+  }
+  const patDepois = patenteIndex(p);
+  PROVA = null;
+
+  $("pv-exec").hidden = true; $("pv-res").hidden = false;
+  $("pv-nota").textContent = `${Math.round(nota * 100)}%`;
+  $("pv-acertos").textContent = `${acertos} de ${total} acertos`;
+  const v = $("pv-veredito");
+  v.className = "verdict " + (aprovado ? "ok" : "no");
+  v.textContent = aprovado ? "Aprovado." : `Ainda não. A nota mínima é ${Math.round(P.notaMinima * 100)}%.`;
+  const promo = $("pv-promo"); promo.innerHTML = "";
+  if (patDepois > patAntes) {
+    const d = document.createElement("div"); d.className = "promo";
+    d.innerHTML = `<span class="label">Patente máxima</span><b></b><span class="hint"></span>`;
+    d.querySelector("b").textContent = PATENTES[patDepois].nome;
+    d.querySelector(".hint").textContent = "Luz firme, madeira de lei e olho aberto. Agora vá abrir os olhos de uma pessoa por mês.";
+    promo.appendChild(d);
+  } else if (!aprovado) {
+    const libera = new Date(Date.now() + P.intervaloHoras * 3600e3);
+    const d = document.createElement("p"); d.className = "hint";
+    d.textContent = `Seu progresso na campanha continua guardado. Revise as explicações abaixo e tente de novo a partir de ${libera.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}.`;
+    promo.appendChild(d);
+  }
+  const lista = $("pv-revisao"); lista.innerHTML = "";
+  S.resp.forEach((r, k) => {
+    const det = document.createElement("details");
+    det.className = "rev " + (r.ok ? "ok" : "no");
+    if (!r.ok) det.open = true;
+    det.innerHTML = `<summary><span class="rv-n"></span><span class="rv-q"></span></summary><p class="rv-a"></p><p class="rv-c"></p><p class="rv-e"></p>`;
+    det.querySelector(".rv-n").textContent = `${k + 1}. ${r.ok ? "✓" : "✗"}`;
+    det.querySelector(".rv-q").textContent = r.q.pergunta;
+    det.querySelector(".rv-a").textContent = `Sua resposta: ${r.q.alternativas[r.idx]}`;
+    det.querySelector(".rv-c").textContent = r.ok ? "" : `Correta: ${r.q.alternativas[r.q.correta]}`;
+    det.querySelector(".rv-e").textContent = r.q.explicacao;
+    lista.appendChild(det);
+  });
+  $("pv-salvo").textContent = "Salvando…";
+  const onde = await Store.salvarPerfil(p);
+  if (patDepois !== patAntes) await Store.publicarRanking(entradaRanking(p));
+  $("pv-salvo").textContent = onde === "online" ? "Resultado salvo na sua conta." : "Resultado salvo neste navegador (modo local).";
+}
+
 $("r-central").addEventListener("click", renderCentral);
 $("r-ranking").addEventListener("click", () => { renderRanking(); show("scr-ranking"); });
 $("btn-ranking").addEventListener("click", () => { renderRanking(); show("scr-ranking"); });

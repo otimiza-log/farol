@@ -2,7 +2,7 @@
 
 Jogo 2D de plataforma para navegador com quiz, para formar **Faroleiros**: o jogador atravessa ruínas pós-apocalípticas, enfrenta saqueadores e acende pilares respondendo perguntas sobre o Manifesto Conservador do Farol da Liberdade, até chegar ao Farol.
 
-Versão atual: **Prólogo + Missões 1 a 6**, com quiz, XP, patentes, ranking e três **mestres** de fim de fase. A Missão 7 e a prova final vêm depois.
+Versão atual: **campanha completa**: Prólogo, Missões 1 a 7 (quatro com **mestres** de fim de fase) e a **prova final**, que concede a patente máxima, Cavaleiro do Farol.
 
 | Missão | Princípios no quiz | Novidade de jogabilidade |
 |---|---|---|
@@ -13,6 +13,9 @@ Versão atual: **Prólogo + Missões 1 a 6**, com quiz, XP, patentes, ranking e 
 | 4. Terras Confiscadas | 8º, 10º e 14º | Burocratas armados, arame farpado, escrituras opcionais. **Mestre: Cria de Deodoro** (golpe de bastão prussiano com alcance longo, salto que solta ondas de poeira pelo chão; fica tonto depois do golpe) |
 | 5. O Mercado das Mentiras | 6º, 9º e 15º | Ilusionistas, plataformas móveis, microfones opcionais. **Mestre: Bolsolepra** (zumbi de verde e amarelo que cospe gosmas de mentira em leque, 3 e depois 5; fica ofegante depois de cuspir) |
 | 6. A Cidade sem Lei | 13º e Conexões | Capangas, barricadas em chamas, provas opcionais. **Mestre: Luladrão** (molusco mascarado que faz chover propina, com sombra de aviso no chão, e investe de parede a parede; fica tonto depois da investida) |
+
+| 7. A Travessia | Cultura Faroleira (Faroleiro, conduta, metáforas, religião, identidade) | Água e barcos móveis, lanternas opcionais. **Mestre: Vagabundo do STF** (juiz careca de toga: intimações que perseguem o jogador, martelada com salto e ondas de choque, tarja da censura que varre o chão e precisa ser pulada; fica tonto depois da martelada) |
+| ★ Prova final | Manifesto inteiro | 20 perguntas, ao menos 1 de cada princípio e ≥ 40% difíceis. Sem resposta na hora, revisão completa no fim. Nota mínima 70%. Reprovou? O progresso fica guardado e há nova tentativa após 24 h. Aprovou (com a campanha concluída)? **Cavaleiro do Farol** |
 
 **Mestres:** ao entrar na arena, a câmera tranca, aparece a barra de vida e o ponto de controle passa para a entrada da arena. Na metade da vida, o mestre fica mais rápido e agressivo. Derrotá-lo vale 300 pontos e 200 XP e é obrigatório para terminar a fase.
 
@@ -35,7 +38,7 @@ jogo/
   index.html                          Jogo pronto para servidores (VPS) e para abrir direto no navegador
   farol-da-liberdade.html             Jogo pronto para publicar como artefato do claude.ai
 testes/
-  campanha.mjs                        Joga do Prólogo à Missão 6 (mestres incluídos) e confere as mecânicas
+  campanha.mjs                        Joga a campanha inteira (mestres e prova final incluídos) e confere as mecânicas
   celular.mjs                         Testa toque, celular em pé/deitado e o quiz em tela baixa
 ```
 
@@ -74,7 +77,7 @@ Para atualizar: `git -C /var/www/farol pull --ff-only` (sem reiniciar o servidor
 python jogo/build_jogo.py
 ```
 
-Os temas usados por cada missão ficam em `FASES` (no template) e a lista de temas incluídos no jogo, em `TEMAS` (no `build_jogo.py`). Os parâmetros de pontuação, XP, patentes e fases ficam no início do script em `jogo/farol-template.html` (`PARAMS`, `PATENTES`, `CAMPANHA`, `FASES`).
+Os temas usados por cada missão ficam em `FASES` (no template). O build inclui o banco inteiro: o Manifesto alimenta as missões 0 a 6 e a prova final, e a Cultura Faroleira alimenta a Missão 7 (com o tema prefixado por `Cultura · `). Os parâmetros da prova ficam em `PARAMS.prova`. Os parâmetros de pontuação, XP, patentes e fases ficam no início do script em `jogo/farol-template.html` (`PARAMS`, `PATENTES`, `CAMPANHA`, `FASES`).
 
 ## Regras implementadas
 
@@ -102,11 +105,10 @@ Cada linha `OK`/`FALHA` é uma verificação, e as capturas de tela ficam em `sa
 ## Limitações conhecidas
 
 - **Pontuação calculada no navegador.** A especificação exige validação no servidor (RN-022), idempotência por evento e um painel administrativo. Isso depende de um backend, previsto na arquitetura técnica (TAD), com Supabase sugerido.
-- A Missão 7 e a prova final ainda não existem e aparecem como "Em breve".
 - A especificação v1.1 (§2.3) ainda lista 7 patentes. A tabela vigente, com 8, está em `docs/avaliacao-especificacao-v1.1.md` (§4.3).
 
 ## Próximos passos
 
 1. Especificação de Arquitetura Técnica (TAD): backend, modelo de dados, API de eventos e antifraude.
 2. Painel administrativo de perguntas, com os campos `versao`, `status` e `revisado_por`.
-3. Missão 7 (A Travessia) e a prova final.
+3. Mais conteúdo para a prova final (meta: 200+ perguntas, para o sorteio repetir menos).

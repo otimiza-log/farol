@@ -2,28 +2,33 @@
 
 Uso:  python jogo/build_jogo.py
 Edite as perguntas nos JSONs de conteudo/ e rode de novo: o jogo não precisa de mudança no código.
+
+O jogo recebe o banco inteiro:
+- módulo Manifesto: usado pelas missões 0 a 6 (por tema) e pela prova final (sorteio entre todos os princípios);
+- módulo Cultura Faroleira: usado pela Missão 7; o tema ganha o prefixo "Cultura · " para não colidir com os
+  temas do Manifesto (os dois módulos têm um tema "Identidade").
 """
 import json, os
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 AQUI = os.path.join(RAIZ, 'jogo')
-
-# temas usados pelas missões jogáveis
-TEMAS = {'Identidade', 'Introdução', '1º Princípio', '2º Princípio',          # Prólogo e Missão 1
-         '3º Princípio', '5º Princípio', '11º Princípio', '6º e 11º Princípios',  # Missão 2
-         '4º Princípio', '7º Princípio', '12º Princípio',                      # Missão 3
-         '8º Princípio', '10º Princípio', '14º Princípio',                     # Missão 4
-         '6º Princípio', '9º Princípio', '15º Princípio',                      # Missão 5
-         '13º Princípio', 'Conexões'}                                          # Missão 6
 CAMPOS = ('id', 'tema', 'nivel', 'pergunta', 'alternativas', 'correta', 'explicacao', 'zoeira')
 
 def ler(nome):
     with open(os.path.join(RAIZ, 'conteudo', nome), encoding='utf-8') as f:
         return json.load(f)
 
+def pergunta(q, modulo, prefixo=''):
+    item = {k: q.get(k) for k in CAMPOS}
+    item['tema'] = prefixo + q['tema']
+    item['modulo'] = modulo
+    item['versao'] = q.get('versao', 1)
+    return item
+
 manifesto = ler('quiz-faroleiros.json')
-banco = [{k: q.get(k) for k in CAMPOS} | {'versao': q.get('versao', 1)}
-         for q in manifesto['perguntas'] if q['tema'] in TEMAS]
+cultura = ler('quiz-cultura-faroleira.json')
+banco = ([pergunta(q, 'manifesto') for q in manifesto['perguntas']]
+         + [pergunta(q, 'cultura', 'Cultura · ') for q in cultura['perguntas']])
 mensagens = ler('quiz-mensagens.json')
 msg = {k: mensagens[k] for k in ('acerto', 'erro', 'sequencia')}
 
@@ -52,4 +57,4 @@ standalone = ('<!doctype html>\n<html lang="pt-BR">\n<head>\n<meta charset="utf-
 index = os.path.join(AQUI, 'index.html')
 with open(index, 'w', encoding='utf-8') as f:
     f.write(standalone)
-print(f'{len(banco)} perguntas -> {saida} e {index}')
+print(f'{len(banco)} perguntas ({len(manifesto["perguntas"])} manifesto + {len(cultura["perguntas"])} cultura) -> {saida} e {index}')

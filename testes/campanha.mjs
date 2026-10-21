@@ -190,7 +190,8 @@ await shot("c07-resultado-m3");
 const MESTRES = [
   { id: "m4", nome: "Cria de Deodoro", fim: 5470, comportamento: `const d=s.chefe.data.values; return d.estado==='golpe' || d.estado==='salto' || s.projeteis.getChildren().some(p=>p.texture.key==='onda')` },
   { id: "m5", nome: "Bolsolepra", fim: 5470, comportamento: `return s.projeteis.getChildren().filter(p=>p.texture.key==='lepra').length >= 3` },
-  { id: "m6", nome: "Luladrão", fim: 5670, comportamento: `const d=s.chefe.data.values; return d.estado==='investida' || s.projeteis.getChildren().some(p=>p.texture.key==='propina')` }
+  { id: "m6", nome: "Luladrão", fim: 5670, comportamento: `const d=s.chefe.data.values; return d.estado==='investida' || s.projeteis.getChildren().some(p=>p.texture.key==='propina')` },
+  { id: "m7", nome: "Vagabundo do STF", fim: 5870, comportamento: `const d=s.chefe.data.values; return d.estado==='salto' || s.projeteis.getChildren().some(p=>['intimacao','tarja'].includes(p.texture.key))` }
 ];
 for (const M of MESTRES) {
   log(`\n[${M.id}: mestre ${M.nome}]`);
@@ -226,6 +227,36 @@ for (const M of MESTRES) {
   ok(r.pts !== undefined && Number(r.pts) > 0, "missão concluída após derrotar o mestre");
   log("  quadro:", await ev(`return [...document.querySelectorAll('#r-breakdown tr')].map(t=>t.textContent).join(' | ')`));
 }
+// ---------- Prova final ----------
+log("\n[Prova final]");
+ok((await ev(`return document.getElementById('r-next').textContent`)) === "Ir para a prova final", "depois da Missão 7, o botão leva à prova final");
+await ev(`document.getElementById('r-next').click()`); await sleep(400);
+ok(!(await ev(`return document.getElementById('scr-prova').hidden`)), "tela da prova abre com as regras");
+const comp = await ev(`const qs=montarProva(); const t=new Set(qs.map(q=>q.tema)); let princ=0; for(let n=1;n<=15;n++) if(t.has(n+'º Princípio')) princ++;
+  return {n: qs.length, princ, dif: qs.filter(q=>q.nivel==='dificil').length, todasManifesto: qs.every(q=>q.modulo==='manifesto'), unicas: new Set(qs.map(q=>q.id)).size}`);
+ok(comp.n === 20 && comp.princ === 15 && comp.dif >= 8 && comp.todasManifesto && comp.unicas === 20, "sorteio: 20 únicas do manifesto, 15 princípios, ≥8 difíceis " + JSON.stringify(comp));
+const responderProva = (certo) => ev(`const esp=(ms)=>new Promise(r=>setTimeout(r,ms));
+  for (let k=0;k<25 && PROVA;k++){ await esp(520); const q=PROVA.qs[PROVA.i]; const pos=PROVA.ordem.findIndex(o=>${certo ? "o.idx===q.correta" : "o.idx!==q.correta"});
+    document.getElementById('pv-opts').children[pos].click(); await esp(60); document.getElementById('pv-ok').click(); }
+  await esp(400); return {nota: document.getElementById('pv-nota').textContent, veredito: document.getElementById('pv-veredito').textContent, revisao: document.querySelectorAll('#pv-revisao details').length}`);
+await ev(`document.getElementById('pv-start').click()`); await sleep(300);
+const semFeedback = await ev(`return document.querySelectorAll('#pv-opts .right, #pv-opts .wrong').length === 0 && !document.getElementById('pv-ok').disabled === false`);
+ok(semFeedback, "durante a prova não há resposta na hora e é preciso escolher antes de confirmar");
+const pr1 = await responderProva(false);
+ok(pr1.nota === "0%" && pr1.veredito.startsWith("Ainda não") && pr1.revisao === 20, "reprovação: nota, veredito e revisão das 20 " + JSON.stringify(pr1));
+await shot("c09-prova-reprovado");
+await ev(`document.getElementById('pv-res-back').click()`); await sleep(300);
+const bloqueio = await ev(`abrirProva(); return {botao: document.getElementById('pv-start').disabled, aviso: document.getElementById('pv-espera').textContent}`);
+ok(bloqueio.botao && bloqueio.aviso.includes("Nova tentativa"), "nova tentativa bloqueada pelo intervalo: " + bloqueio.aviso);
+ok((await ev(`return patenteIndex(PERFIL)`)) < 7, "reprovado não recebe a patente máxima");
+await ev(`PARAMS.prova.intervaloHoras = 0; abrirProva();`); await sleep(200);
+await ev(`document.getElementById('pv-start').click()`); await sleep(300);
+const pr2 = await responderProva(true);
+ok(pr2.nota === "100%" && pr2.veredito === "Aprovado.", "aprovação com 100% " + JSON.stringify(pr2));
+const promoProva = await ev(`return document.getElementById('pv-promo').textContent`);
+ok(promoProva.includes("Cavaleiro do Farol"), "aprovação concede a patente Cavaleiro do Farol");
+await shot("c10-prova-aprovado");
+await ev(`document.getElementById('pv-res-back').click()`); await sleep(300);
 await ev(`document.getElementById('r-central').click()`); await sleep(500);
 log("\ncentral final:", await ev(`return {patente: document.getElementById('c-patente').textContent, xp: document.getElementById('c-xp').textContent, pts: document.getElementById('c-pts').textContent, missoes: [...document.querySelectorAll('.mission .act')].slice(0,5).map(a=>a.textContent).join(' | ')}`));
 await shot("c08-central");
