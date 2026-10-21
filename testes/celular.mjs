@@ -69,7 +69,7 @@ log("opção 1 na tela:", await ev(`const r=document.querySelector('#mq-opts .op
 await ev(`document.querySelector('#mq-opts .opt').scrollIntoView({block:'nearest'})`); await sleep(100);
 await toque('#mq-opts .opt', 60); await sleep(300);
 log("respondeu pelo toque:", await ev(`return cena().run.quizTotal`));
-log("quiz cabe/rola:", await ev(`const m=document.getElementById('m-quiz'); const b=document.getElementById('mq-next'); b.scrollIntoView({block:'nearest'}); const r=b.getBoundingClientRect(); return {modalAltura:m.clientHeight, conteudo:m.scrollHeight, botaoVisivel: r.bottom<=innerHeight && r.top>=0}`));
+log("quiz cabe/rola:", await ev(`await new Promise(r=>setTimeout(r,700)); const m=document.getElementById('m-quiz'); const b=document.getElementById('mq-next'); const r=b.getBoundingClientRect(); return {modalAltura:m.clientHeight, conteudo:m.scrollHeight, rolagem:Math.round(m.scrollTop), topo:Math.round(r.top), base:Math.round(r.bottom), tela:innerHeight, botaoVisivel: r.bottom<=innerHeight+1 && r.top>=0}`));
 await shot("m07-quiz-feedback-paisagem");
 await ev(`for (let i=0;i<3;i++){ const b=document.getElementById('mq-next'); if(!b.hidden){ await new Promise(r=>setTimeout(r,450)); b.click(); await new Promise(r=>setTimeout(r,600)); const o=document.getElementById('mq-opts').children[0]; if(o && !document.getElementById('m-quiz').hidden && document.getElementById('mq-next').hidden) { o.click(); await new Promise(r=>setTimeout(r,200)); } } }`);
 await sleep(500);

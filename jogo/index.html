@@ -148,6 +148,7 @@ body.touchmode .touch { display: flex; }
 /* ---------- modais ---------- */
 .modal { position: fixed; inset: 0; z-index: 50; background: rgba(8,6,5,.78); display: flex; align-items: flex-start; justify-content: center; overflow-y: auto;
   padding: calc(16px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.modal { scroll-padding-block: 16px; }
 .sheet { margin: auto; width: min(640px, 100%); background: var(--panel); border: 1px solid var(--line); border-top: 3px solid var(--blood); padding: 22px; display: grid; gap: 14px; border-radius: 3px; }
 .sheet h2 { font-size: 22px; }
 .sheet p { margin: 0; }
@@ -1126,6 +1127,8 @@ function rodarQuiz({ nome, perguntas, onResposta, onFim }) {
     const nb = $("mq-next");
     nb.textContent = i + 1 < perguntas.length ? "Próxima pergunta" : "Continuar a missão";
     nb.hidden = false;
+    // no celular deitado a explicação fica abaixo da dobra: rola até o botão para o jogador ver que há mais
+    setTimeout(() => { try { nb.scrollIntoView({ block: "end", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); } catch (e) { nb.scrollIntoView(false); } }, 60);
     nb.onclick = () => {
       if (!armado() || etapa !== "feedback") return;
       i++;
